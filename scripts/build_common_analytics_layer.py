@@ -210,7 +210,16 @@ def main() -> None:
     kaggle_common.to_csv(KAGGLE_OUTPUT, index=False)
     save_parquet_if_available(kaggle_common, KAGGLE_OUTPUT.with_suffix(".parquet"))
 
-    combined = pd.concat([api_common, kaggle_common], ignore_index=True)
+    # Большой источник riot_full (raw.zip от наставника) подключаем, если он уже
+    # разобран ingest-скриптом. Это главный объёмный источник с несколькими патчами.
+    parts = [api_common, kaggle_common]
+    riot_full_path = OUTPUT_DIR / "riot_full_common.parquet"
+    if riot_full_path.exists():
+        riot_full = finalize_dtypes(pd.read_parquet(riot_full_path))
+        parts.append(riot_full)
+        print(f"Riot full common: {riot_full.shape} <- {riot_full_path.name}")
+
+    combined = pd.concat(parts, ignore_index=True)
     combined.to_csv(COMBINED_OUTPUT, index=False)
     save_parquet_if_available(combined, COMBINED_OUTPUT.with_suffix(".parquet"))
 

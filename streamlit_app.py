@@ -45,8 +45,9 @@ def run(sql: str):
 # ---------- боковая панель: общие фильтры ----------
 st.sidebar.header("Фильтры")
 source = st.sidebar.selectbox(
-    "Источник данных", ["kaggle", "riot_api"],
-    help="kaggle — большой исторический срез; riot_api — собственная свежая выборка",
+    "Источник данных", ["riot_full", "kaggle", "riot_api"],
+    help="riot_full — большой набор (~26k матчей, патчи 16.7–16.12); "
+         "kaggle — исторический срез; riot_api — собственная свежая выборка",
 )
 st.sidebar.caption("Данные: Riot API + Kaggle → Parquet → DuckDB. Учебный проект.")
 

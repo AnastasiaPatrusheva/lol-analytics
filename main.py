@@ -54,6 +54,7 @@ def main() -> int:
     sub = parser.add_subparsers(dest="stage", required=True)
 
     sub.add_parser("reference", help="справочники Data Dragon (champions, items)")
+    sub.add_parser("ingest", help="разбор большого датасета raw.zip → источник riot_full")
     sub.add_parser("extract", add_help=False, help="сбор из Riot API (проброс аргументов коллектору)")
     sub.add_parser("transform", help="нормализация источников в общую схему")
     sub.add_parser("quality", help="проверки Data Quality")
@@ -66,6 +67,8 @@ def main() -> int:
 
     if args.stage == "reference":
         run_script("fetch_reference.py")
+    elif args.stage == "ingest":
+        run_script("ingest_riot_full.py")
     elif args.stage == "extract":
         run_script("riot_data_collector.py", *extra)
     elif args.stage == "transform":
@@ -83,6 +86,8 @@ def main() -> int:
         else:
             run_script("load_to_warehouse.py", env=env_without_database_url())
     elif args.stage == "all":
+        if (ROOT / "data" / "riot_full" / "raw" / "matches").exists():
+            run_script("ingest_riot_full.py")
         run_script("build_common_analytics_layer.py")
         run_script("run_data_quality.py")
         run_script("build_star_schema.py")
