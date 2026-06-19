@@ -1,0 +1,707 @@
+item_id,item_name,gold_total,purchasable,tags
+1001,Boots,300,True,Boots
+1004,Faerie Charm,200,True,ManaRegen
+1006,Rejuvenation Bead,300,True,HealthRegen
+1011,Giant's Belt,900,True,Health
+1018,Cloak of Agility,600,True,CriticalStrike
+1026,Blasting Wand,850,True,SpellDamage
+1027,Sapphire Crystal,300,True,Mana
+1028,Ruby Crystal,400,True,Health
+1029,Cloth Armor,300,True,Armor
+1031,Chain Vest,800,True,Armor
+1033,Null-Magic Mantle,400,True,SpellBlock
+1035,Emberknife,350,False,"LifeSteal,SpellVamp,Jungle"
+1036,Long Sword,350,True,"Damage,Lane"
+1037,Pickaxe,875,True,Damage
+1038,B. F. Sword,1300,True,Damage
+1039,Hailblade,350,False,"LifeSteal,SpellVamp,Jungle"
+1040,Obsidian Edge,350,True,"LifeSteal,SpellVamp,Jungle"
+1042,Dagger,250,True,AttackSpeed
+1043,Recurve Bow,700,True,"AttackSpeed,OnHit"
+1052,Amplifying Tome,400,True,SpellDamage
+1053,Vampiric Scepter,900,True,"Damage,LifeSteal"
+1054,Doran's Shield,450,True,"Health,HealthRegen,Lane"
+1055,Doran's Blade,450,True,"Health,Damage,LifeSteal,SpellVamp,Lane"
+1056,Doran's Ring,400,True,"Health,Lane,ManaRegen,SpellDamage"
+1057,Negatron Cloak,850,True,SpellBlock
+1058,Needlessly Large Rod,1200,True,SpellDamage
+1082,Dark Seal,350,True,"Health,SpellDamage,Lane"
+1083,Cull,450,True,"Damage,OnHit,Lane"
+1086,Doran's Bow,400,True,"Damage,AttackSpeed,SpellVamp,Lane"
+1090,Quest: Top,0,True,Lane
+1091,Quest: Mid,0,True,Lane
+1092,Quest: Bot,0,True,Lane
+1093,Quest: Support,0,True,Lane
+1094,Quest: Jungle,0,True,Lane
+1101,Scorchclaw Pup,450,True,Jungle
+1102,Gustwalker Hatchling,450,True,Jungle
+1103,Mosstomper Seedling,450,True,Jungle
+1104,Eye of the Herald,0,False,"Trinket,Active"
+1105,Mosstomper Seedling,450,True,Jungle
+1106,Gustwalker Hatchling,450,True,Jungle
+1107,Scorchclaw Pup,450,True,Jungle
+1111,Jarvan I's,300,False,"Armor,AttackSpeed,Boots,Tenacity,MagicPenetration,MagicResist,AbilityHaste"
+1120,Doran's Helm,450,True,"Health,SpellBlock,Armor,Lane"
+1200,Top Lane Quest,0,False,Lane
+1201,Mid Lane Quest,0,False,Lane
+1202,Bot Lane Quest,0,False,Lane
+1203,Support Quest,0,False,Lane
+1204,Jungle Quest,0,False,Lane
+1205,Jungle Quest Reward,0,False,Lane
+1206,Mid Lane Quest Reward,0,False,Lane
+1207,Bot Lane Quest Reward,0,False,Lane
+1208,Support Quest Reward,0,False,Lane
+1209,Jungle Quest Reward,0,False,Lane
+1210,Jungle Quest Reward,0,False,Lane
+1211,Jungle Quest Reward,0,False,Lane
+1220,Unleashed Teleport (Top Lane Quest Reward),0,False,Lane
+1221,Top Lane Quest Reward,0,False,Lane
+1222,Top Lane Quest,0,False,Lane
+1500,Penetrating Bullets,0,False,"HealthRegen,ManaRegen,OnHit"
+1501,Fortification,0,False,
+1502,Reinforced Armor,0,False,"Armor,ManaRegen,OnHit"
+1503,Warden's Eye,0,False,"HealthRegen,ManaRegen,OnHit"
+1504,Vanguard,0,False,"Armor,ManaRegen,OnHit"
+1505,Reinforced Armor,0,False,"Armor,ManaRegen,OnHit"
+1506,Reinforced Armor,0,False,"Armor,ManaRegen,OnHit"
+1507,Overcharged,0,False,"Armor,ManaRegen,OnHit"
+1508,Anti-tower Socks,0,False,"Armor,ManaRegen,OnHit"
+1509,Gusto,0,False,"Armor,ManaRegen,OnHit"
+1510,Phreakish Gusto,0,False,"Armor,ManaRegen,OnHit"
+1511,Super Mech Armor,0,False,"Armor,ManaRegen,OnHit"
+1512,Super Mech Power Field,0,False,"Armor,ManaRegen,OnHit"
+1515,Turret Plating,0,False,Armor
+1516,Structure Bounty,0,False,"HealthRegen,ManaRegen,OnHit"
+1517,Structure Bounty,0,False,"HealthRegen,ManaRegen,OnHit"
+1518,Structure Bounty,0,False,"HealthRegen,ManaRegen,OnHit"
+1519,Structure Bounty,0,False,"HealthRegen,ManaRegen,OnHit"
+1520,OvererchargedHA,0,False,"Armor,ManaRegen,OnHit"
+1521,Fortification,0,False,OnHit
+1522,Tower Power-Up,0,False,"Armor,Damage"
+1523,Overcharged,0,False,"Armor,ManaRegen,OnHit"
+1524,Overgrowth,0,False,"Armor,Damage"
+2001,Recall,60,False,
+2002,Enhanced Recall,60,False,
+2003,Health Potion,50,True,"HealthRegen,Consumable,Lane,Jungle"
+2007,Disabled Recall,60,False,
+2008,,60,False,
+2010,Total Biscuit of Everlasting Will,50,False,
+2015,Kircheis Shard,700,False,"Damage,OnHit"
+2019,Steel Sigil,1100,True,"Armor,Damage"
+2020,The Brutalizer,1337,True,"Damage,CooldownReduction,ArmorPenetration"
+2021,Tunneler,1150,True,"Health,Damage"
+2022,Glowing Mote,250,True,CooldownReduction
+2031,Refillable Potion,150,True,"HealthRegen,Consumable,Active,Lane,Jungle"
+2033,Corrupting Potion,500,False,"Active,Consumable,HealthRegen,Lane,ManaRegen"
+2049,Guardian's Amulet,500,True,"SpellDamage,ManaRegen,CooldownReduction,Lane,AbilityHaste"
+2050,Guardian's Shroud,500,True,"Health,SpellDamage,CooldownReduction,Lane,AbilityHaste"
+2051,Guardian's Horn,950,True,"Health,HealthRegen,Lane"
+2052,Poro-Snax,0,False,
+2055,Control Ward,75,True,"Consumable,Lane,Stealth,Vision"
+2056,Stealth Ward,40,False,"Consumable,Lane,Stealth,Vision"
+2065,Shurelya's Battlesong,2200,True,"SpellDamage,ManaRegen,Active,CooldownReduction,NonbootsMovement,AbilityHaste"
+2138,Elixir of Iron,500,True,"Health,Consumable,NonbootsMovement,Tenacity"
+2139,Elixir of Sorcery,500,True,"Consumable,ManaRegen,SpellDamage"
+2140,Elixir of Wrath,500,True,"Consumable,Damage,LifeSteal,SpellVamp"
+2141,Cappa Juice,300,True,"Damage,Consumable"
+2142,Juice of Power,500,True,"SpellDamage,Consumable"
+2143,Juice of Vitality,500,True,"Health,Consumable"
+2144,Juice of Haste,500,True,"Consumable,CooldownReduction"
+2145,Lucky Dice,0,False,Consumable
+2146,Enhanced Lucky Dice,0,False,Consumable
+2147,Augment Level,1250,True,Consumable
+2150,Elixir of Skill,0,False,Consumable
+2151,Elixir of Avarice,50,False,"Health,Consumable,Tenacity"
+2152,Elixir of Force,50,False,"Consumable,Tenacity"
+2161,Bandle Juice of Power,1000,True,"SpellDamage,Consumable"
+2162,Bandle Juice of Vitality,1000,True,"Health,Consumable"
+2163,Bandle Juice of Haste,1000,True,"Consumable,CooldownReduction"
+2403,Minion Dematerializer,0,False,
+2420,Seeker's Armguard,1600,True,"Armor,SpellDamage,Active"
+2421,Shattered Armguard,1600,True,
+2422,Slightly Magical Footwear,300,False,Boots
+2501,Overlord's Bloodmail,3300,True,"Health,Damage"
+2502,Unending Despair,2800,True,"Health,Armor,CooldownReduction,AbilityHaste"
+2503,Blackfire Torch,2800,True,"SpellDamage,Mana,CooldownReduction,AbilityHaste"
+2504,Kaenic Rookern,2900,True,"Health,SpellBlock,HealthRegen"
+2508,Fated Ashes,900,True,SpellDamage
+2510,Dusk and Dawn,3100,True,"Health,AttackSpeed,SpellDamage,OnHit,AbilityHaste"
+2512,Fiendhunter Bolts,2650,True,"CriticalStrike,AttackSpeed,NonbootsMovement,AbilityHaste"
+2517,Endless Hunger,3100,True,"Damage,LifeSteal,SpellVamp,Tenacity,AbilityHaste"
+2520,Bastionbreaker,3200,True,"Damage,ArmorPenetration,AbilityHaste"
+2522,Actualizer,2800,True,"SpellDamage,Mana,AbilityHaste"
+2523,Hexoptics C44,2800,True,"Damage,CriticalStrike"
+2524,Bandlepipes,2300,True,"Health,SpellBlock,Armor,AttackSpeed,NonbootsMovement,AbilityHaste"
+2525,Protoplasm Harness,2500,True,"Health,NonbootsMovement,Tenacity,AbilityHaste"
+2526,Whispering Circlet,2250,True,"Health,Mana,ManaRegen"
+2530,Diadem of Songs,2250,False,"Health,Mana,ManaRegen,AbilityHaste"
+3001,Evenshroud,2300,False,"Health,SpellBlock,Armor,AbilityHaste"
+3002,Trailblazer,2400,False,"Health,Armor,NonbootsMovement"
+3003,Archangel's Staff,2900,True,"SpellDamage,Mana,AbilityHaste"
+3004,Manamune,2900,True,"Damage,Mana,CooldownReduction,OnHit,AbilityHaste"
+3005,Ghostcrawlers,1000,True,Boots
+3006,Berserker's Greaves,1100,True,"AttackSpeed,Boots"
+3008,Gluttonous Greaves,1000,True,"LifeSteal,SpellVamp,Boots"
+3009,Boots of Swiftness,1000,True,Boots
+3010,Symbiotic Soles,900,False,Boots
+3011,Chemtech Putrifier,1900,False,"SpellDamage,ManaRegen,AbilityHaste"
+3012,Chalice of Blessing,900,False,"Health,ManaRegen"
+3013,Synchronized Souls,900,False,Boots
+3020,Sorcerer's Shoes,1100,True,"Boots,MagicPenetration"
+3023,Lifewell Pendant,1050,False,"Health,Armor,AbilityHaste"
+3024,Glacial Buckler,900,True,"Armor,Mana,CooldownReduction,AbilityHaste"
+3026,Guardian Angel,3200,True,"Armor,Damage"
+3031,Infinity Edge,3500,True,"CriticalStrike,Damage"
+3032,Yun Tal Wildarrows,3100,True,"Damage,CriticalStrike,AttackSpeed"
+3033,Mortal Reminder,3000,True,"Damage,CriticalStrike,ArmorPenetration"
+3035,Last Whisper,1450,True,"ArmorPenetration,Damage"
+3036,Lord Dominik's Regards,3300,True,"Damage,CriticalStrike,ArmorPenetration"
+3039,Atma's Reckoning,2900,True,"Health,CriticalStrike"
+3040,Seraph's Embrace,2900,False,"SpellDamage,Mana,AbilityHaste"
+3041,Mejai's Soulstealer,1500,True,"Health,SpellDamage,NonbootsMovement"
+3042,Muramana,2900,False,"Damage,Mana,CooldownReduction,OnHit,ArmorPenetration"
+3044,Phage,1100,True,"Health,Damage,NonbootsMovement"
+3046,Phantom Dancer,2650,True,"CriticalStrike,AttackSpeed,NonbootsMovement"
+3047,Plated Steelcaps,1200,True,"Armor,Boots"
+3050,Zeke's Convergence,2200,True,"Health,SpellBlock,Armor,AbilityHaste"
+3051,Hearthbound Axe,1200,True,"Damage,AttackSpeed"
+3053,Sterak's Gage,3200,True,"Health,Damage,Tenacity"
+3057,Sheen,900,True,"OnHit,AbilityHaste"
+3065,Spirit Visage,2700,True,"Health,SpellBlock,HealthRegen,CooldownReduction,AbilityHaste"
+3066,Winged Moonplate,800,True,"Health,NonbootsMovement"
+3067,Kindlegem,800,True,"Health,CooldownReduction,AbilityHaste"
+3068,Sunfire Aegis,2700,True,"Health,Armor,Aura,AbilityHaste"
+3070,Tear of the Goddess,400,True,"Mana,ManaRegen"
+3071,Black Cleaver,3000,True,"Health,Damage,CooldownReduction,OnHit,NonbootsMovement,ArmorPenetration,AbilityHaste"
+3072,Bloodthirster,3400,True,"Damage,LifeSteal"
+3073,Experimental Hexplate,3000,True,"Health,Damage,AttackSpeed,CooldownReduction,NonbootsMovement,AbilityHaste"
+3074,Ravenous Hydra,3300,True,"Damage,LifeSteal,CooldownReduction,OnHit,AbilityHaste"
+3075,Thornmail,2450,True,"Health,Armor"
+3076,Bramble Vest,800,True,Armor
+3077,Tiamat,1200,True,"Damage,OnHit"
+3078,Trinity Force,3333,True,"Health,Damage,AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,AbilityHaste"
+3082,Warden's Mail,1000,True,Armor
+3083,Warmog's Armor,3100,True,"Health,HealthRegen"
+3084,Heartsteel,3000,True,"Health,HealthRegen"
+3085,Runaan's Hurricane,2650,True,"CriticalStrike,AttackSpeed,OnHit,NonbootsMovement"
+3086,Zeal,1200,True,"CriticalStrike,AttackSpeed,NonbootsMovement"
+3087,Statikk Shiv,3000,True,"Damage,AttackSpeed,SpellDamage,OnHit,NonbootsMovement"
+3089,Rabadon's Deathcap,3500,True,SpellDamage
+3091,Wit's End,2800,True,"SpellBlock,AttackSpeed,OnHit,Tenacity"
+3094,Rapid Firecannon,2650,True,"CriticalStrike,AttackSpeed,NonbootsMovement"
+3095,Deprecated item,3000,True,"Damage,CriticalStrike,AttackSpeed,NonbootsMovement"
+3097,Stormrazor,3200,True,"Damage,CriticalStrike,AttackSpeed,NonbootsMovement"
+3100,Lich Bane,2900,True,"SpellDamage,OnHit,NonbootsMovement,AbilityHaste"
+3102,Banshee's Veil,3000,True,"SpellBlock,SpellDamage"
+3105,Aegis of the Legion,1100,True,"SpellBlock,Armor,CooldownReduction,AbilityHaste"
+3107,Redemption,2300,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+3108,Fiendish Codex,850,True,"SpellDamage,CooldownReduction,AbilityHaste"
+3109,Knight's Vow,2300,True,"Health,HealthRegen,Armor,Aura,Active,CooldownReduction,AbilityHaste"
+3110,Frozen Heart,2500,True,"Armor,Mana,Aura,CooldownReduction,AbilityHaste"
+3111,Mercury's Treads,1250,True,"Boots,SpellBlock,Tenacity"
+3112,Guardian's Orb,950,True,"Health,SpellDamage,ManaRegen,Lane"
+3113,Aether Wisp,900,True,"NonbootsMovement,SpellDamage"
+3114,Forbidden Idol,600,True,ManaRegen
+3115,Nashor's Tooth,2900,True,"AttackSpeed,SpellDamage,OnHit,AbilityHaste"
+3116,Rylai's Crystal Scepter,2600,True,"Health,SpellDamage,Slow"
+3117,Mobility Boots,1000,False,Boots
+3118,Malignance,2700,True,"SpellDamage,Mana,AbilityHaste"
+3119,Winter's Approach,2400,True,"Health,Mana,AbilityHaste"
+3121,Fimbulwinter,2400,False,"Health,Mana,AbilityHaste"
+3123,Executioner's Calling,800,True,Damage
+3124,Guinsoo's Rageblade,3000,True,"Damage,AttackSpeed,SpellDamage,OnHit"
+3128,Deathfire Grasp,2900,True,"SpellDamage,CooldownReduction"
+3131,Sword of the Divine,2300,True,"Damage,CriticalStrike,AttackSpeed"
+3133,Caulfield's Warhammer,1050,True,"Damage,CooldownReduction,AbilityHaste"
+3134,Serrated Dirk,1000,True,"Damage,ArmorPenetration"
+3135,Void Staff,3000,True,"MagicPenetration,SpellDamage"
+3137,Cryptbloom,3000,True,"SpellDamage,MagicPenetration,AbilityHaste"
+3139,Mercurial Scimitar,3200,True,"SpellBlock,Damage,LifeSteal,Active,NonbootsMovement,Tenacity"
+3140,Quicksilver Sash,1300,True,"Active,SpellBlock"
+3142,Youmuu's Ghostblade,2800,True,"Damage,Active,NonbootsMovement,ArmorPenetration"
+3143,Randuin's Omen,2700,True,"Health,Armor,Active,Slow"
+3144,Scout's Slingshot,600,True,AttackSpeed
+3145,Hextech Alternator,1100,True,SpellDamage
+3146,Hextech Gunblade,3000,True,"Damage,LifeSteal,SpellDamage,Active,SpellVamp"
+3147,Haunting Guise,1300,True,"Health,SpellDamage"
+3152,Hextech Rocketbelt,2650,True,"Health,SpellDamage,Active,CooldownReduction,NonbootsMovement,AbilityHaste"
+3153,Blade of The Ruined King,3200,True,"Damage,AttackSpeed,LifeSteal,Slow,OnHit"
+3155,Hexdrinker,1300,True,"Damage,SpellBlock"
+3156,Maw of Malmortius,3100,True,"SpellBlock,Damage,LifeSteal,SpellVamp,AbilityHaste"
+3157,Zhonya's Hourglass,3250,True,"Armor,SpellDamage,Active"
+3158,Ionian Boots of Lucidity,900,True,"Boots,CooldownReduction"
+3161,Spear of Shojin,3100,True,"Health,Damage,AbilityHaste"
+3165,Morellonomicon,2850,True,"Health,SpellDamage,CooldownReduction,AbilityHaste"
+3168,Immortal Path,1000,True,"LifeSteal,SpellVamp,Boots"
+3170,Swiftmarch,1000,True,Boots
+3171,Crimson Lucidity,900,True,"CooldownReduction,Boots"
+3172,Gunmetal Greaves,1100,True,"AttackSpeed,LifeSteal,NonbootsMovement"
+3173,Chainlaced Crushers,1250,True,"SpellBlock,Boots,Tenacity,MagicResist"
+3174,Armored Advance,1200,True,"Armor,Boots"
+3175,Spellslinger's Shoes,1100,True,"Boots,MagicPenetration"
+3176,Forever Forward,900,False,Boots
+3177,Guardian's Blade,950,True,"Health,Damage,Lane,AbilityHaste"
+3179,Umbral Glaive,2800,True,"Damage,Vision,CooldownReduction,ArmorPenetration,AbilityHaste"
+3181,Hullbreaker,3000,True,"Health,Damage,NonbootsMovement"
+3184,Guardian's Hammer,950,True,"Health,Damage,LifeSteal,Lane"
+3190,Locket of the Iron Solari,2200,True,"Health,SpellBlock,Armor,Aura,Active,MagicResist,AbilityHaste"
+3193,Gargoyle Stoneplate,3150,False,"SpellBlock,Armor,Active,CooldownReduction,AbilityHaste"
+3211,Spectre's Cowl,1250,True,"Health,HealthRegen,SpellBlock"
+3222,Mikael's Blessing,2300,True,"Health,ManaRegen,Active,CooldownReduction,Tenacity,AbilityHaste"
+3302,Terminus,3000,True,"Damage,AttackSpeed,OnHit,MagicPenetration,ArmorPenetration"
+3330,Scarecrow Effigy,0,True,"Active,Jungle,Lane,Trinket,Vision"
+3340,Stealth Ward,0,True,"Active,Jungle,Lane,Trinket,Vision"
+3348,Arcane Sweeper,0,False,"Active,Jungle,Lane,Trinket,Vision"
+3349,Lucent Singularity,0,False,"Active,Jungle,Lane,Trinket,Vision"
+3363,Farsight Alteration,0,True,"Active,Trinket,Vision"
+3364,Oracle Lens,0,True,"Active,Trinket,Vision"
+3398,Small Party Favor,0,False,"Consumable,GoldPer"
+3399,Party Favor,0,False,"Consumable,GoldPer"
+3400,Your Cut,0,False,"Consumable,GoldPer"
+3430,Rite Of Ruin,2500,True,"CriticalStrike,SpellDamage,CooldownReduction"
+3504,Ardent Censer,2200,True,"AttackSpeed,SpellDamage,ManaRegen,NonbootsMovement"
+3508,Essence Reaver,3050,True,"Damage,CriticalStrike,ManaRegen,CooldownReduction,OnHit,AbilityHaste"
+3513,Eye of the Herald,0,False,"Trinket,Active"
+3599,Kalista's Black Spear,0,True,Consumable
+3600,Kalista's Black Spear,0,True,Consumable
+3742,Dead Man's Plate,2900,True,"Health,Armor,Slow,NonbootsMovement"
+3748,Titanic Hydra,3300,True,"Health,HealthRegen,Damage,OnHit"
+3801,Crystalline Bracer,800,True,"Health,HealthRegen"
+3802,Lost Chapter,1200,True,"SpellDamage,Mana,ManaRegen,CooldownReduction,AbilityHaste"
+3803,Catalyst of Aeons,1300,True,"Health,HealthRegen,Mana,ManaRegen"
+3814,Edge of Night,3000,True,"Health,Damage,ArmorPenetration"
+3850,Spellthief's Edge,400,False,"Health,SpellDamage,ManaRegen,Vision,GoldPer,Lane"
+3851,Frostfang,400,False,"GoldPer,Lane,ManaRegen,SpellDamage"
+3853,Shard of True Ice,400,False,"GoldPer,Lane,ManaRegen,SpellDamage"
+3854,Steel Shoulderguards,400,False,"Health,HealthRegen,Damage,Vision,GoldPer,Lane"
+3855,Runesteel Spaulders,400,False,"Health,HealthRegen,GoldPer,Lane"
+3857,Pauldrons of Whiterock,400,False,"Health,HealthRegen,GoldPer,Lane"
+3858,Relic Shield,400,False,"Health,HealthRegen,SpellDamage,Vision,GoldPer,Lane"
+3859,Targon's Buckler,400,False,"Health,HealthRegen,GoldPer,Lane"
+3860,Bulwark of the Mountain,400,False,"Health,HealthRegen,GoldPer,Lane"
+3862,Spectral Sickle,400,False,"Health,Damage,ManaRegen,Vision,GoldPer,Lane"
+3863,Harrowing Crescent,400,False,"Health,ManaRegen,GoldPer,Lane"
+3864,Black Mist Scythe,400,False,"Health,ManaRegen,GoldPer,Lane"
+3865,World Atlas,400,True,"Health,ManaRegen,Vision,GoldPer,Lane"
+3866,Runic Compass,400,False,"SpellDamage,ManaRegen,Vision,GoldPer,Lane"
+3867,Bounty of Worlds,400,False,"SpellDamage,ManaRegen,Vision,GoldPer,Lane"
+3869,Celestial Opposition,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane"
+3870,Dream Maker,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane"
+3871,Zaz'Zak's Realmspike,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane"
+3876,Solstice Sleigh,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane"
+3877,Bloodsong,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane"
+3901,<rarityLegendary>Fire at Will</rarityLegendary><br><subtitleLeft><silver>500 Silver Serpents</silver></subtitleLeft>,0,False,
+3902,<rarityLegendary>Death's Daughter</rarityLegendary><br><subtitleLeft><silver>500 Silver Serpents</silver></subtitleLeft>,0,False,
+3903,<rarityLegendary>Raise Morale</rarityLegendary><br><subtitleLeft><silver>500 Silver Serpents</silver></subtitleLeft>,0,False,
+3916,Oblivion Orb,800,True,SpellDamage
+4003,Lifeline,1600,True,"Damage,NonbootsMovement,ArmorPenetration"
+4004,Spectral Cutlass,2800,True,"Damage,NonbootsMovement,ArmorPenetration"
+4005,Imperial Mandate,2400,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+4010,Bloodletter's Curse,2500,True,"SpellBlock,SpellDamage,CooldownReduction,MagicPenetration"
+4011,Sword of Blossoming Dawn,2500,True,"Health,SpellDamage,CooldownReduction,OnHit,AbilityHaste"
+4012,Sin Eater,3000,True,"Health,SpellBlock,Armor,Tenacity"
+4013,Lightning Braid,3000,True,"SpellBlock,Armor,SpellDamage,Tenacity"
+4014,Frozen Mallet,3000,False,"Health,Damage,AttackSpeed,Slow"
+4015,Perplexity,2500,True,"SpellDamage,CooldownReduction,NonbootsMovement,MagicPenetration,ArmorPenetration,AbilityHaste"
+4016,Wordless Promise,2500,True,"SpellDamage,CooldownReduction,AbilityHaste"
+4017,Hellfire Hatchet,2500,True,"Damage,ArmorPenetration"
+4401,Force of Nature,2800,True,"Health,SpellBlock,NonbootsMovement"
+4402,Innervating Locket,2950,True,"Health,Damage,Mana,CooldownReduction,AbilityHaste"
+4403,The Golden Spatula,7187,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,CooldownReduction,NonbootsMovement"
+4628,Horizon Focus,2700,True,"SpellDamage,AbilityHaste"
+4629,Cosmic Drive,3000,True,"Health,SpellDamage,NonbootsMovement,AbilityHaste"
+4630,Blighting Jewel,1100,True,"MagicPenetration,SpellDamage"
+4632,Verdant Barrier,1600,True,"SpellBlock,SpellDamage"
+4633,Riftmaker,3100,True,"Health,SpellDamage,CooldownReduction,SpellVamp"
+4635,Leeching Leer,1265,False,"Health,SpellDamage,SpellVamp"
+4636,Night Harvester,2765,False,"Health,SpellDamage,CooldownReduction,NonbootsMovement,AbilityHaste"
+4637,Demonic Embrace,3000,False,"Health,SpellDamage"
+4638,Watchful Wardstone,1100,True,"Health,SpellBlock,Armor,Vision,Active,CooldownReduction,AbilityHaste"
+4641,Stirring Wardstone,350,False,"Health,Damage,SpellDamage,ManaRegen,Vision,Active,CooldownReduction,AbilityHaste"
+4642,Bandleglass Mirror,900,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+4643,Vigilant Wardstone,2300,True,"Health,SpellBlock,Armor,Vision,Active,CooldownReduction,AbilityHaste"
+4644,Crown of the Shattered Queen,2865,False,"Health,SpellDamage,Mana,NonbootsMovement,AbilityHaste"
+4645,Shadowflame,3200,True,"SpellDamage,MagicPenetration"
+4646,Stormsurge,2800,True,"SpellDamage,GoldPer,NonbootsMovement,MagicPenetration"
+6029,Ironspike Whip,1100,False,"Damage,Active"
+6032,Stat Bonus,750,True,"Health,SpellBlock,Armor,Damage,CriticalStrike,AttackSpeed,SpellDamage,Mana,Consumable,CooldownReduction,SpellVamp,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,MagicResist,AbilityHaste"
+6035,Silvermere Dawn,3000,False,"Health,SpellBlock,Damage,Active,Tenacity"
+6333,Death's Dance,3300,True,"Armor,Damage,AbilityHaste"
+6609,Chempunk Chainsword,3000,True,"Health,Damage,CooldownReduction,AbilityHaste"
+6610,Sundered Sky,3100,True,"Health,Damage,CooldownReduction,AbilityHaste"
+6616,Staff of Flowing Water,2250,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+6617,Moonstone Renewer,2200,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+6620,Echoes of Helia,2200,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+6621,Dawncore,2500,True,"SpellDamage,ManaRegen"
+6630,Goredrinker,3200,False,"Health,Damage,LifeSteal,Active,CooldownReduction,SpellVamp,AbilityHaste"
+6631,Stridebreaker,3300,True,"Health,Damage,AttackSpeed,Slow"
+6632,Divine Sunderer,3450,False,"Health,Damage,CooldownReduction,OnHit,MagicPenetration,ArmorPenetration,AbilityHaste"
+6653,Liandry's Torment,3000,True,"Health,SpellDamage"
+6655,Luden's Echo,2750,True,"SpellDamage,Mana,CooldownReduction,AbilityHaste"
+6656,Everfrost,2865,False,"Health,SpellDamage,Mana,Active,CooldownReduction,Slow,AbilityHaste"
+6657,Rod of Ages,2600,True,"Health,HealthRegen,SpellDamage,Mana,ManaRegen"
+6660,Bami's Cinder,900,True,"Health,AbilityHaste"
+6662,Iceborn Gauntlet,2900,True,"Health,Armor,CooldownReduction,Slow,OnHit,AbilityHaste"
+6664,Hollow Radiance,2800,True,"Health,SpellBlock,HealthRegen,Aura,MagicResist,AbilityHaste"
+6665,"Jak'Sho, The Protean",3200,True,"Health,SpellBlock,Armor,MagicResist"
+6667,Radiant Virtue,2600,False,"Health,SpellBlock,Armor,Aura,CooldownReduction,AbilityHaste"
+6670,Noonquiver,1300,True,"Damage,CriticalStrike"
+6671,Galeforce,3500,False,"Damage,CriticalStrike,AttackSpeed,Active,NonbootsMovement"
+6672,Kraken Slayer,3000,True,"Damage,AttackSpeed,OnHit,NonbootsMovement"
+6673,Immortal Shieldbow,3000,True,"Damage,CriticalStrike"
+6675,Navori Flickerblade,2650,True,"CriticalStrike,AttackSpeed,NonbootsMovement"
+6676,The Collector,3000,True,"Damage,CriticalStrike,ArmorPenetration"
+6677,Rageknife,1100,False,"AttackSpeed,OnHit"
+6690,Rectrix,775,True,"Damage,NonbootsMovement"
+6691,Duskblade of Draktharr,2950,False,"Damage,Stealth,CooldownReduction,Slow,NonbootsMovement,ArmorPenetration,AbilityHaste"
+6692,Eclipse,2900,True,"Damage,CooldownReduction,AbilityHaste"
+6693,Prowler's Claw,2850,False,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste"
+6694,Serylda's Grudge,3000,True,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste"
+6695,Serpent's Fang,2500,True,"Damage,ArmorPenetration"
+6696,Axiom Arc,2750,True,"Damage,ArmorPenetration,AbilityHaste"
+6697,Hubris,2800,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
+6698,Profane Hydra,2850,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
+6699,Voltaic Cyclosword,3000,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
+6700,Shield of the Rakkor,2675,False,"Armor,Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
+6701,Opportunity,2700,False,"Damage,Active,NonbootsMovement,ArmorPenetration"
+6702,Scouting Ahead,0,False,"Active,Jungle,Lane,Trinket,Vision"
+7050,Gangplank Placeholder,0,False,
+8001,Anathema's Chains,2500,False,"Health,Active,CooldownReduction,AbilityHaste"
+8010,Bloodletter's Curse,2900,True,"Health,SpellDamage,CooldownReduction,MagicPenetration"
+8020,Abyssal Mask,2650,True,"Health,SpellBlock,CooldownReduction,MagicResist,AbilityHaste"
+9168,Locked Weapon Slot,0,True,
+9171,Cyclonic Slicers,0,True,
+9172,YuumiBot,0,True,
+9173,Radiant Field,0,True,
+9174,Statikk Sword,0,True,
+9175,Lioness's Lament,0,True,
+9176,Gatling Bunny-Guns,0,True,
+9177,Searing Shortbow,0,True,
+9178,The Annihilator,0,True,
+9179,Battle Bunny Crossbow,0,True,
+9180,UwU Blaster,0,True,
+9181,Vortex Glove,0,True,
+9183,Blade-o-rang,0,True,
+9184,Bunny Mega-Blast,0,True,
+9185,Anti-Shark Sea Mine,0,True,
+9187,T.I.B.B.E.R.S,0,True,
+9188,Ani-Mines,0,True,
+9189,Final City Transit,0,True,
+9190,Echoing Batblades,0,True,
+9192,Paw Print Poisoner,0,True,
+9193,Iceblast Armor,0,True,
+9271,Unceasing Cyclone,0,True,
+9272,YuumiBot_Final_FINAL,0,True,
+9273,Explosive Embrace,0,True,
+9274,Prumbis's Electrocarver,0,True,
+9275,Enveloping Light,0,True,
+9276,Double Bun-Bun Barrage,0,True,
+9277,Evolved Embershot,0,True,
+9278,Animapocalypse,0,True,
+9279,Bunny Prime Ballista,0,True,
+9280,OwO Blaster,0,True,
+9281,Tempest's Gauntlet,0,True,
+9283,Quad-o-rang,0,True,
+9284,Rapid Rabbit Raindown,0,True,
+9285,Neverending Mobstomper,0,True,
+9287,T.I.B.B.E.R.S (B.E.E.G Edition),0,True,
+9288,Jinx's Tri-Namite,0,True,
+9289,FC Limited Express,0,True,
+9290,Vayne's Chromablades,0,True,
+9292,Bearfoot Chem-Dispenser,0,True,
+9293,Deep Freeze,0,True,
+9300,Meow Meow,0,True,
+9301,Shield Slam,0,True,
+9302,Sound Wave,0,True,
+9303,Pillory Swipe,0,True,
+9304,Steel Tempest,0,True,
+9305,Tentacle Slam,0,True,
+9306,Winged Dagger,0,True,
+9307,Guiding Hex,0,True,
+9308,Bunny Hop,0,True,
+9400,Battle Cat Barrage,0,True,
+9401,Light of the Lion,0,True,
+9402,Anima Echo,0,True,
+9403,Savage Slice,0,True,
+9404,Wandering Storms,0,True,
+9405,Grizzly Smash,0,True,
+9406,Lover's Ricochet,0,True,
+9407,Hopped-Up Hex,0,True,
+9408,Carrot Crash,0,True,
+123430,Rite of Ruin,3000,True,"CriticalStrike,SpellDamage,CooldownReduction,NonbootsMovement"
+124011,Sword of Blossoming Dawn,2350,True,"Health,SpellDamage,CooldownReduction,OnHit,AbilityHaste"
+126697,Hubris,2950,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
+220000,Stat Bonus,750,True,"Health,SpellBlock,Armor,Damage,CriticalStrike,AttackSpeed,SpellDamage,Mana,Consumable,CooldownReduction,SpellVamp,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,MagicResist,AbilityHaste"
+220001,Legendary Fighter Item,2250,True,
+220002,Legendary Marksman Item,2250,True,
+220003,Legendary Assassin Item,2250,True,
+220004,Legendary Mage Item,2250,True,
+220005,Legendary Tank Item,2250,True,
+220006,Legendary Support Item,2250,True,
+220007,Prismatic Item,4000,True,Consumable
+220008,Anvil Voucher,750,False,
+220009,Gold Stat Anvil Voucher,750,False,
+220010,Prismatic Stat Voucher,750,False,
+220011,Bravery Voucher,750,False,
+220012,Shardblade,2500,False,
+220013,Poro-Snax,0,False,
+221011,Giant's Belt,500,False,Health
+221026,Blasting Wand,500,False,SpellDamage
+221031,Chain Vest,500,False,Armor
+221038,B. F. Sword,1300,True,Damage
+221043,Recurve Bow,500,False,"AttackSpeed,OnHit"
+221053,Vampiric Scepter,500,False,"Damage,LifeSteal"
+221057,Negatron Cloak,450,False,SpellBlock
+221058,Needlessly Large Rod,500,False,SpellDamage
+222022,Glowing Mote,250,False,CooldownReduction
+222051,Guardian's Horn,500,True,"Health,HealthRegen,Lane"
+222065,Shurelya's Battlesong,2500,True,"SpellDamage,ManaRegen,Active,CooldownReduction,NonbootsMovement,AbilityHaste"
+222141,Cappa Juice,500,True,Consumable
+222502,Unending Despair,2500,True,"Health,Armor,CooldownReduction,MagicResist,AbilityHaste"
+222503,Blackfire Torch,2500,True,"SpellDamage,Mana,CooldownReduction,AbilityHaste"
+222504,Kaenic Rookern,2500,True,"Health,SpellBlock,HealthRegen"
+222510,Dusk and Dawn,2500,True,"Health,AttackSpeed,SpellDamage,OnHit,AbilityHaste"
+222512,Fiendhunter Bolts,2500,True,"CriticalStrike,AttackSpeed,NonbootsMovement,AbilityHaste"
+222517,Endless Hunger,2500,True,"Damage,LifeSteal,SpellVamp,AbilityHaste"
+222522,Actualizer,2500,True,"SpellDamage,Mana,Active,AbilityHaste"
+222523,Hexoptics C44,2500,True,"Damage,CriticalStrike"
+222524,Bandlepipes,2500,True,"Health,AbilityHaste"
+222525,Protoplasm Harness,2500,True,"Health,NonbootsMovement,Tenacity,AbilityHaste"
+222526,Whispering Circlet,2500,True,"Health,Mana,ManaRegen"
+222530,Diadem of Songs,2500,False,"Health,Mana,ManaRegen,AbilityHaste"
+223001,Evenshroud,2500,False,"Health,SpellBlock,Armor,AbilityHaste"
+223002,Trailblazer,2500,True,"Health,Armor,NonbootsMovement"
+223003,Archangel's Staff,2500,True,"SpellDamage,Mana,AbilityHaste"
+223004,Manamune,2500,True,"Damage,Mana,CooldownReduction,OnHit,AbilityHaste"
+223005,Ghostcrawlers,500,True,Boots
+223006,Berserker's Greaves,500,True,"AttackSpeed,Boots"
+223008,Gluttonous Greaves,500,True,"LifeSteal,SpellVamp,Boots"
+223009,Boots of Swiftness,500,True,Boots
+223011,Chemtech Putrifier,1900,False,"SpellDamage,ManaRegen,AbilityHaste"
+223020,Sorcerer's Shoes,500,True,"Boots,MagicPenetration"
+223026,Guardian Angel,2500,True,"Armor,Damage"
+223031,Infinity Edge,2500,True,"CriticalStrike,Damage"
+223032,Yun Tal Wildarrows,2500,True,"Damage,CriticalStrike"
+223033,Mortal Reminder,2500,True,"Damage,CriticalStrike,ArmorPenetration"
+223036,Lord Dominik's Regards,2500,True,"Damage,CriticalStrike,ArmorPenetration"
+223039,Atma's Reckoning,2500,True,"Health,CriticalStrike,Lane"
+223040,Seraph's Embrace,2500,False,"SpellDamage,Mana,AbilityHaste"
+223042,Muramana,2500,False,"Damage,Mana,CooldownReduction,OnHit,ArmorPenetration"
+223046,Phantom Dancer,2500,True,"CriticalStrike,AttackSpeed,NonbootsMovement"
+223047,Plated Steelcaps,500,True,"Armor,Boots"
+223050,Zeke's Convergence,2500,True,"Health,SpellBlock,Armor,AbilityHaste"
+223053,Sterak's Gage,2500,True,"Health,Damage,Tenacity"
+223057,Sheen,2500,False,"OnHit,AbilityHaste"
+223065,Spirit Visage,2500,True,"Health,SpellBlock,HealthRegen,CooldownReduction,AbilityHaste"
+223067,Kindlegem,500,False,"Health,CooldownReduction,AbilityHaste"
+223068,Sunfire Aegis,2500,True,"Health,Armor,Aura,AbilityHaste"
+223069,Void Immolation,6000,True,"Health,SpellBlock,HealthRegen,Armor,Aura,CooldownReduction,MagicResist,AbilityHaste"
+223071,Black Cleaver,2500,True,"Health,Damage,CooldownReduction,OnHit,NonbootsMovement,ArmorPenetration,AbilityHaste"
+223072,Bloodthirster,2500,True,"Damage,LifeSteal"
+223073,Experimental Hexplate,2500,True,"Health,Damage,AttackSpeed,CooldownReduction,NonbootsMovement,AbilityHaste"
+223074,Ravenous Hydra,2500,True,"Damage,LifeSteal,CooldownReduction,OnHit,AbilityHaste"
+223075,Thornmail,2500,True,"Health,Armor"
+223078,Trinity Force,2500,True,"Health,Damage,AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,AbilityHaste"
+223084,Heartsteel,2500,True,Health
+223085,Runaan's Hurricane,2500,True,"CriticalStrike,AttackSpeed,OnHit,NonbootsMovement"
+223087,Statikk Shiv,2500,True,"Damage,AttackSpeed,OnHit,NonbootsMovement"
+223089,Rabadon's Deathcap,2500,True,SpellDamage
+223091,Wit's End,2500,True,"SpellBlock,AttackSpeed,OnHit,Tenacity"
+223094,Rapid Firecannon,2500,True,"CriticalStrike,AttackSpeed,NonbootsMovement"
+223095,Stormrazor,2500,True,"Damage,CriticalStrike"
+223100,Lich Bane,2500,True,"SpellDamage,OnHit,NonbootsMovement,AbilityHaste"
+223102,Banshee's Veil,2500,True,"SpellBlock,SpellDamage"
+223105,Aegis of the Legion,500,False,"SpellBlock,Armor,CooldownReduction,AbilityHaste"
+223107,Redemption,2500,True,"Health,ManaRegen,CooldownReduction,AbilityHaste"
+223109,Knight's Vow,2500,True,"Health,Armor,Aura,Active,CooldownReduction,AbilityHaste"
+223110,Frozen Heart,2500,True,"Armor,Mana,Aura,CooldownReduction,AbilityHaste"
+223111,Mercury's Treads,500,True,"Boots,SpellBlock,Tenacity"
+223112,Guardian's Orb,500,True,"SpellDamage,ManaRegen,CooldownReduction,Lane"
+223115,Nashor's Tooth,2500,True,"AttackSpeed,SpellDamage,OnHit,AbilityHaste"
+223116,Rylai's Crystal Scepter,2500,True,"Health,SpellDamage,Slow"
+223118,Malignance,2500,True,"SpellDamage,Mana,AbilityHaste"
+223119,Winter's Approach,2500,True,"Health,Mana,AbilityHaste"
+223121,Fimbulwinter,2500,False,"Health,Mana,AbilityHaste"
+223124,Guinsoo's Rageblade,2500,True,"Damage,AttackSpeed,SpellDamage,OnHit"
+223135,Void Staff,2500,True,"MagicPenetration,SpellDamage"
+223137,Cryptbloom,2500,True,"SpellDamage,MagicPenetration,AbilityHaste"
+223139,Mercurial Scimitar,2500,True,"SpellBlock,Damage,LifeSteal,Active,NonbootsMovement,Tenacity"
+223142,Youmuu's Ghostblade,2500,True,"Damage,Active,NonbootsMovement,ArmorPenetration"
+223143,Randuin's Omen,2500,True,"Health,Armor,Active,Slow"
+223146,Hextech Gunblade,2500,True,"Damage,LifeSteal,SpellDamage,Active,SpellVamp"
+223152,Hextech Rocketbelt,2500,True,"Health,SpellDamage,Active,CooldownReduction,NonbootsMovement,AbilityHaste"
+223153,Blade of The Ruined King,2500,True,"Damage,AttackSpeed,LifeSteal,Slow,OnHit"
+223156,Maw of Malmortius,2500,True,"SpellBlock,Damage,LifeSteal,SpellVamp,AbilityHaste"
+223157,Zhonya's Hourglass,2500,True,"Armor,SpellDamage,Active"
+223158,Ionian Boots of Lucidity,500,True,"Boots,CooldownReduction"
+223161,Spear of Shojin,2500,True,"Health,Damage,AbilityHaste"
+223165,Morellonomicon,2500,True,"Health,SpellDamage,CooldownReduction,AbilityHaste"
+223172,Zephyr,2500,True,"AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,Tenacity"
+223177,Guardian's Blade,500,True,"Health,Damage,Lane,AbilityHaste"
+223181,Hullbreaker,2500,True,"Health,Damage,NonbootsMovement"
+223184,Guardian's Hammer,500,True,"Health,Damage,LifeSteal,Lane"
+223185,Guardian's Dirk,500,True,"Damage,ArmorPenetration,Lane"
+223190,Locket of the Iron Solari,2500,True,"Health,SpellBlock,Armor,Aura,Active,MagicResist,AbilityHaste"
+223193,Gargoyle Stoneplate,2500,False,"SpellBlock,Armor,Active,CooldownReduction,AbilityHaste"
+223222,Mikael's Blessing,2500,True,"Health,ManaRegen,Active,CooldownReduction,Tenacity,AbilityHaste"
+223302,Terminus,2500,True,"Damage,AttackSpeed,OnHit,MagicPenetration,ArmorPenetration"
+223504,Ardent Censer,2500,True,"AttackSpeed,SpellDamage,ManaRegen,NonbootsMovement"
+223508,Essence Reaver,2500,True,"Damage,CriticalStrike,ManaRegen,CooldownReduction,OnHit,AbilityHaste"
+223742,Dead Man's Plate,2500,True,"Health,Armor,Slow,NonbootsMovement"
+223748,Titanic Hydra,2500,True,"Health,HealthRegen,Damage,OnHit"
+223814,Edge of Night,2500,True,"Health,Damage,ArmorPenetration"
+224004,Spectral Cutlass,2500,True,"Damage,ArmorPenetration"
+224005,Imperial Mandate,2500,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+224401,Force of Nature,2500,True,"Health,SpellBlock,NonbootsMovement"
+224403,The Golden Spatula,2500,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,CooldownReduction,NonbootsMovement"
+224628,Horizon Focus,2500,True,"SpellDamage,AbilityHaste"
+224629,Cosmic Drive,2500,True,"Health,SpellDamage,NonbootsMovement,AbilityHaste"
+224633,Riftmaker,2500,True,"Health,SpellDamage,CooldownReduction,SpellVamp"
+224636,Night Harvester,2500,False,"Health,SpellDamage,CooldownReduction,NonbootsMovement,AbilityHaste"
+224637,Demonic Embrace,2500,False,"Health,SpellDamage"
+224644,Crown of the Shattered Queen,2500,False,"Health,SpellDamage,Mana,AbilityHaste"
+224645,Shadowflame,2500,True,"SpellDamage,MagicPenetration"
+224646,Stormsurge,2500,True,"SpellDamage,GoldPer,NonbootsMovement,MagicPenetration"
+226035,Silvermere Dawn,2500,False,"Health,SpellBlock,Damage,Active,Tenacity"
+226333,Death's Dance,2500,True,"Armor,Damage,AbilityHaste"
+226609,Chempunk Chainsword,2500,True,"Health,Damage,CooldownReduction,AbilityHaste"
+226610,Sundered Sky,2500,True,"Health,Damage,CooldownReduction,AbilityHaste"
+226616,Staff of Flowing Water,2500,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+226617,Moonstone Renewer,2500,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+226620,Echoes of Helia,2500,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+226621,Dawncore,2500,True,"SpellDamage,ManaRegen"
+226630,Goredrinker,2750,True,"Health,Damage,Active,CooldownReduction,AbilityHaste"
+226631,Stridebreaker,2500,True,"Health,Damage,AttackSpeed,Slow,NonbootsMovement"
+226632,Divine Sunderer,2500,False,"Health,Damage,CooldownReduction,OnHit,MagicPenetration,ArmorPenetration,AbilityHaste"
+226653,Liandry's Anguish,2500,True,"Health,SpellDamage"
+226655,Luden's Echo,2500,True,"SpellDamage,Mana,CooldownReduction,AbilityHaste"
+226656,Everfrost,2500,False,"Health,SpellDamage,Mana,Active,CooldownReduction,Slow,AbilityHaste"
+226657,Rod of Ages,2500,True,"Health,HealthRegen,SpellDamage,Mana,ManaRegen"
+226660,,0,False,"Health,AbilityHaste"
+226662,Iceborn Gauntlet,2500,True,"Health,Armor,CooldownReduction,Slow,OnHit,AbilityHaste"
+226664,Hollow Radiance,2500,True,"Health,SpellBlock,Aura,MagicResist,AbilityHaste"
+226665,"Jak'Sho, The Protean",2500,True,"Health,SpellBlock,Armor,MagicResist"
+226667,Radiant Virtue,2500,False,"Health,SpellBlock,Armor,Aura,CooldownReduction,AbilityHaste"
+226671,Galeforce,2500,False,"Damage,CriticalStrike,AttackSpeed,Active,NonbootsMovement"
+226672,Kraken Slayer,2500,True,"Damage,AttackSpeed,OnHit,NonbootsMovement"
+226673,Immortal Shieldbow,2500,True,"Damage,CriticalStrike"
+226675,Navori Flickerblades,2500,True,"CriticalStrike,AttackSpeed,NonbootsMovement"
+226676,The Collector,2500,True,"Damage,CriticalStrike,ArmorPenetration"
+226691,Duskblade of Draktharr,2500,False,"Damage,Stealth,CooldownReduction,Slow,ArmorPenetration,AbilityHaste"
+226692,Eclipse,2500,True,"Damage,CooldownReduction,AbilityHaste"
+226693,Prowler's Claw,2750,True,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste"
+226694,Serylda's Grudge,2500,True,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste"
+226695,Serpent's Fang,2500,True,"Damage,ArmorPenetration"
+226696,Axiom Arc,2500,True,"Damage,ArmorPenetration,AbilityHaste"
+226697,Hubris,2500,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
+226698,Profane Hydra,2500,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
+226699,Voltaic Cyclosword,2500,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
+226701,Opportunity,2500,True,"Damage,Active,NonbootsMovement,ArmorPenetration"
+228001,Anathema's Chains,2500,True,"Health,Active,CooldownReduction,AbilityHaste"
+228002,Wooglet's Witchcap,6000,True,"Armor,SpellDamage,Active"
+228003,Deathblade,9000,False,"Damage,CriticalStrike,ArmorPenetration"
+228004,Adaptive Helm,6000,False,"Health,SpellBlock,Armor,MagicResist"
+228005,Obsidian Cleaver,3000,False,"Health,Damage,CooldownReduction,OnHit,NonbootsMovement,ArmorPenetration,AbilityHaste"
+228006,Sanguine Blade,3000,False,"Damage,LifeSteal,CooldownReduction,OnHit,AbilityHaste"
+228008,Runeglaive,9000,False,"Health,Damage,AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,AbilityHaste"
+228009,Multitool,2500,True,
+228020,Abyssal Mask,2500,True,"Health,SpellBlock,SpellDamage,CooldownReduction,MagicResist,AbilityHaste"
+322065,Shurelya's Battlesong,2600,True,"SpellDamage,ManaRegen,Active,CooldownReduction,NonbootsMovement,AbilityHaste"
+322526,Whispering Circlet,2250,True,"Health,Mana,ManaRegen"
+322530,Diadem of Songs,2250,False,"Health,Mana,ManaRegen,AbilityHaste"
+323002,Trailblazer,2600,False,"Health,Armor,NonbootsMovement"
+323003,Archangel's Staff,2900,True,"SpellDamage,Mana,AbilityHaste"
+323004,Manamune,2900,True,"Damage,Mana,CooldownReduction,OnHit,AbilityHaste"
+323040,Seraph's Embrace,2900,False,"SpellDamage,Mana,AbilityHaste"
+323042,Muramana,2900,False,"Damage,Mana,CooldownReduction,OnHit,ArmorPenetration"
+323050,Zeke's Convergence,2300,True,"Health,SpellBlock,Armor,AbilityHaste"
+323070,Tear of the Goddess,400,True,"Mana,ManaRegen"
+323075,Thornmail,2650,True,"Health,Armor"
+323107,Redemption,2800,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+323109,Knight's Vow,2900,True,"Health,HealthRegen,Armor,Aura,Active,CooldownReduction,AbilityHaste"
+323110,Frozen Heart,2700,True,"Armor,Mana,Aura,CooldownReduction,AbilityHaste"
+323119,Winter's Approach,2400,True,"Health,Mana,AbilityHaste"
+323121,Fimbulwinter,2400,False,"Health,Mana,AbilityHaste"
+323190,Locket of the Iron Solari,2600,True,"Health,SpellBlock,Armor,Aura,Active,MagicResist,AbilityHaste"
+323222,Mikael's Blessing,2800,True,"Health,ManaRegen,Active,CooldownReduction,Tenacity,AbilityHaste"
+323504,Ardent Censer,2600,True,"AttackSpeed,SpellDamage,ManaRegen,NonbootsMovement"
+324005,Imperial Mandate,2400,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+326616,Staff of Flowing Water,2600,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+326617,Moonstone Renewer,2900,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+326620,Echoes of Helia,2600,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
+326621,Dawncore,2900,True,"SpellDamage,ManaRegen"
+326657,Rod of Ages,2600,True,"Health,HealthRegen,SpellDamage,Mana,ManaRegen"
+328020,Abyssal Mask,2850,True,"Health,SpellBlock,CooldownReduction,MagicResist,AbilityHaste"
+443054,Darksteel Talons,2750,True,"Armor,AttackSpeed,NonbootsMovement"
+443055,Fulmination,2750,True,"Damage,AttackSpeed,NonbootsMovement"
+443056,Demon King's Crown,2750,True,"Health,Armor,Damage,AttackSpeed,SpellDamage,MagicResist,AbilityHaste"
+443058,Shield of Molten Stone,2750,True,"Health,Armor"
+443059,Cloak of Starry Night,2750,True,"Health,SpellBlock"
+443060,Sword of the Divine,2750,True,"Damage,CriticalStrike,SpellDamage"
+443061,Force Of Entropy,2750,True,"Health,SpellBlock,Armor,CriticalStrike"
+443062,Sanguine Gift,2750,True,"SpellDamage,SpellVamp,AbilityHaste"
+443063,Eleisa's Miracle,2750,True,"SpellBlock,Armor,AbilityHaste"
+443064,Talisman Of Ascension,2750,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Active,CooldownReduction,SpellVamp,NonbootsMovement,MagicPenetration,ArmorPenetration,MagicResist,AbilityHaste"
+443069,Hamstringer,2750,True,"Damage,CriticalStrike,AttackSpeed"
+443079,Turbo Chemtank,2750,True,"Health,Active,NonbootsMovement"
+443080,Twin Mask,2750,False,"Health,Armor,Damage,AttackSpeed,SpellDamage,MagicResist,AbilityHaste"
+443081,Hexbolt Companion,2750,True,"Health,AttackSpeed,NonbootsMovement"
+443083,Warmog's Armor,2750,True,"Health,HealthRegen,NonbootsMovement"
+443090,Reaper's Toll,2750,True,"Damage,AttackSpeed,SpellDamage,OnHit,NonbootsMovement"
+443193,Gargoyle Stoneplate,2750,True,"SpellBlock,Armor,Active,CooldownReduction,AbilityHaste"
+444636,Night Harvester,2750,True,"Health,SpellDamage,CooldownReduction,NonbootsMovement,AbilityHaste"
+444637,Demonic Embrace,2750,True,"Health,SpellDamage"
+444644,Crown of the Shattered Queen,2750,True,"Health,SpellDamage,Mana,AbilityHaste"
+446632,Divine Sunderer,2750,True,"Health,Damage,CooldownReduction,OnHit,MagicPenetration,ArmorPenetration,AbilityHaste"
+446656,Everfrost,2750,True,"Health,SpellDamage,Mana,Active,CooldownReduction,Slow,AbilityHaste"
+446667,Radiant Virtue,2750,True,"Health,SpellBlock,Armor,Aura,CooldownReduction,AbilityHaste"
+446671,Galeforce,2750,True,"Damage,CriticalStrike,AttackSpeed,Active,NonbootsMovement"
+446691,Duskblade of Draktharr,2750,True,"Damage,Stealth,CooldownReduction,Slow,ArmorPenetration,AbilityHaste"
+446693,Prowler's Claw,1000,True,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste"
+447100,Mirage Blade,2750,True,"Damage,AttackSpeed,SpellDamage,NonbootsMovement,AbilityHaste"
+447101,Gambler's Blade,2750,True,"AttackSpeed,NonbootsMovement,AbilityHaste"
+447102,Reality Fracture,2750,True,"Health,AttackSpeed,SpellDamage"
+447103,Hemomancer's Helm,2750,True,"Damage,SpellVamp,AbilityHaste"
+447104,Innervating Locket,2750,True,"Health,SpellDamage,AbilityHaste"
+447105,Empyrean Promise,2750,True,"SpellDamage,ManaRegen,AbilityHaste"
+447106,Dragonheart,2750,True,"Health,HealthRegen,Armor,Damage,AttackSpeed,MagicResist,AbilityHaste"
+447107,Decapitator,2750,True,"Damage,AttackSpeed,SpellDamage,NonbootsMovement"
+447108,Runecarver,2750,True,"SpellDamage,NonbootsMovement"
+447109,Cruelty,2750,True,"Armor,SpellDamage,MagicResist"
+447110,Moonflair Spellblade,2750,True,"Health,SpellDamage,Tenacity"
+447111,Overlord's Bloodmail,2500,True,"Health,Damage"
+447112,Flesheater,2750,True,"Damage,SpellDamage,MagicPenetration,ArmorPenetration"
+447113,Detonation Orb,2750,True,"SpellDamage,Mana,MagicPenetration"
+447114,Reverberation,2750,True,"Health,Armor,AttackSpeed,OnHit,MagicResist"
+447115,Regicide,2750,True,"Damage,NonbootsMovement,ArmorPenetration"
+447116,Kinkou Jitte,2750,True,"Health,Damage,SpellDamage,AbilityHaste"
+447118,Pyromancer's Cloak,2750,True,"Health,Damage,SpellDamage,SpellVamp"
+447119,Lightning Rod,2750,True,"Damage,AttackSpeed"
+447120,Diamond-Tipped Spear,2750,True,"Damage,AttackSpeed"
+447121,Twilight's Edge,2750,True,"Health,Armor,Damage,AttackSpeed,SpellDamage,MagicResist,AbilityHaste"
+447122,Black Hole Gauntlet,2750,True,"SpellBlock,AttackSpeed,OnHit,AbilityHaste"
+447123,Puppeteer,2750,True,"SpellDamage,ManaRegen,AbilityHaste"
+550001,Healthbar Splash: Blue,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste"
+550002,Healthbar Splash: Orange,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste"
+550003,Healthbar Splash: Green,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste"
+550004,Healthbar Splash: Pink,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste"
+550005,Healthbar Cleanup: Reset Color,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste"
+550006,Healthbar Splash: Rainbow,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste"
+550007,Party Favor,10,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste"
+663039,Atma's Reckoning,2500,True,"Health,CriticalStrike,Lane"
+663056,Demon King's Crown,2500,True,"Health,Armor,Damage,AttackSpeed,SpellDamage,MagicResist,AbilityHaste"
+663058,Shield of Molten Stone,2500,True,"Health,Armor"
+663059,Cloak of Starry Night,2500,True,"Health,SpellBlock"
+663060,Sword of the Divine,2500,True,"Damage,CriticalStrike,SpellDamage"
+663064,Veigar's Talisman of Ascension,900,True,
+663146,Hextech Gunblade,2500,True,"Damage,LifeSteal,SpellDamage,Active,SpellVamp"
+663172,Zephyr,2500,True,"AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,Tenacity"
+663193,Gargoyle Stoneplate,2500,True,"SpellBlock,Armor,Active,CooldownReduction,AbilityHaste"
+664011,Sword of Blossoming Dawn,2500,True,"Health,SpellDamage,CooldownReduction,OnHit,AbilityHaste"
+664403,The Golden Spatula,2500,False,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,CooldownReduction,NonbootsMovement"
+664644,Crown of the Shattered Queen,2500,True,"Health,SpellDamage,Mana,AbilityHaste"
+667101,Gambler's Blade,2500,True,"Damage,NonbootsMovement,MagicPenetration,ArmorPenetration,AbilityHaste"
+667109,Cruelty,2500,True,"Armor,SpellDamage,MagicResist"
+667112,Flesheater,2500,True,"Damage,SpellDamage,MagicPenetration,ArmorPenetration"
+667666,The Collector,3000,True,"Damage,CriticalStrike,ArmorPenetration"
+994403,Golden Spatula,2500,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,CooldownReduction,NonbootsMovement"
