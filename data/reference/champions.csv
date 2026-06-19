@@ -1,0 +1,173 @@
+champion_id,champion_name,title,tags
+266,Aatrox,the Darkin Blade,Fighter
+103,Ahri,the Nine-Tailed Fox,"Mage,Assassin"
+84,Akali,the Rogue Assassin,Assassin
+166,Akshan,the Rogue Sentinel,"Marksman,Assassin"
+12,Alistar,the Minotaur,"Tank,Support"
+799,Ambessa,Matriarch of War,"Fighter,Assassin"
+32,Amumu,the Sad Mummy,"Tank,Support"
+34,Anivia,the Cryophoenix,Mage
+1,Annie,the Dark Child,"Mage,Support"
+523,Aphelios,the Weapon of the Faithful,Marksman
+22,Ashe,the Frost Archer,"Marksman,Support"
+136,Aurelion Sol,The Star Forger,Mage
+893,Aurora,the Witch Between Worlds,"Mage,Assassin"
+268,Azir,the Emperor of the Sands,"Mage,Marksman"
+432,Bard,the Wandering Caretaker,"Support,Mage"
+200,Bel'Veth,the Empress of the Void,Fighter
+53,Blitzcrank,the Great Steam Golem,"Tank,Support"
+63,Brand,the Burning Vengeance,"Mage,Support"
+201,Braum,the Heart of the Freljord,"Tank,Support"
+233,Briar,the Restrained Hunger,"Fighter,Assassin"
+51,Caitlyn,the Sheriff of Piltover,Marksman
+164,Camille,the Steel Shadow,"Fighter,Assassin"
+69,Cassiopeia,the Serpent's Embrace,Mage
+31,Cho'Gath,the Terror of the Void,"Tank,Mage"
+42,Corki,the Daring Bombardier,"Marksman,Mage"
+122,Darius,the Hand of Noxus,"Fighter,Tank"
+131,Diana,Scorn of the Moon,"Fighter,Assassin"
+36,Dr. Mundo,the Madman of Zaun,"Tank,Fighter"
+119,Draven,the Glorious Executioner,Marksman
+245,Ekko,the Boy Who Shattered Time,"Assassin,Mage"
+60,Elise,the Spider Queen,"Assassin,Mage"
+28,Evelynn,Agony's Embrace,"Assassin,Mage"
+81,Ezreal,the Prodigal Explorer,"Marksman,Mage"
+9,Fiddlesticks,the Ancient Fear,"Mage,Support"
+114,Fiora,the Grand Duelist,"Fighter,Assassin"
+105,Fizz,the Tidal Trickster,"Assassin,Fighter"
+3,Galio,the Colossus,"Tank,Mage"
+41,Gangplank,the Saltwater Scourge,Fighter
+86,Garen,The Might of Demacia,"Fighter,Tank"
+150,Gnar,the Missing Link,"Fighter,Tank"
+79,Gragas,the Rabble Rouser,"Fighter,Mage"
+104,Graves,the Outlaw,Marksman
+887,Gwen,The Hallowed Seamstress,Fighter
+120,Hecarim,the Shadow of War,"Fighter,Tank"
+74,Heimerdinger,the Revered Inventor,"Mage,Support"
+910,Hwei,the Visionary,"Mage,Support"
+420,Illaoi,the Kraken Priestess,"Fighter,Tank"
+39,Irelia,the Blade Dancer,"Fighter,Assassin"
+427,Ivern,the Green Father,"Support,Mage"
+40,Janna,the Storm's Fury,"Support,Mage"
+59,Jarvan IV,the Exemplar of Demacia,"Fighter,Tank"
+24,Jax,Grandmaster at Arms,Fighter
+126,Jayce,the Defender of Tomorrow,"Fighter,Marksman"
+202,Jhin,the Virtuoso,"Marksman,Mage"
+222,Jinx,the Loose Cannon,Marksman
+897,K'Sante,the Pride of Nazumah,"Tank,Fighter"
+145,Kai'Sa,Daughter of the Void,"Marksman,Mage"
+429,Kalista,the Spear of Vengeance,Marksman
+43,Karma,the Enlightened One,"Mage,Support"
+30,Karthus,the Deathsinger,Mage
+38,Kassadin,the Void Walker,"Assassin,Mage"
+55,Katarina,the Sinister Blade,"Assassin,Mage"
+10,Kayle,the Righteous,"Mage,Marksman"
+141,Kayn,the Shadow Reaper,"Fighter,Assassin"
+85,Kennen,the Heart of the Tempest,Mage
+121,Kha'Zix,the Voidreaver,Assassin
+203,Kindred,The Eternal Hunters,Marksman
+240,Kled,the Cantankerous Cavalier,Fighter
+96,Kog'Maw,the Mouth of the Abyss,"Marksman,Mage"
+7,LeBlanc,the Deceiver,"Assassin,Mage"
+64,Lee Sin,the Blind Monk,"Fighter,Assassin"
+89,Leona,the Radiant Dawn,"Tank,Support"
+876,Lillia,the Bashful Bloom,"Fighter,Mage"
+127,Lissandra,the Ice Witch,Mage
+236,Lucian,the Purifier,"Marksman,Assassin"
+117,Lulu,the Fae Sorceress,"Support,Mage"
+99,Lux,the Lady of Luminosity,"Mage,Support"
+54,Malphite,Shard of the Monolith,"Tank,Mage"
+90,Malzahar,the Prophet of the Void,Mage
+57,Maokai,the Twisted Treant,"Tank,Support"
+11,Master Yi,the Wuju Bladesman,"Fighter,Assassin"
+800,Mel,the Soul's Reflection,"Mage,Support"
+902,Milio,The Gentle Flame,"Support,Mage"
+21,Miss Fortune,the Bounty Hunter,"Marksman,Mage"
+82,Mordekaiser,the Iron Revenant,"Fighter,Mage"
+25,Morgana,the Fallen,"Support,Mage"
+950,Naafiri,the Hound of a Hundred Bites,"Assassin,Fighter"
+267,Nami,the Tidecaller,"Support,Mage"
+75,Nasus,the Curator of the Sands,"Fighter,Tank"
+111,Nautilus,the Titan of the Depths,"Tank,Support"
+518,Neeko,the Curious Chameleon,"Mage,Support"
+76,Nidalee,the Bestial Huntress,"Assassin,Mage"
+895,Nilah,the Joy Unbound,"Fighter,Assassin"
+56,Nocturne,the Eternal Nightmare,"Fighter,Assassin"
+20,Nunu & Willump,the Boy and His Yeti,"Tank,Mage"
+2,Olaf,the Berserker,"Fighter,Tank"
+61,Orianna,the Lady of Clockwork,"Mage,Support"
+516,Ornn,The Fire below the Mountain,Tank
+80,Pantheon,the Unbreakable Spear,"Fighter,Assassin"
+78,Poppy,Keeper of the Hammer,"Tank,Fighter"
+555,Pyke,the Bloodharbor Ripper,"Support,Assassin"
+246,Qiyana,Empress of the Elements,Assassin
+133,Quinn,Demacia's Wings,"Marksman,Assassin"
+497,Rakan,The Charmer,Support
+33,Rammus,the Armordillo,Tank
+421,Rek'Sai,the Void Burrower,"Fighter,Tank"
+526,Rell,the Iron Maiden,"Tank,Support"
+888,Renata Glasc,the Chem-Baroness,"Support,Mage"
+58,Renekton,the Butcher of the Sands,"Fighter,Tank"
+107,Rengar,the Pridestalker,"Assassin,Fighter"
+92,Riven,the Exile,"Fighter,Assassin"
+68,Rumble,the Mechanized Menace,"Fighter,Mage"
+13,Ryze,the Rune Mage,Mage
+360,Samira,the Desert Rose,"Marksman,Assassin"
+113,Sejuani,Fury of the North,Tank
+235,Senna,the Redeemer,"Support,Marksman"
+147,Seraphine,the Starry-Eyed Songstress,"Support,Mage"
+875,Sett,the Boss,"Fighter,Tank"
+35,Shaco,the Demon Jester,Assassin
+98,Shen,the Eye of Twilight,Tank
+102,Shyvana,the Half-Dragon,"Fighter,Tank"
+27,Singed,the Mad Chemist,"Tank,Mage"
+14,Sion,The Undead Juggernaut,"Tank,Fighter"
+15,Sivir,the Battle Mistress,Marksman
+72,Skarner,the Primordial Sovereign,"Tank,Fighter"
+901,Smolder,the Fiery Fledgling,"Marksman,Mage"
+37,Sona,Maven of the Strings,"Support,Mage"
+16,Soraka,the Starchild,"Support,Mage"
+50,Swain,the Noxian Grand General,"Mage,Support"
+517,Sylas,the Unshackled,"Mage,Assassin"
+134,Syndra,the Dark Sovereign,Mage
+223,Tahm Kench,The River King,"Tank,Support"
+163,Taliyah,the Stoneweaver,"Mage,Support"
+91,Talon,the Blade's Shadow,Assassin
+44,Taric,the Shield of Valoran,"Support,Tank"
+17,Teemo,the Swift Scout,"Marksman,Mage"
+412,Thresh,the Chain Warden,"Support,Tank"
+18,Tristana,the Yordle Gunner,"Marksman,Assassin"
+48,Trundle,the Troll King,"Fighter,Tank"
+23,Tryndamere,the Barbarian King,"Fighter,Assassin"
+4,Twisted Fate,the Card Master,"Mage,Marksman"
+29,Twitch,the Plague Rat,"Marksman,Assassin"
+77,Udyr,the Spirit Walker,"Fighter,Tank"
+6,Urgot,the Dreadnought,"Fighter,Tank"
+110,Varus,the Arrow of Retribution,"Marksman,Mage"
+67,Vayne,the Night Hunter,"Marksman,Assassin"
+45,Veigar,the Tiny Master of Evil,Mage
+161,Vel'Koz,the Eye of the Void,"Mage,Support"
+711,Vex,the Gloomist,Mage
+254,Vi,the Piltover Enforcer,"Fighter,Assassin"
+234,Viego,The Ruined King,"Fighter,Assassin"
+112,Viktor,the Herald of the Arcane,Mage
+8,Vladimir,the Crimson Reaper,"Mage,Fighter"
+106,Volibear,the Relentless Storm,"Fighter,Tank"
+19,Warwick,the Uncaged Wrath of Zaun,"Fighter,Tank"
+62,Wukong,the Monkey King,"Fighter,Tank"
+498,Xayah,the Rebel,Marksman
+101,Xerath,the Magus Ascendant,"Mage,Support"
+5,Xin Zhao,the Seneschal of Demacia,"Fighter,Tank"
+157,Yasuo,the Unforgiven,"Fighter,Assassin"
+777,Yone,the Unforgotten,"Fighter,Assassin"
+83,Yorick,Shepherd of Souls,"Fighter,Tank"
+804,Yunara,the Unbroken Faith,Marksman
+350,Yuumi,the Magical Cat,"Support,Mage"
+904,Zaahen,The Unsundered,"Fighter,Assassin"
+154,Zac,the Secret Weapon,"Tank,Fighter"
+238,Zed,the Master of Shadows,Assassin
+221,Zeri,The Spark of Zaun,Marksman
+115,Ziggs,the Hexplosives Expert,Mage
+26,Zilean,the Chronokeeper,"Support,Mage"
+142,Zoe,the Aspect of Twilight,Mage
+143,Zyra,Rise of the Thorns,"Mage,Support"

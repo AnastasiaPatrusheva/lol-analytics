@@ -1,0 +1,28 @@
+# --- Python ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# --- Node ---
+node_modules/
+
+# --- Большие / локальные / производные данные (НЕ в репозиторий) ---
+*.mp4
+data/raw/                 # исходный Kaggle xlsx (20 МБ, не редистрибутим)
+data/api/*.csv
+data/api/*.parquet
+data/normalized/          # промежуточный слой (пересобирается скриптом)
+outputs/warehouse/        # локальный SQLite
+outputs/data_quality/
+outputs/api_eda/
+outputs/common_eda/
+*.db
+
+# --- Секреты ---
+.streamlit/secrets.toml
+.env
+
+# ВАЖНО: outputs/sql/star/*.parquet НЕ игнорируем — это данные для дашборда.
+# data/reference/*.csv тоже оставляем (маленькие справочники Data Dragon).
