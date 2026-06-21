@@ -52,8 +52,8 @@ source = st.sidebar.selectbox(
 st.sidebar.caption("Данные: Riot API + Kaggle → Parquet → DuckDB. Учебный проект.")
 
 st.title("🎮 LoL Analytics")
-tab_overview, tab_champions, tab_items, tab_players, tab_duration = st.tabs(
-    ["Обзор", "Чемпионы", "Предметы", "Игроки", "⏱ Длительность"]
+tab_overview, tab_champions, tab_items, tab_players, tab_duration, tab_meta = st.tabs(
+    ["Обзор", "Чемпионы", "Предметы", "Игроки", "⏱ Длительность", "📊 Мета"]
 )
 
 
@@ -333,3 +333,95 @@ with tab_duration:
         st.altair_chart(chart, width="stretch")
         st.caption("Сверху — скейлящиеся (сильнее в долгих играх), снизу — ранние пики.")
         st.dataframe(scaling, width="stretch", hide_index=True)
+
+
+# ---------- Мета (сравнение патчей) ----------
+with tab_meta:
+    st.subheader("Сравнение патчей — сдвиги меты")
+    # патч = первые две части game_version (16.11.782.9736 -> 16.11)
+    patches_df = run(f"""
+        SELECT split_part(game_version, '.', 1) || '.' || split_part(game_version, '.', 2) AS patch,
+               COUNT(*) AS matches
+        FROM dim_match
+        WHERE data_source = '{source}' AND game_version IS NOT NULL
+        GROUP BY 1 HAVING COUNT(*) >= 50 ORDER BY patch
+    """)
+    # числовая сортировка патчей: 16.7 < 16.8 < 16.10 < 16.11 (а не как строки)
+    patches = sorted(
+        [p for p in patches_df["patch"].tolist() if p and p != "."],
+        key=lambda x: [int(n) for n in x.split(".")],
+    )
+
+    if len(patches) < 2:
+        st.info(
+            f"У источника «{source}» меньше двух патчей с данными. "
+            "Переключи источник на **riot_full** — там 7 патчей (16.7–16.12)."
+        )
+    else:
+        c1, c2, c3 = st.columns(3)
+        patch_a = c1.selectbox("Патч A (раньше)", patches, index=len(patches) - 2)
+        patch_b = c2.selectbox("Патч B (позже)", patches, index=len(patches) - 1)
+        min_g = c3.slider("Минимум игр в каждом патче", 10, 200, 30, step=10)
+        st.caption(
+            f"Δ = winrate в патче {patch_b} минус в {patch_a}. "
+            "🟢 вверх = усилились (баффы), 🔴 вниз = ослабли (нерфы)."
+        )
+
+        cmp = run(f"""
+            WITH m AS (
+                SELECT data_source, match_id,
+                       split_part(game_version, '.', 1) || '.' || split_part(game_version, '.', 2) AS patch
+                FROM dim_match WHERE data_source = '{source}'
+            ),
+            f AS (
+                SELECT c.champion_name, c.primary_class, fp.win, m.patch
+                FROM fact_participant fp
+                JOIN m ON fp.data_source = m.data_source AND fp.match_id = m.match_id
+                JOIN dim_champion c ON fp.champion_id = c.champion_id
+                WHERE fp.data_source = '{source}' AND m.patch IN ('{patch_a}', '{patch_b}')
+            ),
+            agg AS (
+                SELECT champion_name, primary_class, patch,
+                       COUNT(*) AS games,
+                       AVG(CASE WHEN win THEN 1.0 ELSE 0.0 END) AS wr
+                FROM f GROUP BY champion_name, primary_class, patch
+            ),
+            piv AS (
+                SELECT champion_name, primary_class,
+                       MAX(CASE WHEN patch = '{patch_a}' THEN wr END) AS wr_a,
+                       MAX(CASE WHEN patch = '{patch_b}' THEN wr END) AS wr_b,
+                       MAX(CASE WHEN patch = '{patch_a}' THEN games END) AS g_a,
+                       MAX(CASE WHEN patch = '{patch_b}' THEN games END) AS g_b
+                FROM agg GROUP BY champion_name, primary_class
+            )
+            SELECT champion_name, primary_class, wr_a, wr_b,
+                   (wr_b - wr_a) AS delta, g_a, g_b
+            FROM piv
+            WHERE g_a >= {min_g} AND g_b >= {min_g}
+            ORDER BY delta DESC
+        """)
+
+        if cmp.empty:
+            st.info("Нет чемпионов с достаточной выборкой в обоих патчах. Снизь минимум игр.")
+        else:
+            diverging = pd.concat([cmp.head(12), cmp.tail(12)])
+            chart = (
+                alt.Chart(diverging)
+                .mark_bar()
+                .encode(
+                    x=alt.X("delta:Q", title=f"Δ winrate ({patch_b} − {patch_a})",
+                            axis=alt.Axis(format="+%")),
+                    y=alt.Y("champion_name:N", sort="-x", title=None),
+                    color=alt.condition("datum.delta > 0", alt.value("#3fa45b"), alt.value("#d9534f")),
+                    tooltip=[
+                        "champion_name", "primary_class",
+                        alt.Tooltip("wr_a:Q", format=".1%", title=patch_a),
+                        alt.Tooltip("wr_b:Q", format=".1%", title=patch_b),
+                        alt.Tooltip("delta:Q", format="+.1%", title="Δ"),
+                    ],
+                )
+                .properties(height=520)
+            )
+            st.altair_chart(chart, width="stretch")
+            st.caption(f"Сверху — кто усилился к патчу {patch_b}, снизу — кто ослаб.")
+            st.dataframe(cmp, width="stretch", hide_index=True)
