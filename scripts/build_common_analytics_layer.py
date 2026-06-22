@@ -62,6 +62,9 @@ COMMON_COLUMNS = [
     "gold_per_min",
     "total_damage_dealt_to_champions",
     "damage_per_min",
+    "riot_id_game_name",
+    "total_minions_killed",
+    "cs_per_min",
     "total_damage_taken",
     "vision_score",
     "vision_per_min",
@@ -189,7 +192,8 @@ def finalize_dtypes(df: pd.DataFrame) -> pd.DataFrame:
     text_cols = [
         "data_source", "match_id", "source_tier", "game_mode", "game_type",
         "game_version", "platform_id", "puuid", "summoner_id", "summoner_name",
-        "champion_name", "team_position", "individual_position", "lane", "role",
+        "riot_id_game_name", "champion_name", "team_position", "individual_position",
+        "lane", "role",
     ]
     for col in text_cols:
         if col in df.columns:

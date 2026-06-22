@@ -27,4 +27,7 @@ def add_metrics(df: pd.DataFrame) -> pd.DataFrame:
     )
     df["gold_per_min"] = df["gold_earned"] / df["game_duration_min"]
     df["vision_per_min"] = df["vision_score"] / df["game_duration_min"]
+    # CS (фарм) в минуту — есть не во всех источниках, поэтому защищаемся проверкой колонки.
+    if "total_minions_killed" in df.columns:
+        df["cs_per_min"] = df["total_minions_killed"] / df["game_duration_min"]
     return df

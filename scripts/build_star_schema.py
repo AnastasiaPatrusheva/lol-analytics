@@ -84,6 +84,7 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
         SELECT data_source, puuid,
                ANY_VALUE(source_tier) AS source_tier,
                ANY_VALUE(summoner_name) AS summoner_name,
+               ANY_VALUE(riot_id_game_name) AS riot_id_game_name,
                COUNT(*) AS appearances
         FROM complete_matches WHERE puuid IS NOT NULL GROUP BY data_source, puuid
     """)
@@ -103,7 +104,8 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
                TRY_CAST(champion_id AS BIGINT) AS champion_id,
                puuid, team_position AS role_key, team_id, win,
                kills, deaths, assists, kda, gold_earned, gold_per_min,
-               total_damage_dealt_to_champions, damage_per_min, vision_score, vision_per_min
+               total_damage_dealt_to_champions, damage_per_min, vision_score, vision_per_min,
+               total_minions_killed, cs_per_min
         FROM complete_matches
     """)
 
