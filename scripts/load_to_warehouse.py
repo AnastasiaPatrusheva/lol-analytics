@@ -69,8 +69,16 @@ def resolve_database_url() -> tuple[str, str]:
 
 
 def load() -> int:
+    # SKIP_TABLES (через запятую) — не грузить тяжёлые таблицы в облако.
+    # Пример: мост fact_participant_item (~1.8M строк) не нужен в Supabase —
+    # для дашборда используется готовая витрина item_stats.
+    skip = {t.strip() for t in os.environ.get("SKIP_TABLES", "").split(",") if t.strip()}
+    tables = [t for t in STAR_TABLES if t not in skip]
+    if skip:
+        print(f"Пропускаем (не грузим): {sorted(skip)}")
+
     missing = [
-        t for t in STAR_TABLES
+        t for t in tables
         if not (STAR_DIR / f"{t}.parquet").exists() and not (STAR_DIR / f"{t}.csv").exists()
     ]
     if missing:
@@ -85,7 +93,7 @@ def load() -> int:
     loaded: dict[str, int] = {}
 
     with engine.begin() as conn:
-        for table in STAR_TABLES:
+        for table in tables:
             df = read_star_table(table)
             # if_exists='replace' делает загрузку идемпотентной:
             # повторный запуск перезаписывает таблицу, а не плодит дубли.
@@ -109,7 +117,7 @@ def load() -> int:
         print(f"ВНИМАНИЕ: в БД {fact_in_db}, а грузили {loaded['fact_participant']} — расхождение.")
         return 1
 
-    print("\nГотово. Таблицы в БД: " + ", ".join(STAR_TABLES))
+    print("\nГотово. Таблицы в БД: " + ", ".join(tables))
     return 0
 
 
