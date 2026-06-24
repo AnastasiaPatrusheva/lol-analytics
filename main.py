@@ -1,17 +1,19 @@
 """
 ETL-оркестратор проекта LoL.
 
-Один управляющий файл, который рулит всем пайплайном через argparse —
-ровно та структура «junior+», которую рекомендовал наставник: стадию выбираешь
-аргументом, внутри происходит ветвление, что запускать.
+Один управляющий файл, который рулит всем пайплайном через argparse — стадию
+выбираешь аргументом, внутри происходит ветвление. Весь прогон пишется в `etl.log`
+(и в консоль), чтобы видеть, какая стадия когда шла, сколько и чем закончилась.
 
 Слои:
-  extract    — сбор данных из Riot API (нужен ключ; аргументы пробрасываются коллектору)
+  reference  — справочники Data Dragon (champions, items)
+  ingest     — разбор большого датасета raw.zip → источник riot_full
+  extract    — сбор из Riot API (нужен ключ; аргументы пробрасываются коллектору)
   transform  — нормализация источников в общую схему (Parquet + CSV)
   quality    — проверки Data Quality
   star       — сборка звёздной схемы (Parquet + CSV)
   load       — загрузка звезды в БД: --target local (SQLite) | supabase (Postgres)
-  all        — transform -> quality -> star -> load(local), без extract
+  all        — ingest -> transform -> quality -> star -> load(local)
 
 Примеры:
   python main.py transform
@@ -23,32 +25,58 @@ ETL-оркестратор проекта LoL.
 from __future__ import annotations
 
 import argparse
+import logging
 import os
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 SCRIPTS = ROOT / "scripts"
+LOG_FILE = ROOT / "etl.log"
+
+sys.path.insert(0, str(ROOT / "src"))
+from lol_utils.logging_setup import setup_logging  # noqa: E402
 
 
 def run_script(name: str, *args: str, env: dict | None = None) -> None:
-    cmd = [sys.executable, str(SCRIPTS / name), *args]
-    print(f"\n=== {name} {' '.join(args)} ===", flush=True)
-    subprocess.run(cmd, check=True, env=env)
+    """Запускает скрипт-стадию, стримит его вывод в лог (консоль + etl.log)."""
+    log = logging.getLogger("etl")
+    label = f"{name} {' '.join(args)}".strip()
+    log.info("START  %s", label)
+    started = time.time()
+
+    proc = subprocess.Popen(
+        [sys.executable, str(SCRIPTS / name), *args],
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        bufsize=1,
+    )
+    for line in proc.stdout:
+        line = line.rstrip()
+        if line:
+            log.info("   | %s", line)
+    proc.wait()
+
+    took = time.time() - started
+    if proc.returncode != 0:
+        log.error("FAILED %s (код %s, %.1fs)", label, proc.returncode, took)
+        raise SystemExit(proc.returncode)
+    log.info("DONE   %s (%.1fs)", label, took)
 
 
 def env_without_database_url() -> dict:
-    # Для локальной загрузки (SQLite) гарантируем, что не утащит данные в Supabase,
-    # даже если DATABASE_URL остался в окружении от прошлого запуска.
+    # Для локальной загрузки (SQLite) убираем DATABASE_URL, чтобы не утащить в Supabase.
     return {k: v for k, v in os.environ.items() if k != "DATABASE_URL"}
 
 
 def main() -> int:
-    try:
-        sys.stdout.reconfigure(encoding="utf-8")
-    except Exception:
-        pass
+    log = setup_logging(LOG_FILE)
 
     parser = argparse.ArgumentParser(description="LoL ETL orchestrator")
     sub = parser.add_subparsers(dest="stage", required=True)
@@ -61,9 +89,11 @@ def main() -> int:
     sub.add_parser("star", help="сборка звёздной схемы")
     p_load = sub.add_parser("load", help="загрузка звезды в БД")
     p_load.add_argument("--target", choices=["local", "supabase"], default="local")
-    sub.add_parser("all", help="transform -> quality -> star -> load(local)")
+    sub.add_parser("all", help="ingest -> transform -> quality -> star -> load(local)")
 
     args, extra = parser.parse_known_args()
+    log.info("===== Стадия: %s =====", args.stage)
+    started = time.time()
 
     if args.stage == "reference":
         run_script("fetch_reference.py")
@@ -80,7 +110,7 @@ def main() -> int:
     elif args.stage == "load":
         if args.target == "supabase":
             if not os.environ.get("DATABASE_URL"):
-                print("Для --target supabase задай переменную окружения DATABASE_URL.")
+                log.error("Для --target supabase задай переменную окружения DATABASE_URL.")
                 return 1
             run_script("load_to_warehouse.py")
         else:
@@ -93,7 +123,7 @@ def main() -> int:
         run_script("build_star_schema.py")
         run_script("load_to_warehouse.py", env=env_without_database_url())
 
-    print("\nГотово.")
+    log.info("Готово за %.1fs. Полный лог: %s", time.time() - started, LOG_FILE)
     return 0
 
 
