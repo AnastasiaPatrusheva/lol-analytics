@@ -22,6 +22,9 @@ outputs/api_eda/
 outputs/common_eda/
 *.db
 
+# --- Логи (генерируются при прогоне) ---
+*.log
+
 # --- Секреты ---
 .streamlit/secrets.toml
 .env
