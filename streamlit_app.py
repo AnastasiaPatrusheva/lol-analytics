@@ -22,6 +22,7 @@ STAR_DIR = Path(__file__).parent / "outputs" / "sql" / "star"
 TABLES = [
     "fact_participant", "dim_champion", "dim_match", "dim_player", "dim_role",
     "fact_participant_item", "dim_item", "item_stats",
+    "champion_strength", "champion_by_duration",
 ]
 POSITIONS = ["Все", "TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"]
 
@@ -80,6 +81,44 @@ with tab_overview:
         "Winrate в сумме ≈ 50%: в каждом матче 5 победителей и 5 проигравших — "
         "это контрольная проверка корректности данных."
     )
+
+    # --- Главное (авто-инсайты / storytelling) ---
+    st.markdown("#### 💡 Главное в мете")
+    top_champ = run(f"""
+        SELECT champion_name, wilson_low, games FROM champion_strength
+        WHERE data_source = '{source}' AND verdict = 'значимо сильный'
+        ORDER BY wilson_low DESC LIMIT 1
+    """)
+    top_item = run(f"""
+        SELECT item_name, wilson_low, purchases FROM item_stats
+        WHERE data_source = '{source}' AND gold_total >= 2000
+        ORDER BY wilson_low DESC LIMIT 1
+    """)
+    scaler = run(f"""
+        WITH p AS (
+            SELECT champion_name,
+                   MAX(CASE WHEN duration_bucket LIKE '1.%' THEN winrate END) AS s,
+                   MAX(CASE WHEN duration_bucket LIKE '3.%' THEN winrate END) AS l,
+                   MAX(CASE WHEN duration_bucket LIKE '1.%' THEN games END) AS gs,
+                   MAX(CASE WHEN duration_bucket LIKE '3.%' THEN games END) AS gl
+            FROM champion_by_duration WHERE data_source = '{source}' GROUP BY champion_name
+        )
+        SELECT champion_name, (l - s) AS delta FROM p
+        WHERE gs >= 20 AND gl >= 20 ORDER BY delta DESC LIMIT 1
+    """)
+    i1, i2, i3 = st.columns(3)
+    if not top_champ.empty:
+        r = top_champ.iloc[0]
+        i1.success(f"🏆 **Сильнейший чемпион**\n\n{r['champion_name']} — надёжный winrate "
+                   f"{r['wilson_low']:.0%} ({int(r['games'])} игр)")
+    if not top_item.empty:
+        r = top_item.iloc[0]
+        i2.success(f"🛡️ **Эффективнейший предмет**\n\n{r['item_name']} — {r['wilson_low']:.0%} "
+                   f"({int(r['purchases'])} покупок)")
+    if not scaler.empty:
+        r = scaler.iloc[0]
+        i3.success(f"📈 **Лучше всех скейлится**\n\n{r['champion_name']} — +{r['delta']:.0%} "
+                   f"winrate в долгих играх")
 
     result = run(f"""
         SELECT CASE WHEN win THEN 'Победа' ELSE 'Поражение' END AS result,
@@ -145,6 +184,14 @@ with tab_champions:
     if champions.empty:
         st.info("Нет чемпионов с таким порогом игр. Снизь минимум игр.")
     else:
+        strong = champions[champions["verdict"].str.contains("значимо сильный")]
+        if not strong.empty:
+            t = strong.iloc[0]
+            st.success(
+                f"🏆 Сильнейший (значимо): **{t['champion_name']}** — надёжный winrate "
+                f"{t['wilson_low']:.0%} на {int(t['games'])} играх. "
+                f"Статистически доказанных сильных всего {len(strong)}."
+            )
         chart = (
             alt.Chart(champions.head(20))
             .mark_bar()
@@ -183,7 +230,7 @@ with tab_items:
         help="Отсекает дешёвые предметы и триннкеты-варды, чтобы видеть «билдовые» предметы",
     )
     items = run(f"""
-        SELECT item_name, purchases, winrate, gold_total
+        SELECT item_name, purchases, winrate, wilson_low, gold_total
         FROM item_stats
         WHERE data_source = '{source}' AND gold_total >= {min_gold}
         ORDER BY purchases DESC
@@ -194,6 +241,11 @@ with tab_items:
     if items.empty:
         st.info("Нет предметов с таким порогом цены.")
     else:
+        best = items.sort_values("wilson_low", ascending=False).iloc[0]
+        st.success(
+            f"🛡️ Самый эффективный (надёжно): **{best['item_name']}** — "
+            f"{best['winrate']:.0%} winrate при {int(best['purchases'])} покупках."
+        )
         scatter = (
             alt.Chart(items)
             .mark_circle(size=70, opacity=0.7, color="#3fa45b")
@@ -270,7 +322,6 @@ with tab_players:
             f"  ·  лига сбора: {row['source_tier']}"
         )
 
-        left, right = st.columns([3, 2])
         champs = run(f"""
             SELECT c.champion_name, COUNT(*) AS games,
                    AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate,
@@ -280,6 +331,15 @@ with tab_players:
             WHERE f.data_source = '{source}' AND f.puuid = '{puuid}'
             GROUP BY c.champion_name ORDER BY games DESC
         """)
+        best_champ = champs[champs["games"] >= 3].sort_values("winrate", ascending=False)
+        if not best_champ.empty:
+            b = best_champ.iloc[0]
+            st.success(
+                f"⭐ Лучший чемпион игрока: **{b['champion_name']}** — "
+                f"{b['winrate']:.0%} winrate на {int(b['games'])} играх."
+            )
+
+        left, right = st.columns([3, 2])
         with left:
             st.markdown("#### Любимые чемпионы")
             ch = (
@@ -371,6 +431,13 @@ with tab_duration:
     if scaling.empty:
         st.info("Мало данных при таком пороге. Снизь минимум игр.")
     else:
+        top_s = scaling.iloc[0]
+        bot_s = scaling.iloc[-1]
+        st.success(
+            f"📈 Сильнее всех скейлится **{top_s['champion_name']}** "
+            f"(+{top_s['delta']:.0%} в долгих играх); раньше всех отваливается "
+            f"**{bot_s['champion_name']}** ({bot_s['delta']:+.0%})."
+        )
         diverging = pd.concat([scaling.head(12), scaling.tail(12)])
         chart = (
             alt.Chart(diverging)
@@ -463,6 +530,13 @@ with tab_meta:
         if cmp.empty:
             st.info("Нет чемпионов с достаточной выборкой в обоих патчах. Снизь минимум игр.")
         else:
+            buff = cmp.iloc[0]
+            nerf = cmp.iloc[-1]
+            st.success(
+                f"📊 От патча {patch_a} к {patch_b}: сильнее всех усилился "
+                f"**{buff['champion_name']}** (+{buff['delta']:.0%}), ослаб "
+                f"**{nerf['champion_name']}** ({nerf['delta']:+.0%})."
+            )
             diverging = pd.concat([cmp.head(12), cmp.tail(12)])
             chart = (
                 alt.Chart(diverging)
