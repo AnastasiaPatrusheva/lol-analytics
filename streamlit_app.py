@@ -315,6 +315,34 @@ with tab_items:
 
 # ---------- Игроки ----------
 with tab_players:
+    st.subheader("Распределение игроков по очкам лиги (LP)")
+    lp = run(f"""
+        SELECT league_points FROM dim_player
+        WHERE data_source = '{source}' AND league_points IS NOT NULL
+    """)
+    if lp.empty:
+        st.caption(
+            "Очки лиги (LP) собраны только для источника **riot_api** (данные Riot API). "
+            "Переключи источник в сайдбаре, чтобы увидеть распределение."
+        )
+    else:
+        st.caption(
+            "LP (league points) — рейтинговые очки: чем выше, тем выше место в топ-ладдере. "
+            f"Собрано {len(lp)} игроков верхних лиг (Challenger/GM/Master)."
+        )
+        lp_hist = (
+            alt.Chart(lp)
+            .mark_bar(color="#3fa45b")
+            .encode(
+                x=alt.X("league_points:Q", bin=alt.Bin(maxbins=25), title="Очки лиги (LP)"),
+                y=alt.Y("count()", title="Игроков"),
+                tooltip=[alt.Tooltip("count()", title="игроков")],
+            )
+            .properties(height=220)
+        )
+        st.altair_chart(lp_hist, width="stretch")
+    st.divider()
+
     min_p_games = st.slider("Минимум матчей у игрока", 5, 100, 20, step=5)
     players = run(f"""
         SELECT p.riot_id_game_name AS name, p.puuid, p.source_tier,
