@@ -79,14 +79,30 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
                ANY_VALUE(source_tier) AS source_tier
         FROM complete_matches GROUP BY data_source, match_id
     """)
-    con.execute("""
+    # dim_player + очки лиги (LP) из players_api.csv (LP есть только у собранных через API; иначе NULL)
+    players_api_path = cfg.API_DIR / "players_api.csv"
+    if players_api_path.exists():
+        lp_cte = f""",
+        lp AS (
+            SELECT puuid, MAX(league_points) AS league_points
+            FROM read_csv_auto('{players_api_path.as_posix()}', header=true)
+            GROUP BY puuid
+        )"""
+        lp_select, lp_join = "l.league_points", "LEFT JOIN lp l ON b.puuid = l.puuid"
+    else:
+        lp_cte, lp_select, lp_join = "", "CAST(NULL AS BIGINT) AS league_points", ""
+    con.execute(f"""
         CREATE OR REPLACE TABLE dim_player AS
-        SELECT data_source, puuid,
-               ANY_VALUE(source_tier) AS source_tier,
-               ANY_VALUE(summoner_name) AS summoner_name,
-               ANY_VALUE(riot_id_game_name) AS riot_id_game_name,
-               COUNT(*) AS appearances
-        FROM complete_matches WHERE puuid IS NOT NULL GROUP BY data_source, puuid
+        WITH base AS (
+            SELECT data_source, puuid,
+                   ANY_VALUE(source_tier) AS source_tier,
+                   ANY_VALUE(summoner_name) AS summoner_name,
+                   ANY_VALUE(riot_id_game_name) AS riot_id_game_name,
+                   COUNT(*) AS appearances
+            FROM complete_matches WHERE puuid IS NOT NULL GROUP BY data_source, puuid
+        ){lp_cte}
+        SELECT b.*, {lp_select}
+        FROM base b {lp_join}
     """)
     con.execute("""
         CREATE OR REPLACE TABLE dim_role AS
