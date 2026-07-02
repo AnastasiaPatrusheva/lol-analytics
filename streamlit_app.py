@@ -177,17 +177,17 @@ with tab_champions:
             FROM base
         )
         SELECT champion_name, primary_class, games, winrate, wilson_low, wilson_high, avg_kda,
-               CASE WHEN wilson_low > 0.5 THEN '🟢 значимо сильный'
-                    WHEN wilson_high < 0.5 THEN '🔴 значимо слабый'
-                    ELSE '⚪ в норме' END AS verdict
+               CASE WHEN wilson_low > 0.5 THEN 'значимо сильный'
+                    WHEN wilson_high < 0.5 THEN 'значимо слабый'
+                    ELSE 'в норме' END AS verdict
         FROM ci ORDER BY {order_col} DESC
     """)
 
     metric_title = "Winrate (нижняя граница Уилсона)" if order_col == "wilson_low" else "Winrate"
     st.subheader(f"Топ чемпионов ({position})")
     st.caption(
-        "Цвет = статистическая значимость: 🟢 значимо сильный (интервал выше 50%), "
-        "🔴 значимо слабый, ⚪ в норме (высокий % может быть шумом малой выборки)."
+        "Цвет столбца = значимость: зелёный — значимо сильный (весь интервал уверенности выше 50%), "
+        "красный — значимо слабый, серый — в норме (высокий % может быть просто шумом малой выборки)."
     )
     if champions.empty:
         st.info("Нет чемпионов с таким порогом игр. Снизь минимум игр.")
@@ -209,7 +209,7 @@ with tab_champions:
                 color=alt.Color(
                     "verdict:N", title="Вердикт",
                     scale=alt.Scale(
-                        domain=["🟢 значимо сильный", "⚪ в норме", "🔴 значимо слабый"],
+                        domain=["значимо сильный", "в норме", "значимо слабый"],
                         range=["#3fa45b", "#9aa0a6", "#d9534f"],
                     ),
                 ),
@@ -223,6 +223,42 @@ with tab_champions:
             .properties(height=480)
         )
         st.altair_chart(chart, width="stretch")
+
+        st.markdown("#### Убийства vs смерти по чемпионам")
+        st.caption(
+            "Каждая точка — чемпион: по горизонтали среднее число смертей за игру, "
+            "по вертикали — убийств. Левее и выше = агрессивные и живучие; цвет — winrate."
+        )
+        kd = run(f"""
+            SELECT c.champion_name, c.primary_class,
+                   COUNT(DISTINCT f.match_id) AS games,
+                   AVG(f.kills) AS avg_kills,
+                   AVG(f.deaths) AS avg_deaths,
+                   AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate
+            FROM fact_participant f
+            JOIN dim_champion c ON f.champion_id = c.champion_id
+            WHERE f.data_source = '{source}' {pos_filter}
+            GROUP BY c.champion_name, c.primary_class
+            HAVING COUNT(DISTINCT f.match_id) >= {min_games}
+        """)
+        kd_scatter = (
+            alt.Chart(kd)
+            .mark_circle(opacity=0.6)
+            .encode(
+                x=alt.X("avg_deaths:Q", title="Смертей за игру (в среднем)"),
+                y=alt.Y("avg_kills:Q", title="Убийств за игру (в среднем)"),
+                size=alt.Size("games:Q", title="Игр"),
+                color=alt.Color("winrate:Q", title="Winrate",
+                                scale=alt.Scale(scheme="redyellowgreen", domain=[0.4, 0.6])),
+                tooltip=["champion_name", "primary_class", "games",
+                         alt.Tooltip("avg_kills:Q", format=".1f", title="убийств"),
+                         alt.Tooltip("avg_deaths:Q", format=".1f", title="смертей"),
+                         alt.Tooltip("winrate:Q", format=".0%")],
+            )
+            .interactive()
+            .properties(height=380)
+        )
+        st.altair_chart(kd_scatter, width="stretch")
 
         anomalies = champions[champions["verdict"].str.contains("значимо")]
         with st.expander(f"🔎 Аномалии меты: {len(anomalies)} чемпионов со значимым отклонением от 50%"):
@@ -400,6 +436,28 @@ with tab_players:
 
 # ---------- Длительность ----------
 with tab_duration:
+    st.subheader("Длительность матчей")
+    dur = run(f"""
+        SELECT game_duration_min FROM dim_match
+        WHERE data_source = '{source}' AND game_duration_min IS NOT NULL
+    """)
+    if not dur.empty:
+        box = (
+            alt.Chart(dur)
+            .mark_boxplot(extent="min-max", size=40, color="#3fa45b")
+            .encode(x=alt.X("game_duration_min:Q", title="Длительность матча, мин"))
+            .properties(height=140)
+        )
+        st.altair_chart(box, width="stretch")
+        q1 = dur["game_duration_min"].quantile(0.25)
+        q3 = dur["game_duration_min"].quantile(0.75)
+        med = dur["game_duration_min"].median()
+        st.caption(
+            f"Половина матчей длится примерно {q1:.0f}–{q3:.0f} мин (медиана {med:.0f}). "
+            "«Коробка» — где лежит середина матчей, «усы» — общий разброс."
+        )
+    st.divider()
+
     min_b = st.slider("Минимум игр в каждой длине (короткие и длинные)", 5, 50, 15, step=5)
     st.subheader("Кто «скейлится» — сила чемпиона по длине матча")
     st.caption(
