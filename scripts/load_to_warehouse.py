@@ -1,9 +1,8 @@
 """
-Слой базы данных: заливаем звёздную схему в реляционную БД.
+Слой базы данных: загрузка звёздной схемы в реляционную БД.
 
-Зачем это нужно (наставник называл это «следующим уровнем»):
 DuckDB/Parquet — это файловый слой. Чтобы дашборд в DataLens (или PowerBI/Streamlit)
-подключался к данным «вживую», их удобно положить в обычную БД и подключить BI к ней.
+подключался к данным напрямую, их удобно положить в обычную БД и подключить BI к ней.
 
 Один и тот же скрипт работает в двух режимах — выбор по переменной окружения DATABASE_URL:
 
@@ -11,15 +10,15 @@ DuckDB/Parquet — это файловый слой. Чтобы дашборд �
    Работает сразу, без облака и регистрации — для демонстрации навыка работы с БД.
 
 2) С DATABASE_URL от Supabase -> те же таблицы заливаются в облачный PostgreSQL,
-   и DataLens подключается к нему по обычному коннекшену.
+   и DataLens подключается к нему обычным способом.
 
 Пример (Supabase):
     setx DATABASE_URL "postgresql+psycopg2://postgres:ПАРОЛЬ@ХОСТ:5432/postgres"
     pip install psycopg2-binary
     python scripts/load_to_warehouse.py
 
-Источник данных — готовые CSV звёздной схемы из outputs/sql/star/
-(их собирает ноутбук LOL_sql_layer.ipynb).
+Источник данных — готовые таблицы звёздной схемы из outputs/sql/star/
+(их собирает scripts/build_star_schema.py).
 """
 
 from __future__ import annotations
@@ -52,10 +51,10 @@ def read_star_table(table: str) -> pd.DataFrame:
 
 
 def resolve_database_url() -> tuple[str, str]:
-    """Возвращает (url, человекочитаемое_описание_цели). Пароль в описании не светим."""
+    """Возвращает (url, человекочитаемое_описание_цели). Пароль в описании не показываем."""
     url = os.environ.get("DATABASE_URL", "").strip()
     if url:
-        # Прячем пароль: postgresql+psycopg2://user:***@host:port/db
+        # Маскируем пароль: postgresql+psycopg2://user:***@host:port/db
         safe = url
         if "@" in url and "//" in url:
             scheme, rest = url.split("//", 1)
@@ -82,8 +81,8 @@ def load() -> int:
         if not (STAR_DIR / f"{t}.parquet").exists() and not (STAR_DIR / f"{t}.csv").exists()
     ]
     if missing:
-        print(f"Нет CSV звёздной схемы: {missing}")
-        print("Сначала прогони ноутбук LOL_sql_layer.ipynb (секция 'Звёздная схема').")
+        print(f"Нет таблиц звёздной схемы: {missing}")
+        print("Сначала соберите звёздную схему: python main.py star")
         return 1
 
     url, target = resolve_database_url()

@@ -1,9 +1,8 @@
 """
 LoL Analytics — дашборд на Streamlit.
 
-Читает готовую звёздную схему (Parquet) напрямую через DuckDB — без отдельной БД,
-как советовал наставник («DuckDB отлично читает Streamlit»). Те же данные, что в
-Supabase, лежат локально в outputs/sql/star/*.parquet.
+Читает готовую звёздную схему (Parquet) напрямую через DuckDB — отдельная БД не нужна.
+Те же данные, что в Supabase, лежат локально в outputs/sql/star/*.parquet.
 
 Запуск локально:   streamlit run streamlit_app.py
 Деплой:            GitHub -> streamlit.app (нужны streamlit_app.py + outputs/sql/star/*.parquet + requirements.txt)
@@ -12,6 +11,7 @@ Supabase, лежат локально в outputs/sql/star/*.parquet.
 from __future__ import annotations
 
 from pathlib import Path
+from statistics import NormalDist
 
 import altair as alt
 import duckdb
@@ -22,7 +22,7 @@ STAR_DIR = Path(__file__).parent / "outputs" / "sql" / "star"
 TABLES = [
     "fact_participant", "dim_champion", "dim_match", "dim_player", "dim_role",
     "fact_participant_item", "dim_item", "item_stats",
-    "champion_strength", "champion_by_duration",
+    "champion_strength", "champion_by_duration", "player_segments",
 ]
 POSITIONS = ["Все", "TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"]
 
@@ -33,9 +33,15 @@ st.set_page_config(page_title="LoL Analytics", page_icon="🎮", layout="wide")
 def get_connection() -> duckdb.DuckDBPyConnection:
     con = duckdb.connect(database=":memory:")
     for table in TABLES:
-        path = (STAR_DIR / f"{table}.parquet").as_posix()
-        con.execute(f"CREATE VIEW {table} AS SELECT * FROM read_parquet('{path}')")
+        parquet = STAR_DIR / f"{table}.parquet"
+        # Витрина может отсутствовать (напр. player_segments до сборки) — пропускаем.
+        if parquet.exists():
+            con.execute(f"CREATE VIEW {table} AS SELECT * FROM read_parquet('{parquet.as_posix()}')")
     return con
+
+
+def table_exists(name: str) -> bool:
+    return (STAR_DIR / f"{name}.parquet").exists()
 
 
 @st.cache_data
@@ -53,8 +59,10 @@ source = st.sidebar.selectbox(
 st.sidebar.caption("Данные: Riot API + Kaggle → Parquet → DuckDB. Учебный проект.")
 
 st.title("🎮 LoL Analytics")
-tab_overview, tab_champions, tab_items, tab_players, tab_duration, tab_meta = st.tabs(
-    ["Обзор", "Чемпионы", "Предметы", "Игроки", "⏱ Длительность", "📊 Мета"]
+(tab_overview, tab_champions, tab_items, tab_players, tab_duration,
+ tab_meta, tab_segments, tab_quality) = st.tabs(
+    ["Обзор", "Чемпионы", "Предметы", "Игроки", "⏱ Длительность",
+     "📊 Мета", "🧩 Архетипы", "✅ Качество"]
 )
 
 
@@ -509,6 +517,7 @@ with tab_meta:
             agg AS (
                 SELECT champion_name, primary_class, patch,
                        COUNT(*) AS games,
+                       SUM(CASE WHEN win THEN 1 ELSE 0 END) AS wins,
                        AVG(CASE WHEN win THEN 1.0 ELSE 0.0 END) AS wr
                 FROM f GROUP BY champion_name, primary_class, patch
             ),
@@ -517,11 +526,13 @@ with tab_meta:
                        MAX(CASE WHEN patch = '{patch_a}' THEN wr END) AS wr_a,
                        MAX(CASE WHEN patch = '{patch_b}' THEN wr END) AS wr_b,
                        MAX(CASE WHEN patch = '{patch_a}' THEN games END) AS g_a,
-                       MAX(CASE WHEN patch = '{patch_b}' THEN games END) AS g_b
+                       MAX(CASE WHEN patch = '{patch_b}' THEN games END) AS g_b,
+                       MAX(CASE WHEN patch = '{patch_a}' THEN wins END) AS w_a,
+                       MAX(CASE WHEN patch = '{patch_b}' THEN wins END) AS w_b
                 FROM agg GROUP BY champion_name, primary_class
             )
             SELECT champion_name, primary_class, wr_a, wr_b,
-                   (wr_b - wr_a) AS delta, g_a, g_b
+                   (wr_b - wr_a) AS delta, g_a, g_b, w_a, w_b
             FROM piv
             WHERE g_a >= {min_g} AND g_b >= {min_g}
             ORDER BY delta DESC
@@ -530,31 +541,220 @@ with tab_meta:
         if cmp.empty:
             st.info("Нет чемпионов с достаточной выборкой в обоих патчах. Снизь минимум игр.")
         else:
-            buff = cmp.iloc[0]
-            nerf = cmp.iloc[-1]
-            st.success(
-                f"📊 От патча {patch_a} к {patch_b}: сильнее всех усилился "
-                f"**{buff['champion_name']}** (+{buff['delta']:.0%}), ослаб "
-                f"**{nerf['champion_name']}** ({nerf['delta']:+.0%})."
+            # Значимость сдвига winrate: two-proportion z-тест (winrate = доля побед).
+            # H0: сила чемпиона между патчами не изменилась. Значимо, если p < 0.05.
+            def patch_pvalue(r):
+                n_a, n_b = r["g_a"], r["g_b"]
+                if not n_a or not n_b:
+                    return 1.0
+                p_a, p_b = r["w_a"] / n_a, r["w_b"] / n_b
+                pool = (r["w_a"] + r["w_b"]) / (n_a + n_b)
+                se = (pool * (1 - pool) * (1 / n_a + 1 / n_b)) ** 0.5
+                if se == 0:
+                    return 1.0
+                z = (p_b - p_a) / se
+                return 2 * (1 - NormalDist().cdf(abs(z)))
+
+            cmp["p_value"] = cmp.apply(patch_pvalue, axis=1)
+            cmp["is_sig"] = cmp["p_value"] < 0.05
+            sig = cmp[cmp["is_sig"]]
+
+            only_sig = st.checkbox(
+                f"Только статистически значимые сдвиги (p < 0.05) — их {len(sig)} из {len(cmp)}",
+                value=False,
+                help="Two-proportion z-тест: отличается ли winrate между патчами сильнее, "
+                     "чем можно объяснить случайностью. H0 — сила чемпиона не изменилась.",
             )
-            diverging = pd.concat([cmp.head(12), cmp.tail(12)])
-            chart = (
-                alt.Chart(diverging)
-                .mark_bar()
-                .encode(
-                    x=alt.X("delta:Q", title=f"Δ winrate ({patch_b} − {patch_a})",
-                            axis=alt.Axis(format="+%")),
-                    y=alt.Y("champion_name:N", sort="-x", title=None),
-                    color=alt.condition("datum.delta > 0", alt.value("#3fa45b"), alt.value("#d9534f")),
-                    tooltip=[
-                        "champion_name", "primary_class",
-                        alt.Tooltip("wr_a:Q", format=".1%", title=patch_a),
-                        alt.Tooltip("wr_b:Q", format=".1%", title=patch_b),
-                        alt.Tooltip("delta:Q", format="+.1%", title="Δ"),
-                    ],
+            view = sig if only_sig else cmp
+
+            if not sig.empty:
+                buff = sig.iloc[0]
+                nerf = sig.iloc[-1]
+                st.success(
+                    f"📊 Значимые сдвиги {patch_a} → {patch_b}: усилился "
+                    f"**{buff['champion_name']}** (+{buff['delta']:.0%}, p={buff['p_value']:.3f}); "
+                    f"ослаб **{nerf['champion_name']}** ({nerf['delta']:+.0%}, p={nerf['p_value']:.3f})."
                 )
-                .properties(height=520)
+            else:
+                st.info(
+                    f"Между {patch_a} и {patch_b} нет статистически значимых сдвигов (p < 0.05) "
+                    "при текущем пороге игр — изменения в пределах шума выборки."
+                )
+
+            if view.empty:
+                st.caption("Включён фильтр «только значимые», но таких нет — сними галочку или снизь порог игр.")
+            else:
+                diverging = pd.concat([view.head(12), view.tail(12)])
+                chart = (
+                    alt.Chart(diverging)
+                    .mark_bar()
+                    .encode(
+                        x=alt.X("delta:Q", title=f"Δ winrate ({patch_b} − {patch_a})",
+                                axis=alt.Axis(format="+%")),
+                        y=alt.Y("champion_name:N", sort="-x", title=None),
+                        color=alt.condition("datum.delta > 0", alt.value("#3fa45b"), alt.value("#d9534f")),
+                        opacity=alt.condition("datum.is_sig", alt.value(0.95), alt.value(0.3)),
+                        tooltip=[
+                            "champion_name", "primary_class",
+                            alt.Tooltip("wr_a:Q", format=".1%", title=patch_a),
+                            alt.Tooltip("wr_b:Q", format=".1%", title=patch_b),
+                            alt.Tooltip("delta:Q", format="+.1%", title="Δ"),
+                            alt.Tooltip("p_value:Q", format=".3f", title="p-значение"),
+                        ],
+                    )
+                    .properties(height=520)
+                )
+                st.altair_chart(chart, width="stretch")
+                st.caption(
+                    "Насыщенные столбцы — статистически значимые сдвиги (p<0.05); "
+                    "блёклые — в пределах шума. Сверху усиление, снизу ослабление."
+                )
+                st.dataframe(view, width="stretch", hide_index=True)
+
+
+# ---------- Архетипы игроков (KMeans) ----------
+with tab_segments:
+    st.subheader("Архетипы игроков")
+    st.caption(
+        "Сегменты **найдены кластеризацией** (KMeans, k=4) по стилю игры "
+        "(KDA, фарм/урон/золото/обзор в минуту, стандартизованные) — это не официальные "
+        "категории. Официальные классы у Riot есть только для чемпионов "
+        "(Fighter / Tank / Mage / Assassin / Marksman / Support). Ярлык кластера — по метрике, "
+        "в которой группа сильнее всего выделяется. Считается build-шагом "
+        "(`python main.py segments`), дашборд читает готовую витрину."
+    )
+    if not table_exists("player_segments"):
+        st.info(
+            "Витрина `player_segments` ещё не собрана. Собери её: "
+            "`pip install -r requirements-build.txt` → `python main.py segments`."
+        )
+    else:
+        seg = run(f"SELECT * FROM player_segments WHERE data_source = '{source}'")
+        if seg.empty:
+            st.info(
+                f"Нет сегментов для источника «{source}» (мало игроков с ≥20 играми). "
+                "Попробуй источник riot_full."
             )
-            st.altair_chart(chart, width="stretch")
-            st.caption(f"Сверху — кто усилился к патчу {patch_b}, снизу — кто ослаб.")
-            st.dataframe(cmp, width="stretch", hide_index=True)
+        else:
+            counts = (
+                seg.groupby("archetype")
+                .agg(players=("puuid", "count"), winrate=("winrate", "mean"),
+                     kda=("kda", "mean"), cs=("cs_per_min", "mean"),
+                     dmg=("damage_per_min", "mean"), vision=("vision_per_min", "mean"),
+                     gold=("gold_per_min", "mean"))
+                .reset_index()
+                .sort_values("players", ascending=False)
+            )
+            top = counts.iloc[0]
+            st.success(
+                f"🧩 Самый массовый архетип: **{top['archetype']}** — "
+                f"{int(top['players'])} игроков, ср. winrate {top['winrate']:.0%}."
+            )
+
+            c_left, c_right = st.columns([1, 1.4])
+            with c_left:
+                st.markdown("#### Игроков в каждом архетипе")
+                bar = (
+                    alt.Chart(counts)
+                    .mark_bar()
+                    .encode(
+                        x=alt.X("players:Q", title="Игроков"),
+                        y=alt.Y("archetype:N", sort="-x", title=None),
+                        color=alt.Color("archetype:N", legend=None),
+                        tooltip=["archetype", "players", alt.Tooltip("winrate:Q", format=".0%")],
+                    )
+                    .properties(height=300)
+                )
+                st.altair_chart(bar, width="stretch")
+            with c_right:
+                st.markdown("#### Урон vs обзор (в минуту)")
+                scatter = (
+                    alt.Chart(seg)
+                    .mark_circle(size=60, opacity=0.5)
+                    .encode(
+                        x=alt.X("damage_per_min:Q", title="Урон/мин"),
+                        y=alt.Y("vision_per_min:Q", title="Vision/мин"),
+                        color=alt.Color("archetype:N", title="Архетип"),
+                        tooltip=["name", "archetype", "games",
+                                 alt.Tooltip("winrate:Q", format=".0%"),
+                                 alt.Tooltip("kda:Q", format=".2f")],
+                    )
+                    .interactive()
+                    .properties(height=300)
+                )
+                st.altair_chart(scatter, width="stretch")
+
+            st.markdown("#### Профиль архетипов (средние метрики)")
+            st.caption("Так видно, чем группы реально отличаются — не «чёрный ящик».")
+            st.dataframe(
+                counts.rename(columns={
+                    "archetype": "Архетип", "players": "Игроков", "winrate": "Winrate",
+                    "kda": "KDA", "cs": "CS/мин", "dmg": "Урон/мин",
+                    "vision": "Vision/мин", "gold": "Золото/мин",
+                }),
+                width="stretch", hide_index=True,
+            )
+
+
+# ---------- Качество данных ----------
+with tab_quality:
+    st.subheader("Качество данных")
+    st.caption(
+        f"Живые проверки по источнику «{source}» + сводный отчёт ETL-слоя Data Quality "
+        "(`run_data_quality.py`). Показывает, что данным можно доверять."
+    )
+
+    # --- живые проверки прямо в дашборде (тот же смысл, что в run_data_quality.py) ---
+    dist = run(f"""
+        SELECT participants, COUNT(*) AS matches FROM (
+            SELECT match_id, COUNT(*) AS participants
+            FROM fact_participant WHERE data_source = '{source}' GROUP BY match_id
+        ) GROUP BY participants ORDER BY participants
+    """)
+    bad_size = int(dist[dist["participants"] != 10]["matches"].sum()) if not dist.empty else 0
+
+    dups = int(run(f"""
+        SELECT COUNT(*) AS d FROM (
+            SELECT match_id, participant_id FROM fact_participant
+            WHERE data_source = '{source}'
+            GROUP BY match_id, participant_id HAVING COUNT(*) > 1
+        )
+    """).iloc[0]["d"])
+
+    orphans = int(run(f"""
+        SELECT COUNT(*) AS o
+        FROM fact_participant f
+        LEFT JOIN dim_match m ON f.data_source = m.data_source AND f.match_id = m.match_id
+        WHERE f.data_source = '{source}' AND m.match_id IS NULL
+    """).iloc[0]["o"])
+
+    wr = float(run(f"""
+        SELECT AVG(CASE WHEN win THEN 1.0 ELSE 0.0 END) AS wr
+        FROM fact_participant WHERE data_source = '{source}'
+    """).iloc[0]["wr"])
+
+    q1, q2, q3, q4 = st.columns(4)
+    q1.metric("Матчей не по 10", bad_size, help="В полном матче ровно 10 участников. Норма — 0.")
+    q1.write("✅ ок" if bad_size == 0 else "⚠️ есть неполные")
+    q2.metric("Дубли ключа", dups, help="Дубли (match_id, participant_id). Норма — 0.")
+    q2.write("✅ ок" if dups == 0 else "⚠️ есть дубли")
+    q3.metric("Строки-сироты", orphans, help="Факт без матча в dim_match. Норма — 0.")
+    q3.write("✅ ок" if orphans == 0 else "⚠️ есть сироты")
+    q4.metric("Ср. winrate", f"{wr:.3f}", help="Должен быть ≈0.500: в матче 5 побед и 5 поражений.")
+    q4.write("✅ ок" if abs(wr - 0.5) <= 0.01 else "⚠️ дисбаланс")
+
+    st.markdown("#### Участников на матч")
+    st.caption("Ожидаем ровно один столбец — «10».")
+    st.dataframe(dist, width="stretch", hide_index=True)
+
+    # --- сводный отчёт из run_data_quality.py, если он сформирован ---
+    st.markdown("#### Отчёт ETL-слоя Data Quality")
+    report_path = Path(__file__).parent / "outputs" / "data_quality" / "data_quality_report.csv"
+    if report_path.exists():
+        st.caption("Полный набор проверок из `python main.py quality` (ERROR — критично, WARN — предупреждение).")
+        st.dataframe(pd.read_csv(report_path), width="stretch", hide_index=True)
+    else:
+        st.info(
+            "Файл `outputs/data_quality/data_quality_report.csv` не найден. "
+            "Сформируй его командой `python main.py quality`."
+        )

@@ -4,8 +4,8 @@
 Читает общую таблицу `all_matches_common` (Parquet — основной формат, CSV — запасной)
 и строит факт + измерения через DuckDB, сохраняя их в outputs/sql/star/ как Parquet и CSV.
 
-Раньше эта логика жила только в ноутбуке LOL_sql_layer.ipynb. Вынос в скрипт нужен,
-чтобы звёздную схему можно было собирать из оркестратора main.py, а не только руками.
+Та же логика присутствует в ноутбуке LOL_sql_layer.ipynb; здесь она оформлена
+отдельным скриптом, чтобы звёздную схему можно было собирать из оркестратора main.py.
 """
 
 from __future__ import annotations
@@ -119,7 +119,7 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
     """)
 
     # мост: разворачиваем item0..item6 (широкий вид -> длинный),
-    # пустые слоты (0 / NULL) выкидываем. 1 строка = 1 предмет у игрока в матче.
+    # пустые слоты (0 / NULL) исключаем. 1 строка = 1 предмет у игрока в матче.
     con.execute("""
         CREATE OR REPLACE TABLE fact_participant_item AS
         SELECT data_source, match_id, participant_id, CAST(item_id AS BIGINT) AS item_id
@@ -143,7 +143,7 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
         FROM used u LEFT JOIN items_ref r ON u.item_id = r.item_id
     """)
 
-    # витрина "Покупки x Winrate" (как в эталоне наставника):
+    # витрина "Покупки x Winrate":
     # по каждому предмету — покупки, winrate и нижняя граница Уилсона
     # (консервативный winrate с поправкой на размер выборки).
     con.execute("""
@@ -174,9 +174,9 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
 
     # витрина "Сила чемпиона" со статистической строгостью:
     # доверительный интервал Уилсона (95%) на winrate + вердикт по аномалии.
-    # Идея: 60% при 5 играх — это шум (широкий интервал), а 53% при 500 играх —
-    # надёжно. Поэтому tier-list честно строить по нижней границе wilson_low,
-    # а "значимо сильный/слабый" = интервал НЕ накрывает 50%.
+    # 60% при 5 играх даёт широкий интервал (ненадёжно), 53% при 500 играх — узкий.
+    # Поэтому tier-list строится по нижней границе wilson_low, а "значимо
+    # сильный/слабый" означает, что интервал не накрывает 50%.
     con.execute("""
         CREATE OR REPLACE TABLE champion_strength AS
         WITH base AS (

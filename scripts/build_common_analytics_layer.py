@@ -166,9 +166,9 @@ def normalize_kaggle() -> pd.DataFrame:
     kaggle_df["source_tier"] = "kaggle"
     kaggle_df["match_id"] = kaggle_df["match_id"].map(normalize_match_id)
 
-    # Roles can legitimately be missing (leavers, edge cases). Per the mentor's
-    # advice we label them UNDEFINED instead of dropping the rows, so player
-    # counts and match completeness stay intact for downstream filtering.
+    # Roles can legitimately be missing (leavers, edge cases). They are labelled
+    # UNDEFINED instead of dropped, so player counts and match completeness stay
+    # intact for downstream filtering.
     kaggle_df["team_position"] = (
         kaggle_df["team_position"]
         .fillna(kaggle_df["individual_position"])
@@ -214,7 +214,7 @@ def main() -> None:
     kaggle_common.to_csv(KAGGLE_OUTPUT, index=False)
     save_parquet_if_available(kaggle_common, KAGGLE_OUTPUT.with_suffix(".parquet"))
 
-    # Большой источник riot_full (raw.zip от наставника) подключаем, если он уже
+    # Большой источник riot_full (из архива raw.zip) подключаем, если он уже
     # разобран ingest-скриптом. Это главный объёмный источник с несколькими патчами.
     parts = [api_common, kaggle_common]
     riot_full_path = OUTPUT_DIR / "riot_full_common.parquet"
