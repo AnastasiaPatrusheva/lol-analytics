@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import sys
 import time
 from datetime import datetime, timezone
 from getpass import getpass
@@ -30,10 +31,14 @@ import pandas as pd
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-REGION = "euw1"
-MATCH_REGION = "europe"
-QUEUE = "RANKED_SOLO_5x5"
-QUEUE_ID = 420
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
+from lol_utils import config as cfg, save_parquet_if_available  # noqa: E402
+
+# Регион и очередь берём из центрального конфига (config.py) — без дублей констант.
+REGION = cfg.REGION
+MATCH_REGION = cfg.MATCH_REGION
+QUEUE = cfg.RANKED_SOLO_QUEUE
+QUEUE_ID = cfg.RANKED_SOLO_QUEUE_ID
 
 DATA_DIR = PROJECT_ROOT / "data" / "api"
 PLAYERS_PATH = DATA_DIR / "players_api.csv"
@@ -313,15 +318,6 @@ def append_unique(existing: pd.DataFrame, new_rows: pd.DataFrame, subset: list[s
         return new_rows.drop_duplicates(subset=subset)
     combined = pd.concat([existing, new_rows], ignore_index=True)
     return combined.drop_duplicates(subset=subset, keep="last")
-
-
-def save_parquet_if_available(df: pd.DataFrame, path: Path) -> None:
-    # Parquet is a useful bonus format for DuckDB/analytics, but CSV remains enough
-    # for the project if pyarrow is not installed in the current environment.
-    try:
-        df.to_parquet(path, index=False)
-    except Exception as exc:
-        print(f"Parquet skipped for {path.name}: {exc}")
 
 
 def run(args: argparse.Namespace) -> None:

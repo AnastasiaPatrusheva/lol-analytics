@@ -10,12 +10,12 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 # Make the shared helpers importable whether the script is run directly or via runpy.
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
-from lol_utils import add_metrics, save_parquet_if_available  # noqa: E402
+from lol_utils import add_metrics, save_parquet_if_available, config as cfg  # noqa: E402
 
 # Only ranked solo queue on Summoner's Rift, to match the Riot API sample
 # (which is collected with queue=420). Mixing in ARAM/flex would make the
 # cross-source champion and role comparisons apples-to-oranges.
-RANKED_SOLO_QUEUE_ID = 420
+RANKED_SOLO_QUEUE_ID = cfg.RANKED_SOLO_QUEUE_ID
 
 API_PATH = PROJECT_ROOT / "data" / "api" / "matches_api_enriched.csv"
 KAGGLE_PATH = PROJECT_ROOT / "data" / "raw" / "league_data.xlsx"

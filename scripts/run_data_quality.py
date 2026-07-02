@@ -27,13 +27,16 @@ from pathlib import Path
 import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
+from lol_utils import config as cfg  # noqa: E402
+
 DATA_PATH = PROJECT_ROOT / "data" / "normalized" / "all_matches_common.csv"
 REPORT_DIR = PROJECT_ROOT / "outputs" / "data_quality"
 
-# Порог ранкед-соло очереди и допустимые роли.
-RANKED_SOLO_QUEUE_ID = 420
-STANDARD_POSITIONS = {"TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"}
-UNDEFINED_SHARE_WARN = 0.05  # доля ролей UNDEFINED выше 5% -> предупреждение
+# Пороги ранкед-соло и допустимые роли — из центрального конфига (config.py).
+RANKED_SOLO_QUEUE_ID = cfg.RANKED_SOLO_QUEUE_ID
+STANDARD_POSITIONS = set(cfg.STANDARD_POSITIONS)  # в конфиге список; здесь нужен set для операций над множествами
+UNDEFINED_SHARE_WARN = cfg.UNDEFINED_SHARE_WARN
 
 # Метрики, которые по смыслу не могут быть отрицательными.
 NON_NEGATIVE_COLUMNS = [
