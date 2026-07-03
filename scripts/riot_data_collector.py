@@ -1,19 +1,19 @@
 """
-Small Riot API data collector for the LoL project.
+Инкрементальный сборщик данных из Riot API для проекта LoL.
 
-The script is intentionally incremental:
-- starts from a high-tier league endpoint;
-- resolves PUUIDs;
-- downloads match ids for each player;
-- skips already downloaded match ids using a log file;
-- saves player rows, participant rows, and download log to data/api/.
+Скрипт собирает данные порциями:
+- стартует с эндпоинта топовой лиги;
+- добывает PUUID игроков;
+- скачивает id матчей по каждому игроку;
+- пропускает уже скачанные матчи по лог-файлу;
+- сохраняет игроков, участников и лог загрузки в data/api/.
 
-Example:
+Пример запуска:
     python scripts/riot_data_collector.py --tier challenger --max-players 10 --matches-per-player 5
     python scripts/riot_data_collector.py --tier master --player-offset 20 --max-players 10 --matches-per-player 5
 
-API key:
-    Set RIOT_API_KEY in the environment or paste it when prompted.
+Ключ API:
+    Задать RIOT_API_KEY в переменных окружения или ввести по запросу.
 """
 
 from __future__ import annotations
@@ -57,13 +57,13 @@ class RiotClient:
         self.max_retries = max_retries
 
     def get(self, url: str, params: dict[str, Any] | None = None) -> Any:
-        # All Riot requests go through this method, so rate limit handling
-        # and retry logic stay in one place instead of being copied across functions.
+        # Все запросы к Riot идут через этот метод — обработка лимитов и повторов
+        # собрана в одном месте, а не копируется по функциям.
         try:
             import requests
         except ImportError as exc:
             raise RiotApiError(
-                "The 'requests' package is required. Install it with: pip install requests"
+                "Требуется пакет 'requests'. Установите: pip install requests"
             ) from exc
 
         for attempt in range(1, self.max_retries + 1):
@@ -75,34 +75,34 @@ class RiotClient:
 
             if response.status_code == 429:
                 retry_after = int(response.headers.get("Retry-After", "10"))
-                print(f"Rate limit: sleeping {retry_after} sec")
+                print(f"Лимит запросов: пауза {retry_after} сек")
                 time.sleep(retry_after)
                 continue
 
             if response.status_code in (500, 502, 503, 504):
                 wait = attempt * 5
-                print(f"Temporary Riot error {response.status_code}: retry in {wait} sec")
+                print(f"Временная ошибка Riot {response.status_code}: повтор через {wait} сек")
                 time.sleep(wait)
                 continue
 
             if response.status_code in (401, 403):
-                raise RiotApiError("API key is invalid or expired.")
+                raise RiotApiError("Ключ API недействителен или истёк.")
 
             raise RiotApiError(
-                f"Unexpected Riot API response {response.status_code}: {response.text[:300]}"
+                f"Неожиданный ответ Riot API {response.status_code}: {response.text[:300]}"
             )
 
-        raise RiotApiError(f"Request failed after {self.max_retries} attempts: {url}")
+        raise RiotApiError(f"Запрос не удался после {self.max_retries} попыток: {url}")
 
 
 def get_api_key() -> str:
-    # For the notebook workflow we usually paste a fresh development key.
-    # If RIOT_API_KEY exists in the environment, the script can run without manual input.
+    # Обычно вставляем свежий development-ключ. Если RIOT_API_KEY задан в
+    # окружении, скрипт отработает без ручного ввода.
     api_key = os.environ.get("RIOT_API_KEY", "").strip()
     if not api_key:
-        api_key = getpass("Paste fresh RIOT_API_KEY: ").strip()
+        api_key = getpass("Вставьте свежий RIOT_API_KEY: ").strip()
     if not api_key:
-        raise RiotApiError("RIOT_API_KEY is empty.")
+        raise RiotApiError("RIOT_API_KEY пустой.")
     return api_key
 
 
@@ -114,7 +114,7 @@ def league_url(tier: str) -> str:
     }
     tier_key = tier.lower()
     if tier_key not in endpoints:
-        raise ValueError("tier must be one of: challenger, grandmaster, master")
+        raise ValueError("tier должен быть одним из: challenger, grandmaster, master")
     return (
         f"https://{REGION}.api.riotgames.com/lol/league/v4/"
         f"{endpoints[tier_key]}/by-queue/{QUEUE}"
@@ -138,8 +138,8 @@ def fetch_league_players(
     max_players: int,
     player_offset: int = 0,
 ) -> pd.DataFrame:
-    # player_offset lets us continue collection from the next slice of league players.
-    # Without it, repeated runs would keep requesting the same top players and mostly find duplicates.
+    # player_offset позволяет продолжить сбор со следующей порции игроков лиги.
+    # Без него повторные запуски брали бы тех же топов и находили в основном дубли.
     league = client.get(league_url(tier))
     entries = league.get("entries", [])
     selected_entries = entries[player_offset : player_offset + max_players]
@@ -198,8 +198,8 @@ def fetch_match_ids(
     start_time: int | None,
     end_time: int | None,
 ) -> list[str]:
-    # Match-V5 works by PUUID. We request ranked solo queue matches only,
-    # so the resulting dataset matches the high-tier SoloQ framing of the project.
+    # Match-V5 работает по PUUID. Запрашиваем только ранкед-соло, чтобы выборка
+    # соответствовала рамке проекта (топовый SoloQ).
     url = (
         f"https://{MATCH_REGION}.api.riotgames.com/lol/match/v5/"
         f"matches/by-puuid/{puuid}/ids"
@@ -223,8 +223,8 @@ def fetch_match_detail(client: RiotClient, match_id: str) -> dict[str, Any]:
 
 
 def flatten_match(match: dict[str, Any], source_puuid: str, source_tier: str) -> list[dict[str, Any]]:
-    # One Riot match response is nested JSON. For analysis we flatten it into
-    # participant-level rows: 1 match -> 10 rows, one row per player in the match.
+    # Ответ Riot по матчу — вложенный JSON. Для анализа разворачиваем его в строки
+    # участников: 1 матч -> 10 строк, по строке на игрока.
     metadata = match.get("metadata", {})
     info = match.get("info", {})
     participants = info.get("participants", [])
@@ -312,15 +312,15 @@ def unix_time(value: str | None) -> int | None:
 
 
 def append_unique(existing: pd.DataFrame, new_rows: pd.DataFrame, subset: list[str]) -> pd.DataFrame:
-    # Incremental runs append new rows but keep only one copy of each logical entity.
-    # For matches the uniqueness key is match_id + participant_id.
+    # Инкрементальные запуски дописывают строки, оставляя по одной копии каждой
+    # логической сущности. Для матчей ключ уникальности — match_id + participant_id.
     if existing.empty:
         return new_rows.drop_duplicates(subset=subset)
     combined = pd.concat([existing, new_rows], ignore_index=True)
     return combined.drop_duplicates(subset=subset, keep="last")
 
 
-def run(args: argparse.Namespace) -> None:
+def run(args: argparse.Namespace) -> int:
     DATA_DIR.mkdir(exist_ok=True)
 
     client = RiotClient(
@@ -329,11 +329,11 @@ def run(args: argparse.Namespace) -> None:
         max_retries=args.max_retries,
     )
 
-    print("Checking Riot API key...")
+    print("Проверяю ключ Riot API...")
     client.get(league_url(args.tier))
-    print("API key works.")
+    print("Ключ работает.")
 
-    print(f"Loading {args.tier} players from offset {args.player_offset}...")
+    print(f"Загружаю игроков {args.tier} со смещения {args.player_offset}...")
     players_new = fetch_league_players(
         client=client,
         tier=args.tier,
@@ -352,8 +352,8 @@ def run(args: argparse.Namespace) -> None:
 
     downloaded_match_ids = set()
     if not log_existing.empty and "status" in log_existing.columns:
-        # The log is our deduplication layer. If a match was already downloaded successfully,
-        # the collector skips it on future runs instead of calling Riot API again.
+        # Лог — слой дедупликации. Если матч уже успешно скачан, коллектор пропускает
+        # его в следующих запусках, а не запрашивает Riot API снова.
         downloaded_match_ids = set(
             log_existing.loc[log_existing["status"].eq("success"), "match_id"].dropna()
         )
@@ -365,11 +365,11 @@ def run(args: argparse.Namespace) -> None:
     end_time = unix_time(args.end_date)
 
     players_for_run = players_new.dropna(subset=["puuid"]).head(args.max_players)
-    print(f"Players in this run: {len(players_for_run)}")
+    print(f"Игроков в этом запуске: {len(players_for_run)}")
 
     for player in players_for_run.to_dict("records"):
         puuid = player["puuid"]
-        print(f"Fetching match ids for player {puuid[:8]}...")
+        print(f"Беру id матчей игрока {puuid[:8]}...")
         try:
             match_ids = fetch_match_ids(
                 client=client,
@@ -393,11 +393,11 @@ def run(args: argparse.Namespace) -> None:
 
         for match_id in match_ids:
             if match_id in downloaded_match_ids:
-                # Same match can be found through several top players.
-                # Skipping it here keeps the dataset clean and saves API quota.
+                # Один матч может встретиться у нескольких топ-игроков. Пропуск здесь
+                # держит датасет чистым и экономит квоту API.
                 continue
 
-            print(f"Downloading match {match_id}...")
+            print(f"Скачиваю матч {match_id}...")
             try:
                 match = fetch_match_detail(client, match_id)
                 match_rows_buffer.extend(flatten_match(match, puuid, args.tier))
@@ -425,8 +425,8 @@ def run(args: argparse.Namespace) -> None:
                 )
 
             if len(match_rows_buffer) >= args.save_every_matches * 10:
-                # Save periodically, not only at the end, so a long run still leaves
-                # useful partial results if the API key expires or the notebook stops.
+                # Сохраняем периодически, а не только в конце — чтобы долгий сбор
+                # оставил полезный частичный результат, если ключ протух или сбор прервали.
                 matches_existing = flush_matches(matches_existing, match_rows_buffer)
                 match_rows_buffer = []
                 log_existing = flush_log(log_existing, log_rows)
@@ -435,15 +435,16 @@ def run(args: argparse.Namespace) -> None:
     matches_existing = flush_matches(matches_existing, match_rows_buffer)
     log_existing = flush_log(log_existing, log_rows)
 
-    print("Done.")
-    print(f"Players saved: {len(players_all)} -> {PLAYERS_PATH}")
-    print(f"Participant rows saved: {len(matches_existing)} -> {MATCHES_PATH}")
-    print(f"Log rows saved: {len(log_existing)} -> {LOG_PATH}")
+    print("Готово.")
+    print(f"Сохранено игроков: {len(players_all)} -> {PLAYERS_PATH}")
+    print(f"Сохранено строк участников: {len(matches_existing)} -> {MATCHES_PATH}")
+    print(f"Сохранено строк лога: {len(log_existing)} -> {LOG_PATH}")
+    return 0
 
 
 def flush_matches(existing: pd.DataFrame, rows: list[dict[str, Any]]) -> pd.DataFrame:
-    # One downloaded match creates 10 participant rows. The unique key protects
-    # against duplicated match downloads across repeated collector runs.
+    # Один скачанный матч даёт 10 строк участников. Ключ уникальности защищает
+    # от повторной загрузки одного матча между запусками коллектора.
     if not rows:
         return existing
     new_df = pd.DataFrame(rows)
@@ -454,8 +455,8 @@ def flush_matches(existing: pd.DataFrame, rows: list[dict[str, Any]]) -> pd.Data
 
 
 def flush_log(existing: pd.DataFrame, rows: list[dict[str, Any]]) -> pd.DataFrame:
-    # The log is intentionally append-only: it records both successful downloads
-    # and errors, which helps explain what happened during API collection.
+    # Лог намеренно только дописывается: фиксирует и успешные загрузки, и ошибки,
+    # что помогает понять, что происходило во время сбора через API.
     if not rows:
         return existing
     new_df = pd.DataFrame(rows)
@@ -466,13 +467,13 @@ def flush_log(existing: pd.DataFrame, rows: list[dict[str, Any]]) -> pd.DataFram
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Incremental Riot API collector.")
+    parser = argparse.ArgumentParser(description="Инкрементальный сборщик Riot API.")
     parser.add_argument("--tier", default="challenger", choices=["challenger", "grandmaster", "master"])
     parser.add_argument("--player-offset", type=int, default=0)
     parser.add_argument("--max-players", type=int, default=10)
     parser.add_argument("--matches-per-player", type=int, default=5)
-    parser.add_argument("--start-date", default=None, help="UTC date, e.g. 2026-05-01 or 2026-05-01T00:00:00+00:00")
-    parser.add_argument("--end-date", default=None, help="UTC date, e.g. 2026-06-01 or 2026-06-01T00:00:00+00:00")
+    parser.add_argument("--start-date", default=None, help="дата UTC, напр. 2026-05-01 или 2026-05-01T00:00:00+00:00")
+    parser.add_argument("--end-date", default=None, help="дата UTC, напр. 2026-06-01 или 2026-06-01T00:00:00+00:00")
     parser.add_argument("--request-sleep", type=float, default=1.2)
     parser.add_argument("--max-retries", type=int, default=3)
     parser.add_argument("--save-every-matches", type=int, default=5)
@@ -480,4 +481,4 @@ def parse_args() -> argparse.Namespace:
 
 
 if __name__ == "__main__":
-    run(parse_args())
+    sys.exit(run(parse_args()))
