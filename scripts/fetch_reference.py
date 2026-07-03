@@ -75,7 +75,7 @@ def main() -> int:
     print(f"  champions.csv: {len(champions)} чемпионов")
 
     items = fetch_items(version)
-    items_path = cfg.REFERENCE_DIR / "items.csv"
+    items_path = cfg.ITEMS_REF
     items.to_csv(items_path, index=False, encoding="utf-8")
     print(f"  items.csv: {len(items)} предметов")
     return 0

@@ -8,13 +8,13 @@ import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-# Make the shared helpers importable whether the script is run directly or via runpy.
+# Делаем общий пакет lol_utils импортируемым при прямом запуске и через runpy.
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 from lol_utils import add_metrics, save_parquet_if_available, config as cfg  # noqa: E402
 
-# Only ranked solo queue on Summoner's Rift, to match the Riot API sample
-# (which is collected with queue=420). Mixing in ARAM/flex would make the
-# cross-source champion and role comparisons apples-to-oranges.
+# Только ранкед-соло на Summoner's Rift, как в выборке через Riot API (queue=420).
+# ARAM/флекс сделали бы сравнение чемпионов и ролей между источниками
+# несопоставимым («яблоки с апельсинами»).
 RANKED_SOLO_QUEUE_ID = cfg.RANKED_SOLO_QUEUE_ID
 
 API_PATH = PROJECT_ROOT / "data" / "api" / "matches_api_enriched.csv"
@@ -158,17 +158,17 @@ def normalize_kaggle() -> pd.DataFrame:
         }
     )
 
-    # Keep only ranked solo queue so the Kaggle sample matches the API framing.
-    # This is also what removes the ~9.7k ARAM rows whose team_position is "Invalid".
+    # Оставляем только ранкед-соло, чтобы Kaggle совпадал по рамке с API-выборкой.
+    # Это заодно убирает ~9.7k строк ARAM, у которых team_position = "Invalid".
     kaggle_df = kaggle_df[kaggle_df["queue_id"] == RANKED_SOLO_QUEUE_ID].copy()
 
     kaggle_df["data_source"] = "kaggle"
     kaggle_df["source_tier"] = "kaggle"
     kaggle_df["match_id"] = kaggle_df["match_id"].map(normalize_match_id)
 
-    # Roles can legitimately be missing (leavers, edge cases). They are labelled
-    # UNDEFINED instead of dropped, so player counts and match completeness stay
-    # intact for downstream filtering.
+    # Роль может законно отсутствовать (ливеры, крайние случаи). Помечаем её
+    # UNDEFINED, а не выкидываем — чтобы число игроков и полнота матчей
+    # сохранялись для последующей фильтрации.
     kaggle_df["team_position"] = (
         kaggle_df["team_position"]
         .fillna(kaggle_df["individual_position"])
@@ -201,15 +201,15 @@ def finalize_dtypes(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def main() -> None:
+def main() -> int:
     OUTPUT_DIR.mkdir(exist_ok=True)
 
-    print("Normalizing Riot API data...")
+    print("Нормализую данные Riot API...")
     api_common = finalize_dtypes(normalize_api())
     api_common.to_csv(API_OUTPUT, index=False)
     save_parquet_if_available(api_common, API_OUTPUT.with_suffix(".parquet"))
 
-    print("Normalizing Kaggle data. This can take a minute because the source is xlsx...")
+    print("Нормализую данные Kaggle (может занять минуту — источник xlsx)...")
     kaggle_common = finalize_dtypes(normalize_kaggle())
     kaggle_common.to_csv(KAGGLE_OUTPUT, index=False)
     save_parquet_if_available(kaggle_common, KAGGLE_OUTPUT.with_suffix(".parquet"))
@@ -221,7 +221,7 @@ def main() -> None:
     if riot_full_path.exists():
         riot_full = finalize_dtypes(pd.read_parquet(riot_full_path))
         parts.append(riot_full)
-        print(f"Riot full common: {riot_full.shape} <- {riot_full_path.name}")
+        print(f"Источник riot_full: {riot_full.shape} <- {riot_full_path.name}")
 
     combined = pd.concat(parts, ignore_index=True)
     combined.to_csv(COMBINED_OUTPUT, index=False)
@@ -229,15 +229,16 @@ def main() -> None:
 
     pd.DataFrame({"column": COMMON_COLUMNS}).to_csv(SCHEMA_OUTPUT, index=False)
 
-    print("Done.")
-    print(f"API common: {api_common.shape} -> {API_OUTPUT}")
-    print(f"Kaggle common: {kaggle_common.shape} -> {KAGGLE_OUTPUT}")
-    print(f"Combined common: {combined.shape} -> {COMBINED_OUTPUT}")
-    print("Rows by source:")
+    print("Готово.")
+    print(f"API: {api_common.shape} -> {API_OUTPUT}")
+    print(f"Kaggle: {kaggle_common.shape} -> {KAGGLE_OUTPUT}")
+    print(f"Объединённая таблица: {combined.shape} -> {COMBINED_OUTPUT}")
+    print("Строк по источникам:")
     print(combined["data_source"].value_counts().to_string())
-    print("Unique matches by source:")
+    print("Уникальных матчей по источникам:")
     print(combined.groupby("data_source")["match_id"].nunique().to_string())
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

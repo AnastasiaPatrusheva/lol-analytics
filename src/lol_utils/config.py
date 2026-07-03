@@ -35,6 +35,7 @@ WAREHOUSE_DIR = OUTPUTS_DIR / "warehouse"
 # --- ключевые файлы ---
 KAGGLE_XLSX = RAW_DIR / "league_data.xlsx"
 CHAMPIONS_REF = REFERENCE_DIR / "champions.csv"
+ITEMS_REF = REFERENCE_DIR / "items.csv"
 # базовое имя общей таблицы без расширения: рядом лежат .parquet (основной) и .csv (для BI-выгрузки)
 COMMON_TABLE = NORMALIZED_DIR / "all_matches_common"
 

@@ -38,6 +38,13 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
     common_rel = source_relation(cfg.COMMON_TABLE)
     con.execute(f"CREATE OR REPLACE VIEW matches_common AS SELECT * FROM {common_rel}")
 
+    # Доверительный интервал Уилсона — макросами, чтобы не повторять формулу в витринах
+    # (p — доля успехов, n — число наблюдений).
+    con.execute("""CREATE OR REPLACE MACRO wilson_low(p, n) AS
+        (p + 1.96*1.96/(2*n) - 1.96*sqrt((p*(1-p) + 1.96*1.96/(4*n))/n)) / (1 + 1.96*1.96/n)""")
+    con.execute("""CREATE OR REPLACE MACRO wilson_high(p, n) AS
+        (p + 1.96*1.96/(2*n) + 1.96*sqrt((p*(1-p) + 1.96*1.96/(4*n))/n)) / (1 + 1.96*1.96/n)""")
+
     # только полные матчи (10 участников)
     con.execute("""
         CREATE OR REPLACE VIEW complete_matches AS
@@ -127,7 +134,7 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
 
     # --- ПРЕДМЕТЫ (связь многие-ко-многим через мост) ---
     # справочник предметов из Data Dragon
-    items_csv = cfg.REFERENCE_DIR / "items.csv"
+    items_csv = cfg.ITEMS_REF
     con.execute(f"""
         CREATE OR REPLACE TABLE items_ref AS
         SELECT CAST(item_id AS BIGINT) AS item_id, item_name, gold_total, tags
@@ -180,10 +187,7 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
             GROUP BY b.data_source, d.item_name, b.item_id, d.gold_total
             HAVING COUNT(*) >= 10
         )
-        SELECT *,
-               (winrate + 1.96*1.96/(2*purchases)
-                - 1.96*sqrt((winrate*(1-winrate) + 1.96*1.96/(4*purchases))/purchases))
-               / (1 + 1.96*1.96/purchases) AS wilson_low
+        SELECT *, wilson_low(winrate, purchases) AS wilson_low
         FROM agg
         ORDER BY purchases DESC
     """)
@@ -206,12 +210,8 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
         ci AS (
             SELECT data_source, champion_name, primary_class, games, wins,
                    wins * 1.0 / games AS winrate,
-                   (wins*1.0/games + 1.96*1.96/(2*games)
-                    - 1.96*sqrt((wins*1.0/games*(1-wins*1.0/games) + 1.96*1.96/(4*games))/games))
-                   / (1 + 1.96*1.96/games) AS wilson_low,
-                   (wins*1.0/games + 1.96*1.96/(2*games)
-                    + 1.96*sqrt((wins*1.0/games*(1-wins*1.0/games) + 1.96*1.96/(4*games))/games))
-                   / (1 + 1.96*1.96/games) AS wilson_high
+                   wilson_low(wins * 1.0 / games, games) AS wilson_low,
+                   wilson_high(wins * 1.0 / games, games) AS wilson_high
             FROM base WHERE games >= 5
         )
         SELECT *,
