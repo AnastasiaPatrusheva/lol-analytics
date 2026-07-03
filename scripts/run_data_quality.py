@@ -24,6 +24,7 @@ import argparse
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -181,8 +182,6 @@ def check_non_negative(df: pd.DataFrame, report: Report) -> None:
 
 def check_kda_finite(df: pd.DataFrame, report: Report) -> None:
     # kda считается через deaths.clip(lower=1), поэтому бесконечностей быть не должно.
-    import numpy as np
-
     bad = int(df["kda"].isna().sum() + np.isinf(df["kda"]).sum())
     report.add(
         "kda_finite",
