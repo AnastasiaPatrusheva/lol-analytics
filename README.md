@@ -131,6 +131,16 @@ requirements.txt            зависимости дашборда (ранта�
 requirements-build.txt      зависимости сборки (ETL + scikit-learn)
 ```
 
+## Тесты
+
+```bash
+pip install -r requirements-build.txt
+pytest tests/
+```
+
+Юнит-тесты на ключевые функции: производные метрики (`add_metrics`), разбор матча
+(`flatten_match`), нормализация id, интервал Уилсона, ярлыки архетипов.
+
 ## Стек
 
 `Python` · `pandas` · `DuckDB` · `Parquet` · `scikit-learn` · `SQLAlchemy` ·
