@@ -29,7 +29,7 @@ def source_relation(base: Path) -> str:
     if csv.exists():
         return f"read_csv_auto('{csv.as_posix()}', header=true)"
     raise FileNotFoundError(
-        f"Нет {parquet.name} или {csv.name}. Сначала запусти transform "
+        f"Нет {parquet.name} или {csv.name}. Сначала запустите transform "
         f"(build_common_analytics_layer.py)."
     )
 
