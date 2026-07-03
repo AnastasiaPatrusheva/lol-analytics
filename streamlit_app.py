@@ -56,12 +56,12 @@ source = st.sidebar.selectbox(
     help="riot_full — большой набор (~26k матчей, патчи 16.7–16.12); "
          "kaggle — исторический срез; riot_api — собственная свежая выборка",
 )
-st.sidebar.caption("Данные: Riot API + Kaggle → Parquet → DuckDB. Учебный проект.")
+st.sidebar.caption("Учебный проект. Источники данных: Riot API и Kaggle.")
 
 st.title("🎮 LoL Analytics")
 (tab_overview, tab_champions, tab_items, tab_players, tab_duration,
  tab_meta, tab_segments, tab_quality) = st.tabs(
-    ["Обзор", "Чемпионы", "Предметы", "Игроки", "⏱ Длительность",
+    ["📋 Обзор", "🏆 Чемпионы", "🛡️ Предметы", "👤 Игроки", "⏱ Длительность",
      "📊 Мета", "🧩 Архетипы", "✅ Качество"]
 )
 
@@ -117,16 +117,16 @@ with tab_overview:
     i1, i2, i3 = st.columns(3)
     if not top_champ.empty:
         r = top_champ.iloc[0]
-        i1.success(f"🏆 **Сильнейший чемпион**\n\n{r['champion_name']} — надёжный winrate "
-                   f"{r['wilson_low']:.0%} ({int(r['games'])} игр)")
+        i1.success(f"🏆 **Сильнейший чемпион**\n\n{r['champion_name']} — winrate "
+                   f"{r['wilson_low']:.0%} с поправкой на число игр ({int(r['games'])} игр)")
     if not top_item.empty:
         r = top_item.iloc[0]
-        i2.success(f"🛡️ **Эффективнейший предмет**\n\n{r['item_name']} — {r['wilson_low']:.0%} "
+        i2.success(f"🛡️ **Предмет с лучшим winrate**\n\n{r['item_name']} — {r['wilson_low']:.0%} "
                    f"({int(r['purchases'])} покупок)")
     if not scaler.empty:
         r = scaler.iloc[0]
-        i3.success(f"📈 **Лучше всех скейлится**\n\n{r['champion_name']} — +{r['delta']:.0%} "
-                   f"winrate в долгих играх")
+        i3.success(f"📈 **Сильнее всего в долгой игре**\n\n{r['champion_name']} — +{r['delta']:.0%} "
+                   f"winrate в долгих матчах")
 
     result = run(f"""
         SELECT CASE WHEN win THEN 'Победа' ELSE 'Поражение' END AS result,
@@ -145,13 +145,15 @@ with tab_champions:
     col_a, col_b, col_c = st.columns([1, 1.4, 1.4])
     position = col_a.selectbox("Позиция", POSITIONS)
     rank_by = col_b.radio(
-        "Ранжировать по", ["Уилсон (надёжно)", "Сырой winrate"], horizontal=True,
-        help="Уилсон = нижняя граница доверительного интервала: учитывает размер выборки",
+        "Ранжировать по", ["С поправкой на число игр", "Сырой winrate"], horizontal=True,
+        help="Метод Уилсона строит доверительный интервал winrate с учётом числа игр: "
+             "чем меньше выборка, тем осторожнее оценка. Ранжируем по нижней границе интервала — "
+             "чтобы 70% на 5 играх не оказались выше 53% на 500.",
     )
     min_games = col_c.slider("Минимум игр", 5, 100, 30, step=5)
 
     pos_filter = "" if position == "Все" else f"AND f.role_key = '{position}'"
-    order_col = "wilson_low" if rank_by.startswith("Уилсон") else "winrate"
+    order_col = "wilson_low" if rank_by.startswith("С поправкой") else "winrate"
 
     # Wilson 95% считаем прямо в запросе, с учётом фильтра позиции.
     champions = run(f"""
@@ -183,7 +185,7 @@ with tab_champions:
         FROM ci ORDER BY {order_col} DESC
     """)
 
-    metric_title = "Winrate (нижняя граница Уилсона)" if order_col == "wilson_low" else "Winrate"
+    metric_title = "Winrate (с поправкой на число игр)" if order_col == "wilson_low" else "Winrate"
     st.subheader(f"Топ чемпионов ({position})")
     st.caption(
         "Цвет столбца = значимость: зелёный — значимо сильный (весь интервал уверенности выше 50%), "
@@ -196,8 +198,8 @@ with tab_champions:
         if not strong.empty:
             t = strong.iloc[0]
             st.success(
-                f"🏆 Сильнейший (значимо): **{t['champion_name']}** — надёжный winrate "
-                f"{t['wilson_low']:.0%} на {int(t['games'])} играх. "
+                f"🏆 Сильнейший (значимо): **{t['champion_name']}** — winrate "
+                f"{t['wilson_low']:.0%} с поправкой на число игр ({int(t['games'])} игр). "
                 f"Статистически доказанных сильных всего {len(strong)}."
             )
         chart = (
@@ -280,15 +282,18 @@ with tab_items:
         ORDER BY purchases DESC
     """)
 
-    st.subheader("Покупки × Winrate")
-    st.caption("Правый верхний угол = популярные И эффективные предметы.")
+    st.subheader("Какие предметы стоит собирать")
+    st.caption(
+        "Точка на графике — предмет: правее — покупают чаще, выше — чаще с ним побеждают. "
+        "Верх-право = и популярны, и приносят победы."
+    )
     if items.empty:
         st.info("Нет предметов с таким порогом цены.")
     else:
         best = items.sort_values("wilson_low", ascending=False).iloc[0]
         st.success(
-            f"🛡️ Самый эффективный (надёжно): **{best['item_name']}** — "
-            f"{best['winrate']:.0%} winrate при {int(best['purchases'])} покупках."
+            f"🛡️ Лучший по winrate: **{best['item_name']}** — "
+            f"{best['winrate']:.0%} при {int(best['purchases'])} покупках."
         )
         scatter = (
             alt.Chart(items)
@@ -363,6 +368,7 @@ with tab_players:
     """)
 
     st.subheader("Профиль игрока")
+    st.caption("Карточка одного игрока: метрики, любимые чемпионы и роли. Выбери игрока из списка ниже.")
     if players.empty:
         st.info("Нет игроков с таким порогом. Снизь минимум (богаче всего — источник riot_full).")
     else:
@@ -388,10 +394,10 @@ with tab_players:
         cols[3].metric("Урон/мин", f"{row['dmg_pm']:.0f}")
         cols[4].metric("Золото/мин", f"{row['gold_pm']:.0f}")
         cols[5].metric("CS/мин", f"{row['cs_pm']:.1f}")
-        cols[6].metric("Vision/мин", f"{row['vis_pm']:.2f}")
+        cols[6].metric("Обзор/мин", f"{row['vis_pm']:.2f}")
         st.caption(
-            f"Средн. K / D / A: {row['k']:.1f} / {row['d']:.1f} / {row['a']:.1f}"
-            f"  ·  лига сбора: {row['source_tier']}"
+            f"В среднем убийства / смерти / помощи: {row['k']:.1f} / {row['d']:.1f} / {row['a']:.1f}"
+            f"  ·  источник: {row['source_tier']}"
         )
 
         champs = run(f"""
@@ -455,7 +461,7 @@ with tab_players:
         with st.expander("📋 Все чемпионы игрока"):
             st.dataframe(champs, width="stretch", hide_index=True)
 
-        st.markdown("#### Топ игроков (по числу матчей)")
+        st.markdown("#### Общий рейтинг игроков источника (не выбранный) — по числу матчей")
         st.dataframe(
             players.drop(columns=["label", "puuid"]).head(50),
             width="stretch", hide_index=True,
@@ -487,10 +493,10 @@ with tab_duration:
     st.divider()
 
     min_b = st.slider("Минимум игр в каждой длине (короткие и длинные)", 5, 50, 15, step=5)
-    st.subheader("Кто «скейлится» — сила чемпиона по длине матча")
+    st.subheader("Кто сильнее в долгих играх, а кто в коротких")
     st.caption(
-        "Δ = winrate в длинных играх (>32 мин) минус в коротких (<25 мин). "
-        "Положительная (зелёная) = поздняя игра, отрицательная (красная) = ранняя."
+        "Разница winrate между долгими (>32 мин) и короткими (<25 мин) матчами. "
+        "Зелёный (плюс) — чемпион сильнее в долгой игре, красный (минус) — в короткой."
     )
 
     scaling = run(f"""
@@ -528,9 +534,9 @@ with tab_duration:
         top_s = scaling.iloc[0]
         bot_s = scaling.iloc[-1]
         st.success(
-            f"📈 Сильнее всех скейлится **{top_s['champion_name']}** "
-            f"(+{top_s['delta']:.0%} в долгих играх); раньше всех отваливается "
-            f"**{bot_s['champion_name']}** ({bot_s['delta']:+.0%})."
+            f"📈 Больше всех выигрывает от долгой игры — **{top_s['champion_name']}** "
+            f"(+{top_s['delta']:.0%} winrate); а **{bot_s['champion_name']}** наоборот сильнее "
+            f"в короткой ({bot_s['delta']:+.0%} в долгой)."
         )
         diverging = pd.concat([scaling.head(12), scaling.tail(12)])
         chart = (
@@ -551,7 +557,7 @@ with tab_duration:
             .properties(height=520)
         )
         st.altair_chart(chart, width="stretch")
-        st.caption("Сверху — скейлящиеся (сильнее в долгих играх), снизу — ранние пики.")
+        st.caption("Сверху — сильнее в долгой игре, снизу — сильнее в короткой.")
         st.dataframe(scaling, width="stretch", hide_index=True)
 
 
@@ -583,8 +589,8 @@ with tab_meta:
         patch_b = c2.selectbox("Патч B (позже)", patches, index=len(patches) - 1)
         min_g = c3.slider("Минимум игр в каждом патче", 10, 200, 30, step=10)
         st.caption(
-            f"Δ = winrate в патче {patch_b} минус в {patch_a}. "
-            "🟢 вверх = усилились (баффы), 🔴 вниз = ослабли (нерфы)."
+            f"Сравниваем winrate чемпионов между патчами {patch_a} и {patch_b}. "
+            "Зелёный — чемпион усилился (бафф), красный — ослаб (нерф)."
         )
 
         cmp = run(f"""
@@ -646,10 +652,11 @@ with tab_meta:
             sig = cmp[cmp["is_sig"]]
 
             only_sig = st.checkbox(
-                f"Только статистически значимые сдвиги (p < 0.05) — их {len(sig)} из {len(cmp)}",
+                f"Только значимые изменения (p < 0.05) — их {len(sig)} из {len(cmp)}",
                 value=False,
-                help="Two-proportion z-тест: отличается ли winrate между патчами сильнее, "
-                     "чем можно объяснить случайностью. H0 — сила чемпиона не изменилась.",
+                help="Оставляет только те изменения winrate, которые слишком велики, чтобы "
+                     "быть случайностью (статистически значимые). Небольшие колебания на малом "
+                     "числе игр отфильтровываются как шум.",
             )
             view = sig if only_sig else cmp
 
@@ -668,7 +675,7 @@ with tab_meta:
                 )
 
             if view.empty:
-                st.caption("Включён фильтр «только значимые», но таких нет — сними галочку или снизь порог игр.")
+                st.caption("При текущих настройках значимых изменений нет. Снимите галочку или снизьте минимум игр.")
             else:
                 diverging = pd.concat([view.head(12), view.tail(12)])
                 chart = (
@@ -702,24 +709,22 @@ with tab_meta:
 with tab_segments:
     st.subheader("Архетипы игроков")
     st.caption(
-        "Сегменты **найдены кластеризацией** (KMeans, k=4) по стилю игры "
-        "(KDA, фарм/урон/золото/обзор в минуту, стандартизованные) — это не официальные "
-        "категории. Официальные классы у Riot есть только для чемпионов "
-        "(Fighter / Tank / Mage / Assassin / Marksman / Support). Ярлык кластера — по метрике, "
-        "в которой группа сильнее всего выделяется. Считается build-шагом "
-        "(`python main.py segments`), дашборд читает готовую витрину."
+        "Игроки разбиты на группы по стилю игры. Названия описательные — это не официальные "
+        "категории Riot."
+    )
+    st.markdown(
+        "**Что значат названия:** «фарм» — много миньонов; «урон» — урон по чемпионам; "
+        "«обзор» — контроль карты (вардинг); «экономика» — золото; "
+        "«командный» — высокий KDA при низком фарме (участие в командных боях)."
     )
     if not table_exists("player_segments"):
-        st.info(
-            "Витрина `player_segments` ещё не собрана. Собери её: "
-            "`pip install -r requirements-build.txt` → `python main.py segments`."
-        )
+        st.info("Данные по архетипам пока недоступны.")
     else:
         seg = run(f"SELECT * FROM player_segments WHERE data_source = '{source}'")
         if seg.empty:
             st.info(
-                f"Нет сегментов для источника «{source}» (мало игроков с ≥20 играми). "
-                "Попробуй источник riot_full."
+                f"Для источника «{source}» мало игроков с ≥20 играми для группировки. "
+                "Переключи источник на riot_full в сайдбаре."
             )
         else:
             counts = (
@@ -753,13 +758,13 @@ with tab_segments:
                 )
                 st.altair_chart(bar, width="stretch")
             with c_right:
-                st.markdown("#### Урон vs обзор (в минуту)")
+                st.markdown("#### Урон в минуту vs контроль карты (вардинг)")
                 scatter = (
                     alt.Chart(seg)
                     .mark_circle(size=60, opacity=0.5)
                     .encode(
                         x=alt.X("damage_per_min:Q", title="Урон/мин"),
-                        y=alt.Y("vision_per_min:Q", title="Vision/мин"),
+                        y=alt.Y("vision_per_min:Q", title="Контроль карты (обзор), в минуту"),
                         color=alt.Color("archetype:N", title="Архетип"),
                         tooltip=["name", "archetype", "games",
                                  alt.Tooltip("winrate:Q", format=".0%"),
@@ -776,7 +781,7 @@ with tab_segments:
                 counts.rename(columns={
                     "archetype": "Архетип", "players": "Игроков", "winrate": "Winrate",
                     "kda": "KDA", "cs": "CS/мин", "dmg": "Урон/мин",
-                    "vision": "Vision/мин", "gold": "Золото/мин",
+                    "vision": "Обзор/мин", "gold": "Золото/мин",
                 }),
                 width="stretch", hide_index=True,
             )
@@ -785,10 +790,7 @@ with tab_segments:
 # ---------- Качество данных ----------
 with tab_quality:
     st.subheader("Качество данных")
-    st.caption(
-        f"Живые проверки по источнику «{source}» + сводный отчёт ETL-слоя Data Quality "
-        "(`run_data_quality.py`). Показывает, что данным можно доверять."
-    )
+    st.caption("Автоматические проверки данных — показывают, что данным можно доверять.")
 
     # --- живые проверки прямо в дашборде (тот же смысл, что в run_data_quality.py) ---
     dist = run(f"""
@@ -822,9 +824,9 @@ with tab_quality:
     q1, q2, q3, q4 = st.columns(4)
     q1.metric("Матчей не по 10", bad_size, help="В полном матче ровно 10 участников. Норма — 0.")
     q1.write("✅ ок" if bad_size == 0 else "⚠️ есть неполные")
-    q2.metric("Дубли ключа", dups, help="Дубли (match_id, participant_id). Норма — 0.")
+    q2.metric("Дубли записей", dups, help="Повторная запись одного игрока в матче. Норма — 0.")
     q2.write("✅ ок" if dups == 0 else "⚠️ есть дубли")
-    q3.metric("Строки-сироты", orphans, help="Факт без матча в dim_match. Норма — 0.")
+    q3.metric("Строки-сироты", orphans, help="Запись игрока без привязки к матчу. Норма — 0.")
     q3.write("✅ ок" if orphans == 0 else "⚠️ есть сироты")
     q4.metric("Ср. winrate", f"{wr:.3f}", help="Должен быть ≈0.500: в матче 5 побед и 5 поражений.")
     q4.write("✅ ок" if abs(wr - 0.5) <= 0.01 else "⚠️ дисбаланс")
@@ -832,15 +834,3 @@ with tab_quality:
     st.markdown("#### Участников на матч")
     st.caption("Ожидаем ровно один столбец — «10».")
     st.dataframe(dist, width="stretch", hide_index=True)
-
-    # --- сводный отчёт из run_data_quality.py, если он сформирован ---
-    st.markdown("#### Отчёт ETL-слоя Data Quality")
-    report_path = Path(__file__).parent / "outputs" / "data_quality" / "data_quality_report.csv"
-    if report_path.exists():
-        st.caption("Полный набор проверок из `python main.py quality` (ERROR — критично, WARN — предупреждение).")
-        st.dataframe(pd.read_csv(report_path), width="stretch", hide_index=True)
-    else:
-        st.info(
-            "Файл `outputs/data_quality/data_quality_report.csv` не найден. "
-            "Сформируй его командой `python main.py quality`."
-        )
