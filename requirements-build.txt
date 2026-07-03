@@ -11,3 +11,4 @@ duckdb>=1.0
 openpyxl>=3.1
 SQLAlchemy>=2.0
 scikit-learn>=1.3      # только для scripts/build_player_segments.py (KMeans-сегментация)
+pytest>=8.0            # юнит-тесты (tests/)
