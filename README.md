@@ -99,8 +99,24 @@ python main.py segments
 streamlit run streamlit_app.py
 ```
 
-Свежий сбор через API: `python main.py extract --tier master --max-players 10 --matches-per-player 5`
-(нужен ключ Riot в переменной окружения `RIOT_API_KEY`).
+## Обновление данных (свежая выборка через API)
+
+Сбор через Riot API — **локальная ручная операция** (на живом дашборде API не
+вызывается: он читает готовый снимок Parquet). Нужен dev-ключ Riot — действует ~24 ч,
+берётся на developer.riotgames.com.
+
+```bash
+setx RIOT_API_KEY "RGAPI-..."            # ключ Riot (или введётся по запросу)
+
+python main.py extract --tier master --max-players 10 --matches-per-player 5
+python main.py transform                 # сам досчитывает метрики API
+python main.py quality
+python main.py star                      # обновит outputs/sql/star/*.parquet
+```
+
+Чтобы свежие данные попали на **живой дашборд**, закоммитьте обновлённые
+`outputs/sql/star/*.parquet` в репозиторий и запушьте — Streamlit Cloud пересоберётся
+автоматически.
 
 ## Структура
 
