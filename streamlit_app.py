@@ -50,13 +50,14 @@ def run(sql: str):
 
 
 # ---------- боковая панель: общие фильтры ----------
+SOURCE_DESC = {
+    "riot_full": "Большой набор: ~26 000 матчей, 7 патчей (16.7–16.12), регион EUW.",
+    "kaggle": "Исторический срез матчей с Kaggle.",
+    "riot_api": "Собственная свежая выборка, собранная через Riot API.",
+}
 st.sidebar.header("Фильтры")
-source = st.sidebar.selectbox(
-    "Источник данных", ["riot_full", "kaggle", "riot_api"],
-    help="riot_full — большой набор (~26k матчей, патчи 16.7–16.12); "
-         "kaggle — исторический срез; riot_api — собственная свежая выборка",
-)
-st.sidebar.caption("Источники данных: Riot API и Kaggle.")
+source = st.sidebar.selectbox("Источник данных", ["riot_full", "kaggle", "riot_api"])
+st.sidebar.caption(SOURCE_DESC[source])
 
 st.title("🎮 LoL Analytics")
 (tab_overview, tab_champions, tab_items, tab_players, tab_duration,
