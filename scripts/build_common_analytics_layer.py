@@ -17,7 +17,8 @@ from lol_utils import add_metrics, save_parquet_if_available, config as cfg  # n
 # несопоставимым («яблоки с апельсинами»).
 RANKED_SOLO_QUEUE_ID = cfg.RANKED_SOLO_QUEUE_ID
 
-API_PATH = PROJECT_ROOT / "data" / "api" / "matches_api_enriched.csv"
+API_RAW_PATH = PROJECT_ROOT / "data" / "api" / "matches_api.csv"          # сырой вывод коллектора
+API_PATH = PROJECT_ROOT / "data" / "api" / "matches_api_enriched.csv"     # запасной вариант (уже обогащённый)
 KAGGLE_PATH = PROJECT_ROOT / "data" / "raw" / "league_data.xlsx"
 OUTPUT_DIR = PROJECT_ROOT / "data" / "normalized"
 
@@ -136,8 +137,11 @@ def normalize_match_id(value: object) -> str:
 
 
 def normalize_api() -> pd.DataFrame:
-    api_df = pd.read_csv(API_PATH)
-    api_df = api_df.copy()
+    # Читаем сырой вывод коллектора и досчитываем метрики здесь (как для Kaggle),
+    # чтобы полный цикл работал из CLI: extract -> transform. Если сырого файла нет,
+    # берём уже обогащённый (обратная совместимость).
+    src = API_RAW_PATH if API_RAW_PATH.exists() else API_PATH
+    api_df = add_metrics(pd.read_csv(src))
 
     api_df["data_source"] = "riot_api"
     api_df["match_id"] = api_df["match_id"].map(normalize_match_id)
