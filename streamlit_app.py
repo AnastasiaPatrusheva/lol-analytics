@@ -56,7 +56,7 @@ source = st.sidebar.selectbox(
     help="riot_full — большой набор (~26k матчей, патчи 16.7–16.12); "
          "kaggle — исторический срез; riot_api — собственная свежая выборка",
 )
-st.sidebar.caption("Учебный проект. Источники данных: Riot API и Kaggle.")
+st.sidebar.caption("Источники данных: Riot API и Kaggle.")
 
 st.title("🎮 LoL Analytics")
 (tab_overview, tab_champions, tab_items, tab_players, tab_duration,
@@ -264,9 +264,23 @@ with tab_champions:
 
         anomalies = champions[champions["verdict"].str.contains("значимо")]
         with st.expander(f"🔎 Аномалии меты: {len(anomalies)} чемпионов со значимым отклонением от 50%"):
-            st.dataframe(anomalies, width="stretch", hide_index=True)
-
-        st.dataframe(champions, width="stretch", hide_index=True)
+            verdict_colors = {"значимо сильный": "#3fa45b", "значимо слабый": "#d9534f"}
+            disp = anomalies.rename(columns={
+                "champion_name": "Чемпион", "primary_class": "Класс", "games": "Игр",
+                "winrate": "Winrate", "wilson_low": "Ниж. оценка", "wilson_high": "Верх. оценка",
+                "avg_kda": "KDA", "verdict": "Вердикт",
+            })
+            styled = (
+                disp.style
+                .format({"Winrate": "{:.1%}", "Ниж. оценка": "{:.1%}",
+                         "Верх. оценка": "{:.1%}", "KDA": "{:.2f}"})
+                .apply(
+                    lambda col: [f"color: {verdict_colors.get(v, '#9aa0a6')}; font-weight: 600"
+                                 for v in col],
+                    subset=["Вердикт"],
+                )
+            )
+            st.dataframe(styled, width="stretch", hide_index=True)
 
 
 # ---------- Предметы ----------
@@ -312,6 +326,7 @@ with tab_items:
             .properties(height=420)
         )
         st.altair_chart(scatter, width="stretch")
+        st.markdown("#### Все предметы (сортировка по winrate)")
         st.dataframe(
             items.sort_values("winrate", ascending=False),
             width="stretch", hide_index=True,
@@ -327,8 +342,8 @@ with tab_players:
     """)
     if lp.empty:
         st.caption(
-            "Очки лиги (LP) собраны только для источника **riot_api** (данные Riot API). "
-            "Переключи источник в сайдбаре, чтобы увидеть распределение."
+            "Очки лиги (LP) есть только у источника **riot_api**. "
+            "Выбери его в панели «Фильтры» слева, чтобы увидеть распределение."
         )
     else:
         st.caption(
@@ -395,10 +410,13 @@ with tab_players:
         cols[4].metric("Золото/мин", f"{row['gold_pm']:.0f}")
         cols[5].metric("CS/мин", f"{row['cs_pm']:.1f}")
         cols[6].metric("Обзор/мин", f"{row['vis_pm']:.2f}")
-        st.caption(
-            f"В среднем убийства / смерти / помощи: {row['k']:.1f} / {row['d']:.1f} / {row['a']:.1f}"
-            f"  ·  источник: {row['source_tier']}"
-        )
+
+        st.markdown("**В среднем за игру**")
+        kda_hint = f"Среднее значение за игру. Источник данных: {source}."
+        kc = st.columns(3)
+        kc[0].metric("Убийства", f"{row['k']:.1f}", help=kda_hint)
+        kc[1].metric("Смерти", f"{row['d']:.1f}", help=kda_hint)
+        kc[2].metric("Помощи", f"{row['a']:.1f}", help=kda_hint)
 
         champs = run(f"""
             SELECT c.champion_name, COUNT(*) AS games,
@@ -461,7 +479,7 @@ with tab_players:
         with st.expander("📋 Все чемпионы игрока"):
             st.dataframe(champs, width="stretch", hide_index=True)
 
-        st.markdown("#### Общий рейтинг игроков источника (не выбранный) — по числу матчей")
+        st.markdown("#### Все игроки источника — рейтинг по числу матчей")
         st.dataframe(
             players.drop(columns=["label", "puuid"]).head(50),
             width="stretch", hide_index=True,
@@ -585,12 +603,14 @@ with tab_meta:
         )
     else:
         c1, c2, c3 = st.columns(3)
-        patch_a = c1.selectbox("Патч A (раньше)", patches, index=len(patches) - 2)
-        patch_b = c2.selectbox("Патч B (позже)", patches, index=len(patches) - 1)
+        patch_a = c1.selectbox("Патч A", patches, index=len(patches) - 2)
+        patch_b = c2.selectbox("Патч B", patches, index=len(patches) - 1)
         min_g = c3.slider("Минимум игр в каждом патче", 10, 200, 30, step=10)
+        # Порядок выбора не важен — всегда сравниваем от раннего патча к позднему.
+        patch_a, patch_b = sorted([patch_a, patch_b], key=lambda x: [int(n) for n in x.split(".")])
         st.caption(
-            f"Сравниваем winrate чемпионов между патчами {patch_a} и {patch_b}. "
-            "Зелёный — чемпион усилился (бафф), красный — ослаб (нерф)."
+            f"Сравниваем winrate чемпионов от раннего патча ({patch_a}) к позднему ({patch_b}); "
+            "порядок выбора не важен. Зелёный — усилился (бафф), красный — ослаб (нерф)."
         )
 
         cmp = run(f"""
@@ -713,9 +733,12 @@ with tab_segments:
         "категории Riot."
     )
     st.markdown(
-        "**Что значат названия:** «фарм» — много миньонов; «урон» — урон по чемпионам; "
-        "«обзор» — контроль карты (вардинг); «экономика» — золото; "
-        "«командный» — высокий KDA при низком фарме (участие в командных боях)."
+        "**Что значат названия архетипов:**\n"
+        "- **фарм** — много миньонов (CS)\n"
+        "- **урон** — высокий урон по чемпионам\n"
+        "- **обзор** — контроль карты (вардинг)\n"
+        "- **экономика** — много золота\n"
+        "- **командный** — высокий KDA при низком фарме (участие в командных боях)"
     )
     if not table_exists("player_segments"):
         st.info("Данные по архетипам пока недоступны.")
@@ -724,7 +747,7 @@ with tab_segments:
         if seg.empty:
             st.info(
                 f"Для источника «{source}» мало игроков с ≥20 играми для группировки. "
-                "Переключи источник на riot_full в сайдбаре."
+                "Выбери источник riot_full в панели «Фильтры» слева."
             )
         else:
             counts = (
@@ -776,7 +799,7 @@ with tab_segments:
                 st.altair_chart(scatter, width="stretch")
 
             st.markdown("#### Профиль архетипов (средние метрики)")
-            st.caption("Так видно, чем группы реально отличаются — не «чёрный ящик».")
+            st.caption("Средние показатели каждой группы — видно, чем они реально отличаются.")
             st.dataframe(
                 counts.rename(columns={
                     "archetype": "Архетип", "players": "Игроков", "winrate": "Winrate",
