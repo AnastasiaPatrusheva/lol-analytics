@@ -124,11 +124,13 @@ python main.py star                      # обновит outputs/sql/star/*.par
 
 ```
 main.py                     оркестратор (стадии ETL)
-streamlit_app.py            дашборд (читает Parquet через DuckDB)
+streamlit_app.py            дашборд — точка входа (тонкая)
+dashboard/                  модули дашборда: data, stats, tabs/ (по вкладке на файл)
 scripts/                    стадии пайплайна
 src/lol_utils/              общий код: config, логирование, метрики, пути
 outputs/sql/star/*.parquet  звёздная схема + витрины (данные для дашборда)
 data/reference/*.csv        справочники Data Dragon
+tests/                      юнит-тесты (pytest)
 requirements.txt            зависимости дашборда (рантайм)
 requirements-build.txt      зависимости сборки (ETL + scikit-learn)
 ```
@@ -143,6 +145,17 @@ pytest tests/
 Юнит-тесты на ключевые функции: производные метрики (`add_metrics`), разбор матча
 (`flatten_match`), нормализация id, интервал Уилсона, ярлыки архетипов.
 
+## Docker
+
+Запуск дашборда в контейнере:
+
+```bash
+docker compose up        # соберёт образ и поднимет дашборд на http://localhost:8501
+```
+
+`Dockerfile` кладёт в образ дашборд, пакет `dashboard/` и готовые Parquet-витрины —
+внешняя БД не нужна.
+
 ## Стек
 
 `Python` · `pandas` · `DuckDB` · `Parquet` · `scikit-learn` · `SQLAlchemy` ·
@@ -156,6 +169,9 @@ pytest tests/
   выборке — это шум, а не сила.
 - Источники не смешиваются вслепую — сравниваются через `data_source`; основной
   объём даёт `riot_full` (~26k матчей, патчи 16.7–16.12).
+- Большой архив `raw.zip` (~436 МБ, в репозиторий не входит) — набор Parquet-чанков,
+  где каждый матч хранится сырым JSON формата Match-V5 (`match_id`, `_raw_json`);
+  распаковывается в `data/riot_full/` и разбирается стадией `ingest`.
 - Архетипы игроков — **сегменты, найденные кластеризацией** (не официальные классы
   Riot); официальные классы у Riot есть только для чемпионов (Fighter / Tank / Mage /
   Assassin / Marksman / Support).
