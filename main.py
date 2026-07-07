@@ -104,7 +104,8 @@ def main() -> int:
     sub.add_parser("segments", help="витрина сегментации игроков (KMeans)")
     p_load = sub.add_parser("load", help="загрузка звезды в БД")
     p_load.add_argument("--target", choices=["local", "supabase"], default="local")
-    sub.add_parser("all", help="ingest -> transform -> quality -> star -> load(local)")
+    p_all = sub.add_parser("all", help="ingest -> transform -> quality -> star -> segments -> load(local)")
+    p_all.add_argument("--skip-quality", action="store_true", help="пропустить проверки качества (для отладки)")
 
     # parse_known_args возвращает распознанные аргументы и остаток (extra)
     # — остаток пробрасывается стадии extract как параметры коллектора.
@@ -140,7 +141,10 @@ def main() -> int:
         if (ROOT / "data" / "riot_full" / "raw" / "matches").exists():
             run_script("ingest_riot_full.py")
         run_script("build_common_analytics_layer.py")
-        run_script("run_data_quality.py")
+        if args.skip_quality:
+            log.warning("quality пропущена (--skip-quality)")
+        else:
+            run_script("run_data_quality.py")
         run_script("build_star_schema.py")
         # segments — опциональная витрина: нужен scikit-learn; без него не рушим пайплайн
         try:

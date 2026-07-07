@@ -1,0 +1,6 @@
+# Локальный запуск дашборда в контейнере:  docker compose up
+services:
+  dashboard:
+    build: .
+    ports:
+      - "8501:8501"
