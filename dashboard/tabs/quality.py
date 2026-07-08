@@ -1,7 +1,7 @@
 """Вкладка «Качество данных»: живые проверки прямо в интерфейсе."""
 import streamlit as st
 
-from dashboard.data import run
+from dashboard.data import run, table_with_download
 
 
 def render(source: str) -> None:
@@ -46,6 +46,6 @@ def render(source: str) -> None:
     q4.metric("Ср. winrate", f"{wr:.3f}", help="Должен быть ≈0.500: в матче 5 побед и 5 поражений.")
     q4.write("✅ ок" if abs(wr - 0.5) <= 0.01 else "⚠️ дисбаланс")
 
-    st.markdown("#### Участников на матч")
-    st.caption("Ожидаем ровно один столбец — «10».")
-    st.dataframe(dist, width="stretch", hide_index=True)
+    table_with_download(dist, "Участников на матч", "participants_per_match.csv",
+                        key="dl_quality",
+                        caption="Ожидаем ровно один столбец — «10».")

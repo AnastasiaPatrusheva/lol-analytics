@@ -63,9 +63,23 @@ def check_source(source: str) -> str:
     return source
 
 
-def download_csv(df: pd.DataFrame, filename: str, *, key: str, label: str = "⬇️ Скачать CSV") -> None:
-    """Кнопка скачивания таблицы в CSV."""
+def download_csv(df: pd.DataFrame, filename: str, *, key: str,
+                 label: str = "📥 Скачать CSV", use_container_width: bool = False) -> None:
+    """Зелёная кнопка скачивания таблицы в CSV (акцентный цвет темы)."""
     st.download_button(
         label, df.to_csv(index=False).encode("utf-8"),
         file_name=filename, mime="text/csv", key=key,
+        type="primary", use_container_width=use_container_width,
     )
+
+
+def table_with_download(df: pd.DataFrame, title: str, filename: str, *,
+                        key: str, caption: str | None = None) -> None:
+    """Таблица с шапкой: название слева, кнопка скачивания справа."""
+    left, right = st.columns([4, 1])
+    left.markdown(f"#### {title}")
+    with right:
+        download_csv(df, filename, key=key, use_container_width=True)
+    if caption:
+        st.caption(caption)
+    st.dataframe(df, width="stretch", hide_index=True)
