@@ -10,7 +10,9 @@
 
 from __future__ import annotations
 
+import json
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import duckdb
@@ -260,6 +262,16 @@ def main() -> int:
         df.to_csv(cfg.STAR_DIR / f"{table}.csv", index=False, encoding="utf-8")
         save_parquet_if_available(df, cfg.STAR_DIR / f"{table}.parquet")
         print(f"  {table}: {len(df)} строк")
+
+    # Метаданные сборки — когда собрано и сколько строк в каждой витрине.
+    build_info = {
+        "built_at": datetime.now().isoformat(timespec="seconds"),
+        "tables": {t: int(con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0])
+                   for t in cfg.STAR_TABLES},
+    }
+    (cfg.STAR_DIR / "_build_info.json").write_text(
+        json.dumps(build_info, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"_build_info.json: собрано {build_info['built_at']}")
 
     # проверка целостности факта
     fact_rows = con.execute("SELECT COUNT(*) FROM fact_participant").fetchone()[0]
