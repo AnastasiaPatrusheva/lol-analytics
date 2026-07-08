@@ -2,7 +2,7 @@
 import altair as alt
 import streamlit as st
 
-from dashboard.data import run, download_csv
+from dashboard.data import run, download_csv, table_with_download
 
 
 def _player_name(row) -> str:
@@ -149,9 +149,11 @@ def render(source: str) -> None:
         st.altair_chart(rc, width="stretch")
 
     with st.expander("📋 Все чемпионы игрока"):
+        _, dl_col = st.columns([4, 1])
+        with dl_col:
+            download_csv(champs, "player_champions.csv", key="dl_player_champs", use_container_width=True)
         st.dataframe(champs, width="stretch", hide_index=True)
 
-    st.markdown("#### Все игроки источника — рейтинг по числу матчей")
     top_players = players.drop(columns=["label", "puuid"]).head(50)
-    st.dataframe(top_players, width="stretch", hide_index=True)
-    download_csv(top_players, "players.csv", key="dl_players")
+    table_with_download(top_players, "Все игроки источника — по числу матчей",
+                        "players.csv", key="dl_players")

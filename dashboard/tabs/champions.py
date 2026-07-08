@@ -86,7 +86,6 @@ def render(source: str) -> None:
         .properties(height=480)
     )
     st.altair_chart(chart, width="stretch")
-    download_csv(champions, "champions.csv", key="dl_champions")
 
     st.markdown("#### Убийства vs смерти по чемпионам")
     st.caption(
@@ -132,6 +131,9 @@ def render(source: str) -> None:
 
     anomalies = champions[champions["verdict"].str.contains("значимо")]
     with st.expander(f"🔎 Аномалии меты: {len(anomalies)} чемпионов со значимым отклонением от 50%"):
+        _, dl_col = st.columns([4, 1])
+        with dl_col:
+            download_csv(champions, "champions.csv", key="dl_champions", use_container_width=True)
         verdict_colors = {"значимо сильный": "#3fa45b", "значимо слабый": "#d9534f"}
         disp = anomalies.rename(columns={
             "champion_name": "Чемпион", "primary_class": "Класс", "games": "Игр",

@@ -3,7 +3,7 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-from dashboard.data import run, download_csv
+from dashboard.data import run, table_with_download
 from dashboard.stats import two_proportion_pvalue
 
 
@@ -136,9 +136,7 @@ def render(source: str) -> None:
         .properties(height=520)
     )
     st.altair_chart(chart, width="stretch")
-    st.caption(
-        "Насыщенные столбцы — статистически значимые сдвиги (p<0.05); "
-        "блёклые — в пределах шума. Сверху усиление, снизу ослабление."
-    )
-    st.dataframe(view, width="stretch", hide_index=True)
-    download_csv(view, "patch_comparison.csv", key="dl_meta")
+    table_with_download(view, "Сравнение патчей (таблица)", "patch_comparison.csv",
+                        key="dl_meta",
+                        caption="Насыщенные столбцы — значимые сдвиги (p<0.05); "
+                                "блёклые — в пределах шума. Сверху усиление, снизу ослабление.")

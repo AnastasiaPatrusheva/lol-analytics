@@ -3,7 +3,7 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-from dashboard.data import run, download_csv
+from dashboard.data import run, table_with_download
 
 
 def render(source: str) -> None:
@@ -95,6 +95,6 @@ def render(source: str) -> None:
         .properties(height=520)
     )
     st.altair_chart(chart, width="stretch")
-    st.caption("Сверху — сильнее в долгой игре, снизу — сильнее в короткой.")
-    st.dataframe(scaling, width="stretch", hide_index=True)
-    download_csv(scaling, "champion_by_duration.csv", key="dl_duration")
+    table_with_download(scaling, "Чемпионы по длине матча", "champion_by_duration.csv",
+                        key="dl_duration",
+                        caption="Сверху — сильнее в долгой игре, снизу — сильнее в короткой.")

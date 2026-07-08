@@ -1,7 +1,7 @@
 """Вкладка «Обзор»: KPI, авто-инсайты, победители vs проигравшие."""
 import streamlit as st
 
-from dashboard.data import run
+from dashboard.data import run, table_with_download
 
 
 def render(source: str) -> None:
@@ -72,5 +72,5 @@ def render(source: str) -> None:
         FROM fact_participant WHERE data_source = '{source}'
         GROUP BY win ORDER BY win
     """)
-    st.subheader("Победители против проигравших")
-    st.dataframe(result, width="stretch", hide_index=True)
+    table_with_download(result, "Победители против проигравших",
+                        "winners_vs_losers.csv", key="dl_overview")

@@ -14,7 +14,7 @@ import streamlit as st
 
 from dashboard.data import SOURCES, SOURCE_DESC, check_source
 from dashboard.tabs import (
-    champions, duration, items, meta, overview, players, quality, segments,
+    about, champions, duration, items, meta, overview, players, quality, segments,
 )
 
 st.set_page_config(page_title="LoL Analytics", page_icon="🎮", layout="wide")
@@ -30,11 +30,11 @@ if st.sidebar.button("🔄 Обновить данные", help="Сбросит�
 st.title("🎮 LoL Analytics")
 tabs = st.tabs(
     ["📋 Обзор", "🏆 Чемпионы", "🛡️ Предметы", "👤 Игроки", "⏱ Длительность",
-     "📊 Мета", "🧩 Архетипы", "✅ Качество"]
+     "📊 Мета", "🧩 Архетипы", "✅ Качество", "ℹ️ О метриках"]
 )
 renderers = [
     overview.render, champions.render, items.render, players.render,
-    duration.render, meta.render, segments.render, quality.render,
+    duration.render, meta.render, segments.render, quality.render, about.render,
 ]
 for tab, render in zip(tabs, renderers):
     with tab:

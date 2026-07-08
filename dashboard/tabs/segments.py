@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-from dashboard.data import run, table_exists, download_csv
+from dashboard.data import run, table_exists, table_with_download
 
 
 def render(source: str) -> None:
@@ -81,15 +81,14 @@ def render(source: str) -> None:
         )
         st.altair_chart(scatter, width="stretch")
 
-    st.markdown("#### Профиль архетипов (средние метрики)")
-    st.caption("Средние показатели каждой группы — видно, чем они реально отличаются.")
     profile = counts.rename(columns={
         "archetype": "Архетип", "players": "Игроков", "winrate": "Winrate",
         "kda": "KDA", "cs": "CS/мин", "dmg": "Урон/мин",
         "vision": "Обзор/мин", "gold": "Золото/мин",
     })
-    st.dataframe(profile, width="stretch", hide_index=True)
-    download_csv(profile, "player_segments.csv", key="dl_segments")
+    table_with_download(profile, "Профиль архетипов (средние метрики)", "player_segments.csv",
+                        key="dl_segments",
+                        caption="Средние показатели каждой группы — видно, чем они реально отличаются.")
 
     st.markdown("#### Профиль архетипов — радар")
     st.caption(

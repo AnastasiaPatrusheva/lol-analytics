@@ -2,7 +2,7 @@
 import altair as alt
 import streamlit as st
 
-from dashboard.data import run, download_csv
+from dashboard.data import run, table_with_download
 
 
 def render(source: str) -> None:
@@ -48,7 +48,5 @@ def render(source: str) -> None:
         .properties(height=420)
     )
     st.altair_chart(scatter, width="stretch")
-    st.markdown("#### Все предметы (сортировка по winrate)")
     table = items.sort_values("winrate", ascending=False)
-    st.dataframe(table, width="stretch", hide_index=True)
-    download_csv(table, "items.csv", key="dl_items")
+    table_with_download(table, "Все предметы (по winrate)", "items.csv", key="dl_items")
