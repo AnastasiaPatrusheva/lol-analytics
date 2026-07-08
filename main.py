@@ -102,6 +102,7 @@ def main() -> int:
     sub.add_parser("quality", help="проверки качества данных")
     sub.add_parser("star", help="построение звёздной схемы")
     sub.add_parser("segments", help="витрина сегментации игроков (KMeans)")
+    sub.add_parser("snapshot", help="снимок витрин звёздной схемы в outputs/snapshots/<дата>/")
     p_load = sub.add_parser("load", help="загрузка звезды в БД")
     p_load.add_argument("--target", choices=["local", "supabase"], default="local")
     p_all = sub.add_parser("all", help="ingest -> transform -> quality -> star -> segments -> load(local)")
@@ -128,6 +129,8 @@ def main() -> int:
         run_script("build_star_schema.py")
     elif args.stage == "segments":
         run_script("build_player_segments.py")
+    elif args.stage == "snapshot":
+        run_script("snapshot_data.py")
     elif args.stage == "load":
         if args.target == "supabase":
             if not os.environ.get("DATABASE_URL"):

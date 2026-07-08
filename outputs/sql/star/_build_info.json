@@ -1,0 +1,15 @@
+{
+  "built_at": "2026-07-08T15:59:22",
+  "tables": {
+    "fact_participant": 288370,
+    "dim_champion": 172,
+    "dim_match": 28837,
+    "dim_player": 42111,
+    "dim_role": 6,
+    "fact_participant_item": 1849619,
+    "dim_item": 232,
+    "item_stats": 616,
+    "champion_strength": 496,
+    "champion_by_duration": 1504
+  }
+}

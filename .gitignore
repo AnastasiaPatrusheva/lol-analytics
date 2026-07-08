@@ -20,6 +20,7 @@ outputs/warehouse/        # локальный SQLite
 outputs/data_quality/
 outputs/api_eda/
 outputs/common_eda/
+outputs/snapshots/         # датированные снимки витрин (версионирование, локально)
 *.db
 
 # --- Логи (генерируются при прогоне) ---
