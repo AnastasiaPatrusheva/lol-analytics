@@ -64,7 +64,7 @@ def check_source(source: str) -> str:
 
 
 def download_csv(df: pd.DataFrame, filename: str, *, key: str,
-                 label: str = "📥 Скачать CSV", use_container_width: bool = False) -> None:
+                 label: str = "🗎 Скачать CSV", use_container_width: bool = False) -> None:
     """Зелёная кнопка скачивания таблицы в CSV (акцентный цвет темы)."""
     st.download_button(
         label, df.to_csv(index=False).encode("utf-8"),

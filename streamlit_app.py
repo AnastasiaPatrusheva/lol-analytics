@@ -23,7 +23,8 @@ st.set_page_config(page_title="LoL Analytics", page_icon="🎮", layout="wide")
 st.sidebar.header("Фильтры")
 source = check_source(st.sidebar.selectbox("Источник данных", SOURCES))
 st.sidebar.caption(SOURCE_DESC[source])
-if st.sidebar.button("🔄 Обновить данные", help="Сбросить кэш и перечитать Parquet-файлы"):
+if st.sidebar.button("⟳ Обновить данные", type="primary",
+                     help="Сбросить кэш и перечитать Parquet-файлы"):
     st.cache_data.clear()
     st.rerun()
 
