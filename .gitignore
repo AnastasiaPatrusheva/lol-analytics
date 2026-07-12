@@ -8,27 +8,50 @@ venv/
 # --- Node ---
 node_modules/
 
+# --- Инструменты / служебное (локально) ---
+.claude/
+archive/
+
 # --- Большие / локальные / производные данные (НЕ в репозиторий) ---
-*.mp4
-*.zip                     # raw.zip (436 МБ сырых матчей), archive.zip и т.п.
-data/riot_full/           # распакованный большой датасет (266 чанков, ~436 МБ)
-data/raw/                 # исходный Kaggle xlsx (20 МБ, не редистрибутим)
+# raw.zip (~437 МБ сырых матчей), archive.zip и т.п.
+*.zip
+*.db
+# распакованный большой датасет (~553 МБ)
+data/riot_full/
+# исходный Kaggle xlsx (не редистрибутим)
+data/raw/
+# старый первый сэмпл
+data/api_first_sample/
+# сырьё Riot API (справочники data/reference/*.csv при этом остаются)
 data/api/*.csv
 data/api/*.parquet
-data/normalized/          # промежуточный слой (пересобирается скриптом)
-outputs/warehouse/        # локальный SQLite
+# промежуточный слой (пересобирается скриптом)
+data/normalized/
+# датированные снимки витрин (версионирование, локально)
+outputs/snapshots/
+# производные выгрузки и локальная БД
+outputs/warehouse/
 outputs/data_quality/
 outputs/api_eda/
 outputs/common_eda/
-outputs/snapshots/         # датированные снимки витрин (версионирование, локально)
-*.db
+# CSV-экспорты витрин (в репозитории храним только .parquet)
+outputs/sql/*.csv
+outputs/sql/star/*.csv
 
-# --- Логи (генерируются при прогоне) ---
+# --- Логи ---
 *.log
 
 # --- Секреты ---
 .streamlit/secrets.toml
 .env
+
+# --- Личный материал (НЕ публиковать) ---
+разбор_кода/
+media/
+docs/notes/
+docs/task/
+docs/transcripts/
+notebooks/reference/
 
 # ВАЖНО: outputs/sql/star/*.parquet НЕ игнорируем — это данные для дашборда.
 # data/reference/*.csv тоже оставляем (маленькие справочники Data Dragon).
