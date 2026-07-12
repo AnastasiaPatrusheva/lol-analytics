@@ -23,8 +23,7 @@ data/raw/
 # старый первый сэмпл
 data/api_first_sample/
 # сырьё Riot API (справочники data/reference/*.csv при этом остаются)
-data/api/*.csv
-data/api/*.parquet
+data/api/
 # промежуточный слой (пересобирается скриптом)
 data/normalized/
 # датированные снимки витрин (версионирование, локально)
@@ -52,6 +51,14 @@ docs/notes/
 docs/task/
 docs/transcripts/
 notebooks/reference/
+# внутренняя заметка-карта (в README есть раздел «Структура»)
+КАРТА_ПРОЕКТА.md
+# личные утилиты (расшифровка встреч, разовая уборка файлов) — не часть пайплайна
+scripts/transcribe_meeting.py
+scripts/inspect_transcription.py
+scripts/organize_project_files.py
+# выгрузки для Yandex DataLens (устарели: 2 источника, до riot_full)
+datalens/
 
 # ВАЖНО: outputs/sql/star/*.parquet НЕ игнорируем — это данные для дашборда.
 # data/reference/*.csv тоже оставляем (маленькие справочники Data Dragon).
