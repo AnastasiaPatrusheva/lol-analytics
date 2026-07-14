@@ -59,6 +59,8 @@ scripts/inspect_transcription.py
 scripts/organize_project_files.py
 # выгрузки для Yandex DataLens (устарели: 2 источника, до riot_full)
 datalens/
+# локальный контекст для Claude Code (личные правила работы, не публиковать)
+CLAUDE.md
 
 # ВАЖНО: outputs/sql/star/*.parquet НЕ игнорируем — это данные для дашборда.
 # data/reference/*.csv тоже оставляем (маленькие справочники Data Dragon).
