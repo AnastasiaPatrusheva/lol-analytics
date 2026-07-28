@@ -12,12 +12,16 @@ from __future__ import annotations
 
 import streamlit as st
 
+from dashboard import theme
 from dashboard.data import SOURCES, SOURCE_DESC, check_source
 from dashboard.tabs import (
     about, champions, duration, items, meta, overview, players, quality, segments,
 )
 
 st.set_page_config(page_title="LoL Analytics", page_icon="🎮", layout="wide")
+
+# Оформление в стиле League of Legends (фон, шрифт Cinzel, золото, таблетки-вкладки).
+theme.inject()
 
 # ---------- боковая панель: общие фильтры ----------
 st.sidebar.header("Фильтры")
@@ -28,10 +32,13 @@ if st.sidebar.button("⟳ Обновить данные", type="primary",
     st.cache_data.clear()
     st.rerun()
 
-st.title("🎮 LoL Analytics")
+st.title("LoL Analytics")
 tabs = st.tabs(
-    ["📋 Обзор", "🏆 Чемпионы", "🛡️ Предметы", "👤 Игроки", "⏱ Длительность",
-     "📊 Мета", "🧩 Архетипы", "✅ Качество", "ℹ️ О метриках"]
+    [":material/dashboard: Обзор", ":material/emoji_events: Чемпионы",
+     ":material/shield: Предметы", ":material/group: Игроки",
+     ":material/schedule: Длительность", ":material/trending_up: Мета",
+     ":material/hub: Архетипы", ":material/verified: Качество",
+     ":material/info: О метриках"]
 )
 renderers = [
     overview.render, champions.render, items.render, players.render,
@@ -40,3 +47,9 @@ renderers = [
 for tab, render in zip(tabs, renderers):
     with tab:
         render(source)
+
+st.divider()
+st.caption(
+    "Не аффилировано с Riot Games. League of Legends — товарный знак Riot Games, Inc. "
+    "Иллюстрации и справочники — Data Dragon."
+)

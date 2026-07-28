@@ -44,25 +44,32 @@ def render(source: str) -> None:
     )
     top = counts.iloc[0]
     st.success(
-        f"🧩 Самый массовый архетип: **{top['archetype']}** — "
+        f"Самый массовый архетип: **{top['archetype']}** — "
         f"{int(top['players'])} игроков, ср. winrate {top['winrate']:.0%}."
     )
 
     c_left, c_right = st.columns([1, 1.4])
     with c_left:
         st.markdown("#### Игроков в каждом архетипе")
+        ybar = alt.Y("archetype:N", sort="-x", title=None,
+                     axis=alt.Axis(labelPadding=6, domain=False, ticks=False))
         bar = (
             alt.Chart(counts)
-            .mark_bar()
+            .mark_bar(cornerRadiusEnd=4)
             .encode(
-                x=alt.X("players:Q", title="Игроков"),
-                y=alt.Y("archetype:N", sort="-x", title=None),
+                x=alt.X("players:Q", title="Игроков", axis=alt.Axis(grid=True, domain=False)),
+                y=ybar,
                 color=alt.Color("archetype:N", legend=None),
                 tooltip=["archetype", "players", alt.Tooltip("winrate:Q", format=".0%")],
             )
-            .properties(height=300)
+            .properties(height=320)
         )
-        st.altair_chart(bar, width="stretch")
+        labels = (
+            alt.Chart(counts)
+            .mark_text(align="left", dx=5, fontSize=12, color="#cfd6d6")
+            .encode(x=alt.X("players:Q"), y=ybar, text=alt.Text("players:Q"))
+        )
+        st.altair_chart((bar + labels).configure_view(strokeWidth=0), use_container_width=True)
     with c_right:
         st.markdown("#### Урон в минуту vs контроль карты (вардинг)")
         scatter = (

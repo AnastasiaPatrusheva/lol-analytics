@@ -37,7 +37,7 @@ def render(source: str) -> None:
     patch_a, patch_b = sorted([patch_a, patch_b], key=lambda x: [int(n) for n in x.split(".")])
     st.caption(
         f"Сравниваем winrate чемпионов от раннего патча ({patch_a}) к позднему ({patch_b}); "
-        "порядок выбора не важен. Зелёный — усилился (бафф), красный — ослаб (нерф)."
+        "порядок выбора не важен. Золотой — усилился (бафф), красный — ослаб (нерф)."
     )
 
     cmp = run(f"""
@@ -101,7 +101,7 @@ def render(source: str) -> None:
         buff = sig.iloc[0]
         nerf = sig.iloc[-1]
         st.success(
-            f"📊 Значимые сдвиги {patch_a} → {patch_b}: усилился "
+            f"Значимые сдвиги {patch_a} → {patch_b}: усилился "
             f"**{buff['champion_name']}** (+{buff['delta']:.0%}, p={buff['p_value']:.3f}); "
             f"ослаб **{nerf['champion_name']}** ({nerf['delta']:+.0%}, p={nerf['p_value']:.3f})."
         )
@@ -118,12 +118,12 @@ def render(source: str) -> None:
     diverging = pd.concat([view.head(12), view.tail(12)])
     chart = (
         alt.Chart(diverging)
-        .mark_bar()
+        .mark_bar(cornerRadiusEnd=2)
         .encode(
             x=alt.X("delta:Q", title=f"Δ winrate ({patch_b} − {patch_a})",
                     axis=alt.Axis(format="+%")),
             y=alt.Y("champion_name:N", sort="-x", title=None),
-            color=alt.condition("datum.delta > 0", alt.value("#3fa45b"), alt.value("#d9534f")),
+            color=alt.condition("datum.delta > 0", alt.value("#C8AA6E"), alt.value("#d9534f")),
             opacity=alt.condition("datum.is_sig", alt.value(0.95), alt.value(0.3)),
             tooltip=[
                 "champion_name", "primary_class",

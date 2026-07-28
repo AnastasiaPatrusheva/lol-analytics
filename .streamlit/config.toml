@@ -1,2 +1,7 @@
 [theme]
-primaryColor = "#3fa45b"
+# Стиль League of Legends: тёмный navy + hextech-золото, текст — «пергамент».
+base = "dark"
+primaryColor = "#C8AA6E"
+backgroundColor = "#0A1428"
+secondaryBackgroundColor = "#0F2033"
+textColor = "#F0E6D2"

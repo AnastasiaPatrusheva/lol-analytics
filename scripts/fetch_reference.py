@@ -37,6 +37,9 @@ def fetch_champions(version: str) -> pd.DataFrame:
             "champion_name": info["name"],
             "title": info["title"],
             "tags": ",".join(info.get("tags", [])),
+            # Строковый id Data Dragon (info["id"]) — это имя файла картинки
+            # ("MissFortune", "MonkeyKing"), оно не совпадает с champion_name.
+            "image": f"{DDRAGON}/cdn/{version}/img/champion/{info['id']}.png",
         }
         for info in data.values()
     ]
@@ -54,6 +57,7 @@ def fetch_items(version: str) -> pd.DataFrame:
             "gold_total": info.get("gold", {}).get("total"),
             "purchasable": info.get("gold", {}).get("purchasable"),
             "tags": ",".join(info.get("tags", [])),
+            "image": f"{DDRAGON}/cdn/{version}/img/item/{item_id}.png",
         }
         for item_id, info in data.items()
     ]

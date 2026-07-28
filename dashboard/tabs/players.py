@@ -2,7 +2,7 @@
 import altair as alt
 import streamlit as st
 
-from dashboard.data import run, download_csv, table_with_download
+from dashboard.data import run, download_csv, champion_images
 
 
 def _player_name(row) -> str:
@@ -28,7 +28,7 @@ def render(source: str) -> None:
         )
         lp_hist = (
             alt.Chart(lp)
-            .mark_bar(color="#3fa45b")
+            .mark_bar(color="#C8AA6E")
             .encode(
                 x=alt.X("league_points:Q", bin=alt.Bin(maxbins=25), title="Очки лиги (LP)"),
                 y=alt.Y("count()", title="Игроков"),
@@ -73,7 +73,7 @@ def render(source: str) -> None:
     row = players[players["label"] == choice].iloc[0]
     puuid = row["puuid"]
 
-    st.markdown(f"### 👤 {_player_name(row)}")
+    st.markdown(f"### {_player_name(row)}")
     cols = st.columns(7)
     cols[0].metric("Матчей", int(row["games"]))
     cols[1].metric("Winrate", f"{row['winrate']:.0%}")
@@ -91,31 +91,41 @@ def render(source: str) -> None:
     kc[2].metric("Помощи", f"{row['a']:.1f}", help=kda_hint)
 
     champs = run(f"""
-        SELECT c.champion_name, COUNT(*) AS games,
+        SELECT c.champion_name, c.champion_id, COUNT(*) AS games,
                AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate,
                AVG(f.kda) AS avg_kda
         FROM fact_participant f
         JOIN dim_champion c ON f.champion_id = c.champion_id
         WHERE f.data_source = '{source}' AND f.puuid = '{puuid}'
-        GROUP BY c.champion_name ORDER BY games DESC
+        GROUP BY c.champion_name, c.champion_id ORDER BY games DESC
     """)
+    imgs = champion_images()
     best_champ = champs[champs["games"] >= 3].sort_values("winrate", ascending=False)
     if not best_champ.empty:
         b = best_champ.iloc[0]
         st.success(
-            f"⭐ Лучший чемпион игрока: **{b['champion_name']}** — "
+            f"Лучший чемпион игрока: **{b['champion_name']}** — "
             f"{b['winrate']:.0%} winrate на {int(b['games'])} играх."
         )
 
     left, right = st.columns([3, 2])
     with left:
         st.markdown("#### Любимые чемпионы")
-        ch = (
-            alt.Chart(champs.head(12))
-            .mark_bar()
+        favs = champs.head(12).copy()
+        favs["image"] = favs["champion_id"].map(imgs)
+        ysort = alt.EncodingSortField(field="games", op="max", order="descending")
+        portraits = (
+            alt.Chart(favs).mark_image(width=22, height=22)
+            .encode(y=alt.Y("champion_name:N", sort=ysort, axis=None), url="image:N")
+            .properties(width=26, height=360)
+        )
+        y_named = alt.Y("champion_name:N", sort=ysort, title=None,
+                        axis=alt.Axis(labelPadding=6, domain=False, ticks=False))
+        bars = (
+            alt.Chart(favs).mark_bar(cornerRadiusEnd=3)
             .encode(
-                x=alt.X("games:Q", title="Игр"),
-                y=alt.Y("champion_name:N", sort="-x", title=None),
+                x=alt.X("games:Q", title="Игр", axis=alt.Axis(grid=True, domain=False)),
+                y=y_named,
                 color=alt.Color("winrate:Q", title="WR",
                                 scale=alt.Scale(scheme="redyellowgreen", domain=[0.3, 0.7])),
                 tooltip=["champion_name", "games",
@@ -124,7 +134,12 @@ def render(source: str) -> None:
             )
             .properties(height=360)
         )
-        st.altair_chart(ch, width="stretch")
+        vals = (
+            alt.Chart(favs).mark_text(align="left", dx=5, fontSize=11, color="#cfd6d6")
+            .encode(x=alt.X("games:Q"), y=y_named, text=alt.Text("games:Q"))
+        )
+        ch = alt.hconcat(portraits, (bars + vals), spacing=4).configure_view(strokeWidth=0)
+        st.altair_chart(ch, use_container_width=True)
 
     roles = run(f"""
         SELECT r.role_name_ru AS role, COUNT(*) AS games,
@@ -148,12 +163,47 @@ def render(source: str) -> None:
         )
         st.altair_chart(rc, width="stretch")
 
-    with st.expander("📋 Все чемпионы игрока"):
+    with st.expander("Все чемпионы игрока"):
         _, dl_col = st.columns([4, 1])
         with dl_col:
             download_csv(champs, "player_champions.csv", key="dl_player_champs", use_container_width=True)
-        st.dataframe(champs, width="stretch", hide_index=True)
+        cshow = champs.copy()
+        cshow.insert(0, "icon", cshow["champion_id"].map(imgs))
+        st.dataframe(
+            cshow[["icon", "champion_name", "games", "winrate", "avg_kda"]],
+            hide_index=True, width="stretch",
+            column_config={
+                "icon": st.column_config.ImageColumn(" ", width="small"),
+                "champion_name": "Чемпион",
+                "games": st.column_config.NumberColumn("Игр"),
+                "winrate": st.column_config.ProgressColumn(
+                    "Winrate", format="percent", min_value=0.0, max_value=1.0),
+                "avg_kda": st.column_config.NumberColumn("KDA", format="%.2f"),
+            },
+        )
 
-    top_players = players.drop(columns=["label", "puuid"]).head(50)
-    table_with_download(top_players, "Все игроки источника — по числу матчей",
-                        "players.csv", key="dl_players")
+    st.markdown("#### Все игроки источника — по числу матчей")
+    hdr, dl = st.columns([4, 1])
+    with dl:
+        download_csv(players.drop(columns=["label", "puuid"]), "players.csv",
+                     key="dl_players", use_container_width=True)
+    tp = players.drop(columns=["label", "puuid"]).head(50).rename(columns={
+        "name": "Игрок", "source_tier": "Лига", "games": "Матчей", "winrate": "WR",
+        "avg_kda": "KDA", "dmg_pm": "Урон/мин", "gold_pm": "Золото/мин",
+        "cs_pm": "CS/мин", "vis_pm": "Обзор/мин", "k": "Уб.", "d": "См.", "a": "Пом.",
+    })
+    st.dataframe(
+        tp, hide_index=True, width="stretch",
+        column_config={
+            "WR": st.column_config.ProgressColumn("WR", format="percent",
+                                                  min_value=0.0, max_value=1.0),
+            "KDA": st.column_config.NumberColumn("KDA", format="%.2f"),
+            "Урон/мин": st.column_config.NumberColumn("Урон/мин", format="%d"),
+            "Золото/мин": st.column_config.NumberColumn("Золото/мин", format="%d"),
+            "CS/мин": st.column_config.NumberColumn("CS/мин", format="%.1f"),
+            "Обзор/мин": st.column_config.NumberColumn("Обзор/мин", format="%.2f"),
+            "Уб.": st.column_config.NumberColumn("Уб.", format="%.1f"),
+            "См.": st.column_config.NumberColumn("См.", format="%.1f"),
+            "Пом.": st.column_config.NumberColumn("Пом.", format="%.1f"),
+        },
+    )
