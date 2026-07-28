@@ -1,707 +1,707 @@
-item_id,item_name,gold_total,purchasable,tags
-1001,Boots,300,True,Boots
-1004,Faerie Charm,200,True,ManaRegen
-1006,Rejuvenation Bead,300,True,HealthRegen
-1011,Giant's Belt,900,True,Health
-1018,Cloak of Agility,600,True,CriticalStrike
-1026,Blasting Wand,850,True,SpellDamage
-1027,Sapphire Crystal,300,True,Mana
-1028,Ruby Crystal,400,True,Health
-1029,Cloth Armor,300,True,Armor
-1031,Chain Vest,800,True,Armor
-1033,Null-Magic Mantle,400,True,SpellBlock
-1035,Emberknife,350,False,"LifeSteal,SpellVamp,Jungle"
-1036,Long Sword,350,True,"Damage,Lane"
-1037,Pickaxe,875,True,Damage
-1038,B. F. Sword,1300,True,Damage
-1039,Hailblade,350,False,"LifeSteal,SpellVamp,Jungle"
-1040,Obsidian Edge,350,True,"LifeSteal,SpellVamp,Jungle"
-1042,Dagger,250,True,AttackSpeed
-1043,Recurve Bow,700,True,"AttackSpeed,OnHit"
-1052,Amplifying Tome,400,True,SpellDamage
-1053,Vampiric Scepter,900,True,"Damage,LifeSteal"
-1054,Doran's Shield,450,True,"Health,HealthRegen,Lane"
-1055,Doran's Blade,450,True,"Health,Damage,LifeSteal,SpellVamp,Lane"
-1056,Doran's Ring,400,True,"Health,Lane,ManaRegen,SpellDamage"
-1057,Negatron Cloak,850,True,SpellBlock
-1058,Needlessly Large Rod,1200,True,SpellDamage
-1082,Dark Seal,350,True,"Health,SpellDamage,Lane"
-1083,Cull,450,True,"Damage,OnHit,Lane"
-1086,Doran's Bow,400,True,"Damage,AttackSpeed,SpellVamp,Lane"
-1090,Quest: Top,0,True,Lane
-1091,Quest: Mid,0,True,Lane
-1092,Quest: Bot,0,True,Lane
-1093,Quest: Support,0,True,Lane
-1094,Quest: Jungle,0,True,Lane
-1101,Scorchclaw Pup,450,True,Jungle
-1102,Gustwalker Hatchling,450,True,Jungle
-1103,Mosstomper Seedling,450,True,Jungle
-1104,Eye of the Herald,0,False,"Trinket,Active"
-1105,Mosstomper Seedling,450,True,Jungle
-1106,Gustwalker Hatchling,450,True,Jungle
-1107,Scorchclaw Pup,450,True,Jungle
-1111,Jarvan I's,300,False,"Armor,AttackSpeed,Boots,Tenacity,MagicPenetration,MagicResist,AbilityHaste"
-1120,Doran's Helm,450,True,"Health,SpellBlock,Armor,Lane"
-1200,Top Lane Quest,0,False,Lane
-1201,Mid Lane Quest,0,False,Lane
-1202,Bot Lane Quest,0,False,Lane
-1203,Support Quest,0,False,Lane
-1204,Jungle Quest,0,False,Lane
-1205,Jungle Quest Reward,0,False,Lane
-1206,Mid Lane Quest Reward,0,False,Lane
-1207,Bot Lane Quest Reward,0,False,Lane
-1208,Support Quest Reward,0,False,Lane
-1209,Jungle Quest Reward,0,False,Lane
-1210,Jungle Quest Reward,0,False,Lane
-1211,Jungle Quest Reward,0,False,Lane
-1220,Unleashed Teleport (Top Lane Quest Reward),0,False,Lane
-1221,Top Lane Quest Reward,0,False,Lane
-1222,Top Lane Quest,0,False,Lane
-1500,Penetrating Bullets,0,False,"HealthRegen,ManaRegen,OnHit"
-1501,Fortification,0,False,
-1502,Reinforced Armor,0,False,"Armor,ManaRegen,OnHit"
-1503,Warden's Eye,0,False,"HealthRegen,ManaRegen,OnHit"
-1504,Vanguard,0,False,"Armor,ManaRegen,OnHit"
-1505,Reinforced Armor,0,False,"Armor,ManaRegen,OnHit"
-1506,Reinforced Armor,0,False,"Armor,ManaRegen,OnHit"
-1507,Overcharged,0,False,"Armor,ManaRegen,OnHit"
-1508,Anti-tower Socks,0,False,"Armor,ManaRegen,OnHit"
-1509,Gusto,0,False,"Armor,ManaRegen,OnHit"
-1510,Phreakish Gusto,0,False,"Armor,ManaRegen,OnHit"
-1511,Super Mech Armor,0,False,"Armor,ManaRegen,OnHit"
-1512,Super Mech Power Field,0,False,"Armor,ManaRegen,OnHit"
-1515,Turret Plating,0,False,Armor
-1516,Structure Bounty,0,False,"HealthRegen,ManaRegen,OnHit"
-1517,Structure Bounty,0,False,"HealthRegen,ManaRegen,OnHit"
-1518,Structure Bounty,0,False,"HealthRegen,ManaRegen,OnHit"
-1519,Structure Bounty,0,False,"HealthRegen,ManaRegen,OnHit"
-1520,OvererchargedHA,0,False,"Armor,ManaRegen,OnHit"
-1521,Fortification,0,False,OnHit
-1522,Tower Power-Up,0,False,"Armor,Damage"
-1523,Overcharged,0,False,"Armor,ManaRegen,OnHit"
-1524,Overgrowth,0,False,"Armor,Damage"
-2001,Recall,60,False,
-2002,Enhanced Recall,60,False,
-2003,Health Potion,50,True,"HealthRegen,Consumable,Lane,Jungle"
-2007,Disabled Recall,60,False,
-2008,,60,False,
-2010,Total Biscuit of Everlasting Will,50,False,
-2015,Kircheis Shard,700,False,"Damage,OnHit"
-2019,Steel Sigil,1100,True,"Armor,Damage"
-2020,The Brutalizer,1337,True,"Damage,CooldownReduction,ArmorPenetration"
-2021,Tunneler,1150,True,"Health,Damage"
-2022,Glowing Mote,250,True,CooldownReduction
-2031,Refillable Potion,150,True,"HealthRegen,Consumable,Active,Lane,Jungle"
-2033,Corrupting Potion,500,False,"Active,Consumable,HealthRegen,Lane,ManaRegen"
-2049,Guardian's Amulet,500,True,"SpellDamage,ManaRegen,CooldownReduction,Lane,AbilityHaste"
-2050,Guardian's Shroud,500,True,"Health,SpellDamage,CooldownReduction,Lane,AbilityHaste"
-2051,Guardian's Horn,950,True,"Health,HealthRegen,Lane"
-2052,Poro-Snax,0,False,
-2055,Control Ward,75,True,"Consumable,Lane,Stealth,Vision"
-2056,Stealth Ward,40,False,"Consumable,Lane,Stealth,Vision"
-2065,Shurelya's Battlesong,2200,True,"SpellDamage,ManaRegen,Active,CooldownReduction,NonbootsMovement,AbilityHaste"
-2138,Elixir of Iron,500,True,"Health,Consumable,NonbootsMovement,Tenacity"
-2139,Elixir of Sorcery,500,True,"Consumable,ManaRegen,SpellDamage"
-2140,Elixir of Wrath,500,True,"Consumable,Damage,LifeSteal,SpellVamp"
-2141,Cappa Juice,300,True,"Damage,Consumable"
-2142,Juice of Power,500,True,"SpellDamage,Consumable"
-2143,Juice of Vitality,500,True,"Health,Consumable"
-2144,Juice of Haste,500,True,"Consumable,CooldownReduction"
-2145,Lucky Dice,0,False,Consumable
-2146,Enhanced Lucky Dice,0,False,Consumable
-2147,Augment Level,1250,True,Consumable
-2150,Elixir of Skill,0,False,Consumable
-2151,Elixir of Avarice,50,False,"Health,Consumable,Tenacity"
-2152,Elixir of Force,50,False,"Consumable,Tenacity"
-2161,Bandle Juice of Power,1000,True,"SpellDamage,Consumable"
-2162,Bandle Juice of Vitality,1000,True,"Health,Consumable"
-2163,Bandle Juice of Haste,1000,True,"Consumable,CooldownReduction"
-2403,Minion Dematerializer,0,False,
-2420,Seeker's Armguard,1600,True,"Armor,SpellDamage,Active"
-2421,Shattered Armguard,1600,True,
-2422,Slightly Magical Footwear,300,False,Boots
-2501,Overlord's Bloodmail,3300,True,"Health,Damage"
-2502,Unending Despair,2800,True,"Health,Armor,CooldownReduction,AbilityHaste"
-2503,Blackfire Torch,2800,True,"SpellDamage,Mana,CooldownReduction,AbilityHaste"
-2504,Kaenic Rookern,2900,True,"Health,SpellBlock,HealthRegen"
-2508,Fated Ashes,900,True,SpellDamage
-2510,Dusk and Dawn,3100,True,"Health,AttackSpeed,SpellDamage,OnHit,AbilityHaste"
-2512,Fiendhunter Bolts,2650,True,"CriticalStrike,AttackSpeed,NonbootsMovement,AbilityHaste"
-2517,Endless Hunger,3100,True,"Damage,LifeSteal,SpellVamp,Tenacity,AbilityHaste"
-2520,Bastionbreaker,3200,True,"Damage,ArmorPenetration,AbilityHaste"
-2522,Actualizer,2800,True,"SpellDamage,Mana,AbilityHaste"
-2523,Hexoptics C44,2800,True,"Damage,CriticalStrike"
-2524,Bandlepipes,2300,True,"Health,SpellBlock,Armor,AttackSpeed,NonbootsMovement,AbilityHaste"
-2525,Protoplasm Harness,2500,True,"Health,NonbootsMovement,Tenacity,AbilityHaste"
-2526,Whispering Circlet,2250,True,"Health,Mana,ManaRegen"
-2530,Diadem of Songs,2250,False,"Health,Mana,ManaRegen,AbilityHaste"
-3001,Evenshroud,2300,False,"Health,SpellBlock,Armor,AbilityHaste"
-3002,Trailblazer,2400,False,"Health,Armor,NonbootsMovement"
-3003,Archangel's Staff,2900,True,"SpellDamage,Mana,AbilityHaste"
-3004,Manamune,2900,True,"Damage,Mana,CooldownReduction,OnHit,AbilityHaste"
-3005,Ghostcrawlers,1000,True,Boots
-3006,Berserker's Greaves,1100,True,"AttackSpeed,Boots"
-3008,Gluttonous Greaves,1000,True,"LifeSteal,SpellVamp,Boots"
-3009,Boots of Swiftness,1000,True,Boots
-3010,Symbiotic Soles,900,False,Boots
-3011,Chemtech Putrifier,1900,False,"SpellDamage,ManaRegen,AbilityHaste"
-3012,Chalice of Blessing,900,False,"Health,ManaRegen"
-3013,Synchronized Souls,900,False,Boots
-3020,Sorcerer's Shoes,1100,True,"Boots,MagicPenetration"
-3023,Lifewell Pendant,1050,False,"Health,Armor,AbilityHaste"
-3024,Glacial Buckler,900,True,"Armor,Mana,CooldownReduction,AbilityHaste"
-3026,Guardian Angel,3200,True,"Armor,Damage"
-3031,Infinity Edge,3500,True,"CriticalStrike,Damage"
-3032,Yun Tal Wildarrows,3100,True,"Damage,CriticalStrike,AttackSpeed"
-3033,Mortal Reminder,3000,True,"Damage,CriticalStrike,ArmorPenetration"
-3035,Last Whisper,1450,True,"ArmorPenetration,Damage"
-3036,Lord Dominik's Regards,3300,True,"Damage,CriticalStrike,ArmorPenetration"
-3039,Atma's Reckoning,2900,True,"Health,CriticalStrike"
-3040,Seraph's Embrace,2900,False,"SpellDamage,Mana,AbilityHaste"
-3041,Mejai's Soulstealer,1500,True,"Health,SpellDamage,NonbootsMovement"
-3042,Muramana,2900,False,"Damage,Mana,CooldownReduction,OnHit,ArmorPenetration"
-3044,Phage,1100,True,"Health,Damage,NonbootsMovement"
-3046,Phantom Dancer,2650,True,"CriticalStrike,AttackSpeed,NonbootsMovement"
-3047,Plated Steelcaps,1200,True,"Armor,Boots"
-3050,Zeke's Convergence,2200,True,"Health,SpellBlock,Armor,AbilityHaste"
-3051,Hearthbound Axe,1200,True,"Damage,AttackSpeed"
-3053,Sterak's Gage,3200,True,"Health,Damage,Tenacity"
-3057,Sheen,900,True,"OnHit,AbilityHaste"
-3065,Spirit Visage,2700,True,"Health,SpellBlock,HealthRegen,CooldownReduction,AbilityHaste"
-3066,Winged Moonplate,800,True,"Health,NonbootsMovement"
-3067,Kindlegem,800,True,"Health,CooldownReduction,AbilityHaste"
-3068,Sunfire Aegis,2700,True,"Health,Armor,Aura,AbilityHaste"
-3070,Tear of the Goddess,400,True,"Mana,ManaRegen"
-3071,Black Cleaver,3000,True,"Health,Damage,CooldownReduction,OnHit,NonbootsMovement,ArmorPenetration,AbilityHaste"
-3072,Bloodthirster,3400,True,"Damage,LifeSteal"
-3073,Experimental Hexplate,3000,True,"Health,Damage,AttackSpeed,CooldownReduction,NonbootsMovement,AbilityHaste"
-3074,Ravenous Hydra,3300,True,"Damage,LifeSteal,CooldownReduction,OnHit,AbilityHaste"
-3075,Thornmail,2450,True,"Health,Armor"
-3076,Bramble Vest,800,True,Armor
-3077,Tiamat,1200,True,"Damage,OnHit"
-3078,Trinity Force,3333,True,"Health,Damage,AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,AbilityHaste"
-3082,Warden's Mail,1000,True,Armor
-3083,Warmog's Armor,3100,True,"Health,HealthRegen"
-3084,Heartsteel,3000,True,"Health,HealthRegen"
-3085,Runaan's Hurricane,2650,True,"CriticalStrike,AttackSpeed,OnHit,NonbootsMovement"
-3086,Zeal,1200,True,"CriticalStrike,AttackSpeed,NonbootsMovement"
-3087,Statikk Shiv,3000,True,"Damage,AttackSpeed,SpellDamage,OnHit,NonbootsMovement"
-3089,Rabadon's Deathcap,3500,True,SpellDamage
-3091,Wit's End,2800,True,"SpellBlock,AttackSpeed,OnHit,Tenacity"
-3094,Rapid Firecannon,2650,True,"CriticalStrike,AttackSpeed,NonbootsMovement"
-3095,Deprecated item,3000,True,"Damage,CriticalStrike,AttackSpeed,NonbootsMovement"
-3097,Stormrazor,3200,True,"Damage,CriticalStrike,AttackSpeed,NonbootsMovement"
-3100,Lich Bane,2900,True,"SpellDamage,OnHit,NonbootsMovement,AbilityHaste"
-3102,Banshee's Veil,3000,True,"SpellBlock,SpellDamage"
-3105,Aegis of the Legion,1100,True,"SpellBlock,Armor,CooldownReduction,AbilityHaste"
-3107,Redemption,2300,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-3108,Fiendish Codex,850,True,"SpellDamage,CooldownReduction,AbilityHaste"
-3109,Knight's Vow,2300,True,"Health,HealthRegen,Armor,Aura,Active,CooldownReduction,AbilityHaste"
-3110,Frozen Heart,2500,True,"Armor,Mana,Aura,CooldownReduction,AbilityHaste"
-3111,Mercury's Treads,1250,True,"Boots,SpellBlock,Tenacity"
-3112,Guardian's Orb,950,True,"Health,SpellDamage,ManaRegen,Lane"
-3113,Aether Wisp,900,True,"NonbootsMovement,SpellDamage"
-3114,Forbidden Idol,600,True,ManaRegen
-3115,Nashor's Tooth,2900,True,"AttackSpeed,SpellDamage,OnHit,AbilityHaste"
-3116,Rylai's Crystal Scepter,2600,True,"Health,SpellDamage,Slow"
-3117,Mobility Boots,1000,False,Boots
-3118,Malignance,2700,True,"SpellDamage,Mana,AbilityHaste"
-3119,Winter's Approach,2400,True,"Health,Mana,AbilityHaste"
-3121,Fimbulwinter,2400,False,"Health,Mana,AbilityHaste"
-3123,Executioner's Calling,800,True,Damage
-3124,Guinsoo's Rageblade,3000,True,"Damage,AttackSpeed,SpellDamage,OnHit"
-3128,Deathfire Grasp,2900,True,"SpellDamage,CooldownReduction"
-3131,Sword of the Divine,2300,True,"Damage,CriticalStrike,AttackSpeed"
-3133,Caulfield's Warhammer,1050,True,"Damage,CooldownReduction,AbilityHaste"
-3134,Serrated Dirk,1000,True,"Damage,ArmorPenetration"
-3135,Void Staff,3000,True,"MagicPenetration,SpellDamage"
-3137,Cryptbloom,3000,True,"SpellDamage,MagicPenetration,AbilityHaste"
-3139,Mercurial Scimitar,3200,True,"SpellBlock,Damage,LifeSteal,Active,NonbootsMovement,Tenacity"
-3140,Quicksilver Sash,1300,True,"Active,SpellBlock"
-3142,Youmuu's Ghostblade,2800,True,"Damage,Active,NonbootsMovement,ArmorPenetration"
-3143,Randuin's Omen,2700,True,"Health,Armor,Active,Slow"
-3144,Scout's Slingshot,600,True,AttackSpeed
-3145,Hextech Alternator,1100,True,SpellDamage
-3146,Hextech Gunblade,3000,True,"Damage,LifeSteal,SpellDamage,Active,SpellVamp"
-3147,Haunting Guise,1300,True,"Health,SpellDamage"
-3152,Hextech Rocketbelt,2650,True,"Health,SpellDamage,Active,CooldownReduction,NonbootsMovement,AbilityHaste"
-3153,Blade of The Ruined King,3200,True,"Damage,AttackSpeed,LifeSteal,Slow,OnHit"
-3155,Hexdrinker,1300,True,"Damage,SpellBlock"
-3156,Maw of Malmortius,3100,True,"SpellBlock,Damage,LifeSteal,SpellVamp,AbilityHaste"
-3157,Zhonya's Hourglass,3250,True,"Armor,SpellDamage,Active"
-3158,Ionian Boots of Lucidity,900,True,"Boots,CooldownReduction"
-3161,Spear of Shojin,3100,True,"Health,Damage,AbilityHaste"
-3165,Morellonomicon,2850,True,"Health,SpellDamage,CooldownReduction,AbilityHaste"
-3168,Immortal Path,1000,True,"LifeSteal,SpellVamp,Boots"
-3170,Swiftmarch,1000,True,Boots
-3171,Crimson Lucidity,900,True,"CooldownReduction,Boots"
-3172,Gunmetal Greaves,1100,True,"AttackSpeed,LifeSteal,NonbootsMovement"
-3173,Chainlaced Crushers,1250,True,"SpellBlock,Boots,Tenacity,MagicResist"
-3174,Armored Advance,1200,True,"Armor,Boots"
-3175,Spellslinger's Shoes,1100,True,"Boots,MagicPenetration"
-3176,Forever Forward,900,False,Boots
-3177,Guardian's Blade,950,True,"Health,Damage,Lane,AbilityHaste"
-3179,Umbral Glaive,2800,True,"Damage,Vision,CooldownReduction,ArmorPenetration,AbilityHaste"
-3181,Hullbreaker,3000,True,"Health,Damage,NonbootsMovement"
-3184,Guardian's Hammer,950,True,"Health,Damage,LifeSteal,Lane"
-3190,Locket of the Iron Solari,2200,True,"Health,SpellBlock,Armor,Aura,Active,MagicResist,AbilityHaste"
-3193,Gargoyle Stoneplate,3150,False,"SpellBlock,Armor,Active,CooldownReduction,AbilityHaste"
-3211,Spectre's Cowl,1250,True,"Health,HealthRegen,SpellBlock"
-3222,Mikael's Blessing,2300,True,"Health,ManaRegen,Active,CooldownReduction,Tenacity,AbilityHaste"
-3302,Terminus,3000,True,"Damage,AttackSpeed,OnHit,MagicPenetration,ArmorPenetration"
-3330,Scarecrow Effigy,0,True,"Active,Jungle,Lane,Trinket,Vision"
-3340,Stealth Ward,0,True,"Active,Jungle,Lane,Trinket,Vision"
-3348,Arcane Sweeper,0,False,"Active,Jungle,Lane,Trinket,Vision"
-3349,Lucent Singularity,0,False,"Active,Jungle,Lane,Trinket,Vision"
-3363,Farsight Alteration,0,True,"Active,Trinket,Vision"
-3364,Oracle Lens,0,True,"Active,Trinket,Vision"
-3398,Small Party Favor,0,False,"Consumable,GoldPer"
-3399,Party Favor,0,False,"Consumable,GoldPer"
-3400,Your Cut,0,False,"Consumable,GoldPer"
-3430,Rite Of Ruin,2500,True,"CriticalStrike,SpellDamage,CooldownReduction"
-3504,Ardent Censer,2200,True,"AttackSpeed,SpellDamage,ManaRegen,NonbootsMovement"
-3508,Essence Reaver,3050,True,"Damage,CriticalStrike,ManaRegen,CooldownReduction,OnHit,AbilityHaste"
-3513,Eye of the Herald,0,False,"Trinket,Active"
-3599,Kalista's Black Spear,0,True,Consumable
-3600,Kalista's Black Spear,0,True,Consumable
-3742,Dead Man's Plate,2900,True,"Health,Armor,Slow,NonbootsMovement"
-3748,Titanic Hydra,3300,True,"Health,HealthRegen,Damage,OnHit"
-3801,Crystalline Bracer,800,True,"Health,HealthRegen"
-3802,Lost Chapter,1200,True,"SpellDamage,Mana,ManaRegen,CooldownReduction,AbilityHaste"
-3803,Catalyst of Aeons,1300,True,"Health,HealthRegen,Mana,ManaRegen"
-3814,Edge of Night,3000,True,"Health,Damage,ArmorPenetration"
-3850,Spellthief's Edge,400,False,"Health,SpellDamage,ManaRegen,Vision,GoldPer,Lane"
-3851,Frostfang,400,False,"GoldPer,Lane,ManaRegen,SpellDamage"
-3853,Shard of True Ice,400,False,"GoldPer,Lane,ManaRegen,SpellDamage"
-3854,Steel Shoulderguards,400,False,"Health,HealthRegen,Damage,Vision,GoldPer,Lane"
-3855,Runesteel Spaulders,400,False,"Health,HealthRegen,GoldPer,Lane"
-3857,Pauldrons of Whiterock,400,False,"Health,HealthRegen,GoldPer,Lane"
-3858,Relic Shield,400,False,"Health,HealthRegen,SpellDamage,Vision,GoldPer,Lane"
-3859,Targon's Buckler,400,False,"Health,HealthRegen,GoldPer,Lane"
-3860,Bulwark of the Mountain,400,False,"Health,HealthRegen,GoldPer,Lane"
-3862,Spectral Sickle,400,False,"Health,Damage,ManaRegen,Vision,GoldPer,Lane"
-3863,Harrowing Crescent,400,False,"Health,ManaRegen,GoldPer,Lane"
-3864,Black Mist Scythe,400,False,"Health,ManaRegen,GoldPer,Lane"
-3865,World Atlas,400,True,"Health,ManaRegen,Vision,GoldPer,Lane"
-3866,Runic Compass,400,False,"SpellDamage,ManaRegen,Vision,GoldPer,Lane"
-3867,Bounty of Worlds,400,False,"SpellDamage,ManaRegen,Vision,GoldPer,Lane"
-3869,Celestial Opposition,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane"
-3870,Dream Maker,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane"
-3871,Zaz'Zak's Realmspike,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane"
-3876,Solstice Sleigh,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane"
-3877,Bloodsong,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane"
-3901,<rarityLegendary>Fire at Will</rarityLegendary><br><subtitleLeft><silver>500 Silver Serpents</silver></subtitleLeft>,0,False,
-3902,<rarityLegendary>Death's Daughter</rarityLegendary><br><subtitleLeft><silver>500 Silver Serpents</silver></subtitleLeft>,0,False,
-3903,<rarityLegendary>Raise Morale</rarityLegendary><br><subtitleLeft><silver>500 Silver Serpents</silver></subtitleLeft>,0,False,
-3916,Oblivion Orb,800,True,SpellDamage
-4003,Lifeline,1600,True,"Damage,NonbootsMovement,ArmorPenetration"
-4004,Spectral Cutlass,2800,True,"Damage,NonbootsMovement,ArmorPenetration"
-4005,Imperial Mandate,2400,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-4010,Bloodletter's Curse,2500,True,"SpellBlock,SpellDamage,CooldownReduction,MagicPenetration"
-4011,Sword of Blossoming Dawn,2500,True,"Health,SpellDamage,CooldownReduction,OnHit,AbilityHaste"
-4012,Sin Eater,3000,True,"Health,SpellBlock,Armor,Tenacity"
-4013,Lightning Braid,3000,True,"SpellBlock,Armor,SpellDamage,Tenacity"
-4014,Frozen Mallet,3000,False,"Health,Damage,AttackSpeed,Slow"
-4015,Perplexity,2500,True,"SpellDamage,CooldownReduction,NonbootsMovement,MagicPenetration,ArmorPenetration,AbilityHaste"
-4016,Wordless Promise,2500,True,"SpellDamage,CooldownReduction,AbilityHaste"
-4017,Hellfire Hatchet,2500,True,"Damage,ArmorPenetration"
-4401,Force of Nature,2800,True,"Health,SpellBlock,NonbootsMovement"
-4402,Innervating Locket,2950,True,"Health,Damage,Mana,CooldownReduction,AbilityHaste"
-4403,The Golden Spatula,7187,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,CooldownReduction,NonbootsMovement"
-4628,Horizon Focus,2700,True,"SpellDamage,AbilityHaste"
-4629,Cosmic Drive,3000,True,"Health,SpellDamage,NonbootsMovement,AbilityHaste"
-4630,Blighting Jewel,1100,True,"MagicPenetration,SpellDamage"
-4632,Verdant Barrier,1600,True,"SpellBlock,SpellDamage"
-4633,Riftmaker,3100,True,"Health,SpellDamage,CooldownReduction,SpellVamp"
-4635,Leeching Leer,1265,False,"Health,SpellDamage,SpellVamp"
-4636,Night Harvester,2765,False,"Health,SpellDamage,CooldownReduction,NonbootsMovement,AbilityHaste"
-4637,Demonic Embrace,3000,False,"Health,SpellDamage"
-4638,Watchful Wardstone,1100,True,"Health,SpellBlock,Armor,Vision,Active,CooldownReduction,AbilityHaste"
-4641,Stirring Wardstone,350,False,"Health,Damage,SpellDamage,ManaRegen,Vision,Active,CooldownReduction,AbilityHaste"
-4642,Bandleglass Mirror,900,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-4643,Vigilant Wardstone,2300,True,"Health,SpellBlock,Armor,Vision,Active,CooldownReduction,AbilityHaste"
-4644,Crown of the Shattered Queen,2865,False,"Health,SpellDamage,Mana,NonbootsMovement,AbilityHaste"
-4645,Shadowflame,3200,True,"SpellDamage,MagicPenetration"
-4646,Stormsurge,2800,True,"SpellDamage,GoldPer,NonbootsMovement,MagicPenetration"
-6029,Ironspike Whip,1100,False,"Damage,Active"
-6032,Stat Bonus,750,True,"Health,SpellBlock,Armor,Damage,CriticalStrike,AttackSpeed,SpellDamage,Mana,Consumable,CooldownReduction,SpellVamp,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,MagicResist,AbilityHaste"
-6035,Silvermere Dawn,3000,False,"Health,SpellBlock,Damage,Active,Tenacity"
-6333,Death's Dance,3300,True,"Armor,Damage,AbilityHaste"
-6609,Chempunk Chainsword,3000,True,"Health,Damage,CooldownReduction,AbilityHaste"
-6610,Sundered Sky,3100,True,"Health,Damage,CooldownReduction,AbilityHaste"
-6616,Staff of Flowing Water,2250,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-6617,Moonstone Renewer,2200,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-6620,Echoes of Helia,2200,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-6621,Dawncore,2500,True,"SpellDamage,ManaRegen"
-6630,Goredrinker,3200,False,"Health,Damage,LifeSteal,Active,CooldownReduction,SpellVamp,AbilityHaste"
-6631,Stridebreaker,3300,True,"Health,Damage,AttackSpeed,Slow"
-6632,Divine Sunderer,3450,False,"Health,Damage,CooldownReduction,OnHit,MagicPenetration,ArmorPenetration,AbilityHaste"
-6653,Liandry's Torment,3000,True,"Health,SpellDamage"
-6655,Luden's Echo,2750,True,"SpellDamage,Mana,CooldownReduction,AbilityHaste"
-6656,Everfrost,2865,False,"Health,SpellDamage,Mana,Active,CooldownReduction,Slow,AbilityHaste"
-6657,Rod of Ages,2600,True,"Health,HealthRegen,SpellDamage,Mana,ManaRegen"
-6660,Bami's Cinder,900,True,"Health,AbilityHaste"
-6662,Iceborn Gauntlet,2900,True,"Health,Armor,CooldownReduction,Slow,OnHit,AbilityHaste"
-6664,Hollow Radiance,2800,True,"Health,SpellBlock,HealthRegen,Aura,MagicResist,AbilityHaste"
-6665,"Jak'Sho, The Protean",3200,True,"Health,SpellBlock,Armor,MagicResist"
-6667,Radiant Virtue,2600,False,"Health,SpellBlock,Armor,Aura,CooldownReduction,AbilityHaste"
-6670,Noonquiver,1300,True,"Damage,CriticalStrike"
-6671,Galeforce,3500,False,"Damage,CriticalStrike,AttackSpeed,Active,NonbootsMovement"
-6672,Kraken Slayer,3000,True,"Damage,AttackSpeed,OnHit,NonbootsMovement"
-6673,Immortal Shieldbow,3000,True,"Damage,CriticalStrike"
-6675,Navori Flickerblade,2650,True,"CriticalStrike,AttackSpeed,NonbootsMovement"
-6676,The Collector,3000,True,"Damage,CriticalStrike,ArmorPenetration"
-6677,Rageknife,1100,False,"AttackSpeed,OnHit"
-6690,Rectrix,775,True,"Damage,NonbootsMovement"
-6691,Duskblade of Draktharr,2950,False,"Damage,Stealth,CooldownReduction,Slow,NonbootsMovement,ArmorPenetration,AbilityHaste"
-6692,Eclipse,2900,True,"Damage,CooldownReduction,AbilityHaste"
-6693,Prowler's Claw,2850,False,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste"
-6694,Serylda's Grudge,3000,True,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste"
-6695,Serpent's Fang,2500,True,"Damage,ArmorPenetration"
-6696,Axiom Arc,2750,True,"Damage,ArmorPenetration,AbilityHaste"
-6697,Hubris,2800,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
-6698,Profane Hydra,2850,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
-6699,Voltaic Cyclosword,3000,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
-6700,Shield of the Rakkor,2675,False,"Armor,Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
-6701,Opportunity,2700,False,"Damage,Active,NonbootsMovement,ArmorPenetration"
-6702,Scouting Ahead,0,False,"Active,Jungle,Lane,Trinket,Vision"
-7050,Gangplank Placeholder,0,False,
-8001,Anathema's Chains,2500,False,"Health,Active,CooldownReduction,AbilityHaste"
-8010,Bloodletter's Curse,2900,True,"Health,SpellDamage,CooldownReduction,MagicPenetration"
-8020,Abyssal Mask,2650,True,"Health,SpellBlock,CooldownReduction,MagicResist,AbilityHaste"
-9168,Locked Weapon Slot,0,True,
-9171,Cyclonic Slicers,0,True,
-9172,YuumiBot,0,True,
-9173,Radiant Field,0,True,
-9174,Statikk Sword,0,True,
-9175,Lioness's Lament,0,True,
-9176,Gatling Bunny-Guns,0,True,
-9177,Searing Shortbow,0,True,
-9178,The Annihilator,0,True,
-9179,Battle Bunny Crossbow,0,True,
-9180,UwU Blaster,0,True,
-9181,Vortex Glove,0,True,
-9183,Blade-o-rang,0,True,
-9184,Bunny Mega-Blast,0,True,
-9185,Anti-Shark Sea Mine,0,True,
-9187,T.I.B.B.E.R.S,0,True,
-9188,Ani-Mines,0,True,
-9189,Final City Transit,0,True,
-9190,Echoing Batblades,0,True,
-9192,Paw Print Poisoner,0,True,
-9193,Iceblast Armor,0,True,
-9271,Unceasing Cyclone,0,True,
-9272,YuumiBot_Final_FINAL,0,True,
-9273,Explosive Embrace,0,True,
-9274,Prumbis's Electrocarver,0,True,
-9275,Enveloping Light,0,True,
-9276,Double Bun-Bun Barrage,0,True,
-9277,Evolved Embershot,0,True,
-9278,Animapocalypse,0,True,
-9279,Bunny Prime Ballista,0,True,
-9280,OwO Blaster,0,True,
-9281,Tempest's Gauntlet,0,True,
-9283,Quad-o-rang,0,True,
-9284,Rapid Rabbit Raindown,0,True,
-9285,Neverending Mobstomper,0,True,
-9287,T.I.B.B.E.R.S (B.E.E.G Edition),0,True,
-9288,Jinx's Tri-Namite,0,True,
-9289,FC Limited Express,0,True,
-9290,Vayne's Chromablades,0,True,
-9292,Bearfoot Chem-Dispenser,0,True,
-9293,Deep Freeze,0,True,
-9300,Meow Meow,0,True,
-9301,Shield Slam,0,True,
-9302,Sound Wave,0,True,
-9303,Pillory Swipe,0,True,
-9304,Steel Tempest,0,True,
-9305,Tentacle Slam,0,True,
-9306,Winged Dagger,0,True,
-9307,Guiding Hex,0,True,
-9308,Bunny Hop,0,True,
-9400,Battle Cat Barrage,0,True,
-9401,Light of the Lion,0,True,
-9402,Anima Echo,0,True,
-9403,Savage Slice,0,True,
-9404,Wandering Storms,0,True,
-9405,Grizzly Smash,0,True,
-9406,Lover's Ricochet,0,True,
-9407,Hopped-Up Hex,0,True,
-9408,Carrot Crash,0,True,
-123430,Rite of Ruin,3000,True,"CriticalStrike,SpellDamage,CooldownReduction,NonbootsMovement"
-124011,Sword of Blossoming Dawn,2350,True,"Health,SpellDamage,CooldownReduction,OnHit,AbilityHaste"
-126697,Hubris,2950,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
-220000,Stat Bonus,750,True,"Health,SpellBlock,Armor,Damage,CriticalStrike,AttackSpeed,SpellDamage,Mana,Consumable,CooldownReduction,SpellVamp,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,MagicResist,AbilityHaste"
-220001,Legendary Fighter Item,2250,True,
-220002,Legendary Marksman Item,2250,True,
-220003,Legendary Assassin Item,2250,True,
-220004,Legendary Mage Item,2250,True,
-220005,Legendary Tank Item,2250,True,
-220006,Legendary Support Item,2250,True,
-220007,Prismatic Item,4000,True,Consumable
-220008,Anvil Voucher,750,False,
-220009,Gold Stat Anvil Voucher,750,False,
-220010,Prismatic Stat Voucher,750,False,
-220011,Bravery Voucher,750,False,
-220012,Shardblade,2500,False,
-220013,Poro-Snax,0,False,
-221011,Giant's Belt,500,False,Health
-221026,Blasting Wand,500,False,SpellDamage
-221031,Chain Vest,500,False,Armor
-221038,B. F. Sword,1300,True,Damage
-221043,Recurve Bow,500,False,"AttackSpeed,OnHit"
-221053,Vampiric Scepter,500,False,"Damage,LifeSteal"
-221057,Negatron Cloak,450,False,SpellBlock
-221058,Needlessly Large Rod,500,False,SpellDamage
-222022,Glowing Mote,250,False,CooldownReduction
-222051,Guardian's Horn,500,True,"Health,HealthRegen,Lane"
-222065,Shurelya's Battlesong,2500,True,"SpellDamage,ManaRegen,Active,CooldownReduction,NonbootsMovement,AbilityHaste"
-222141,Cappa Juice,500,True,Consumable
-222502,Unending Despair,2500,True,"Health,Armor,CooldownReduction,MagicResist,AbilityHaste"
-222503,Blackfire Torch,2500,True,"SpellDamage,Mana,CooldownReduction,AbilityHaste"
-222504,Kaenic Rookern,2500,True,"Health,SpellBlock,HealthRegen"
-222510,Dusk and Dawn,2500,True,"Health,AttackSpeed,SpellDamage,OnHit,AbilityHaste"
-222512,Fiendhunter Bolts,2500,True,"CriticalStrike,AttackSpeed,NonbootsMovement,AbilityHaste"
-222517,Endless Hunger,2500,True,"Damage,LifeSteal,SpellVamp,AbilityHaste"
-222522,Actualizer,2500,True,"SpellDamage,Mana,Active,AbilityHaste"
-222523,Hexoptics C44,2500,True,"Damage,CriticalStrike"
-222524,Bandlepipes,2500,True,"Health,AbilityHaste"
-222525,Protoplasm Harness,2500,True,"Health,NonbootsMovement,Tenacity,AbilityHaste"
-222526,Whispering Circlet,2500,True,"Health,Mana,ManaRegen"
-222530,Diadem of Songs,2500,False,"Health,Mana,ManaRegen,AbilityHaste"
-223001,Evenshroud,2500,False,"Health,SpellBlock,Armor,AbilityHaste"
-223002,Trailblazer,2500,True,"Health,Armor,NonbootsMovement"
-223003,Archangel's Staff,2500,True,"SpellDamage,Mana,AbilityHaste"
-223004,Manamune,2500,True,"Damage,Mana,CooldownReduction,OnHit,AbilityHaste"
-223005,Ghostcrawlers,500,True,Boots
-223006,Berserker's Greaves,500,True,"AttackSpeed,Boots"
-223008,Gluttonous Greaves,500,True,"LifeSteal,SpellVamp,Boots"
-223009,Boots of Swiftness,500,True,Boots
-223011,Chemtech Putrifier,1900,False,"SpellDamage,ManaRegen,AbilityHaste"
-223020,Sorcerer's Shoes,500,True,"Boots,MagicPenetration"
-223026,Guardian Angel,2500,True,"Armor,Damage"
-223031,Infinity Edge,2500,True,"CriticalStrike,Damage"
-223032,Yun Tal Wildarrows,2500,True,"Damage,CriticalStrike"
-223033,Mortal Reminder,2500,True,"Damage,CriticalStrike,ArmorPenetration"
-223036,Lord Dominik's Regards,2500,True,"Damage,CriticalStrike,ArmorPenetration"
-223039,Atma's Reckoning,2500,True,"Health,CriticalStrike,Lane"
-223040,Seraph's Embrace,2500,False,"SpellDamage,Mana,AbilityHaste"
-223042,Muramana,2500,False,"Damage,Mana,CooldownReduction,OnHit,ArmorPenetration"
-223046,Phantom Dancer,2500,True,"CriticalStrike,AttackSpeed,NonbootsMovement"
-223047,Plated Steelcaps,500,True,"Armor,Boots"
-223050,Zeke's Convergence,2500,True,"Health,SpellBlock,Armor,AbilityHaste"
-223053,Sterak's Gage,2500,True,"Health,Damage,Tenacity"
-223057,Sheen,2500,False,"OnHit,AbilityHaste"
-223065,Spirit Visage,2500,True,"Health,SpellBlock,HealthRegen,CooldownReduction,AbilityHaste"
-223067,Kindlegem,500,False,"Health,CooldownReduction,AbilityHaste"
-223068,Sunfire Aegis,2500,True,"Health,Armor,Aura,AbilityHaste"
-223069,Void Immolation,6000,True,"Health,SpellBlock,HealthRegen,Armor,Aura,CooldownReduction,MagicResist,AbilityHaste"
-223071,Black Cleaver,2500,True,"Health,Damage,CooldownReduction,OnHit,NonbootsMovement,ArmorPenetration,AbilityHaste"
-223072,Bloodthirster,2500,True,"Damage,LifeSteal"
-223073,Experimental Hexplate,2500,True,"Health,Damage,AttackSpeed,CooldownReduction,NonbootsMovement,AbilityHaste"
-223074,Ravenous Hydra,2500,True,"Damage,LifeSteal,CooldownReduction,OnHit,AbilityHaste"
-223075,Thornmail,2500,True,"Health,Armor"
-223078,Trinity Force,2500,True,"Health,Damage,AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,AbilityHaste"
-223084,Heartsteel,2500,True,Health
-223085,Runaan's Hurricane,2500,True,"CriticalStrike,AttackSpeed,OnHit,NonbootsMovement"
-223087,Statikk Shiv,2500,True,"Damage,AttackSpeed,OnHit,NonbootsMovement"
-223089,Rabadon's Deathcap,2500,True,SpellDamage
-223091,Wit's End,2500,True,"SpellBlock,AttackSpeed,OnHit,Tenacity"
-223094,Rapid Firecannon,2500,True,"CriticalStrike,AttackSpeed,NonbootsMovement"
-223095,Stormrazor,2500,True,"Damage,CriticalStrike"
-223100,Lich Bane,2500,True,"SpellDamage,OnHit,NonbootsMovement,AbilityHaste"
-223102,Banshee's Veil,2500,True,"SpellBlock,SpellDamage"
-223105,Aegis of the Legion,500,False,"SpellBlock,Armor,CooldownReduction,AbilityHaste"
-223107,Redemption,2500,True,"Health,ManaRegen,CooldownReduction,AbilityHaste"
-223109,Knight's Vow,2500,True,"Health,Armor,Aura,Active,CooldownReduction,AbilityHaste"
-223110,Frozen Heart,2500,True,"Armor,Mana,Aura,CooldownReduction,AbilityHaste"
-223111,Mercury's Treads,500,True,"Boots,SpellBlock,Tenacity"
-223112,Guardian's Orb,500,True,"SpellDamage,ManaRegen,CooldownReduction,Lane"
-223115,Nashor's Tooth,2500,True,"AttackSpeed,SpellDamage,OnHit,AbilityHaste"
-223116,Rylai's Crystal Scepter,2500,True,"Health,SpellDamage,Slow"
-223118,Malignance,2500,True,"SpellDamage,Mana,AbilityHaste"
-223119,Winter's Approach,2500,True,"Health,Mana,AbilityHaste"
-223121,Fimbulwinter,2500,False,"Health,Mana,AbilityHaste"
-223124,Guinsoo's Rageblade,2500,True,"Damage,AttackSpeed,SpellDamage,OnHit"
-223135,Void Staff,2500,True,"MagicPenetration,SpellDamage"
-223137,Cryptbloom,2500,True,"SpellDamage,MagicPenetration,AbilityHaste"
-223139,Mercurial Scimitar,2500,True,"SpellBlock,Damage,LifeSteal,Active,NonbootsMovement,Tenacity"
-223142,Youmuu's Ghostblade,2500,True,"Damage,Active,NonbootsMovement,ArmorPenetration"
-223143,Randuin's Omen,2500,True,"Health,Armor,Active,Slow"
-223146,Hextech Gunblade,2500,True,"Damage,LifeSteal,SpellDamage,Active,SpellVamp"
-223152,Hextech Rocketbelt,2500,True,"Health,SpellDamage,Active,CooldownReduction,NonbootsMovement,AbilityHaste"
-223153,Blade of The Ruined King,2500,True,"Damage,AttackSpeed,LifeSteal,Slow,OnHit"
-223156,Maw of Malmortius,2500,True,"SpellBlock,Damage,LifeSteal,SpellVamp,AbilityHaste"
-223157,Zhonya's Hourglass,2500,True,"Armor,SpellDamage,Active"
-223158,Ionian Boots of Lucidity,500,True,"Boots,CooldownReduction"
-223161,Spear of Shojin,2500,True,"Health,Damage,AbilityHaste"
-223165,Morellonomicon,2500,True,"Health,SpellDamage,CooldownReduction,AbilityHaste"
-223172,Zephyr,2500,True,"AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,Tenacity"
-223177,Guardian's Blade,500,True,"Health,Damage,Lane,AbilityHaste"
-223181,Hullbreaker,2500,True,"Health,Damage,NonbootsMovement"
-223184,Guardian's Hammer,500,True,"Health,Damage,LifeSteal,Lane"
-223185,Guardian's Dirk,500,True,"Damage,ArmorPenetration,Lane"
-223190,Locket of the Iron Solari,2500,True,"Health,SpellBlock,Armor,Aura,Active,MagicResist,AbilityHaste"
-223193,Gargoyle Stoneplate,2500,False,"SpellBlock,Armor,Active,CooldownReduction,AbilityHaste"
-223222,Mikael's Blessing,2500,True,"Health,ManaRegen,Active,CooldownReduction,Tenacity,AbilityHaste"
-223302,Terminus,2500,True,"Damage,AttackSpeed,OnHit,MagicPenetration,ArmorPenetration"
-223504,Ardent Censer,2500,True,"AttackSpeed,SpellDamage,ManaRegen,NonbootsMovement"
-223508,Essence Reaver,2500,True,"Damage,CriticalStrike,ManaRegen,CooldownReduction,OnHit,AbilityHaste"
-223742,Dead Man's Plate,2500,True,"Health,Armor,Slow,NonbootsMovement"
-223748,Titanic Hydra,2500,True,"Health,HealthRegen,Damage,OnHit"
-223814,Edge of Night,2500,True,"Health,Damage,ArmorPenetration"
-224004,Spectral Cutlass,2500,True,"Damage,ArmorPenetration"
-224005,Imperial Mandate,2500,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-224401,Force of Nature,2500,True,"Health,SpellBlock,NonbootsMovement"
-224403,The Golden Spatula,2500,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,CooldownReduction,NonbootsMovement"
-224628,Horizon Focus,2500,True,"SpellDamage,AbilityHaste"
-224629,Cosmic Drive,2500,True,"Health,SpellDamage,NonbootsMovement,AbilityHaste"
-224633,Riftmaker,2500,True,"Health,SpellDamage,CooldownReduction,SpellVamp"
-224636,Night Harvester,2500,False,"Health,SpellDamage,CooldownReduction,NonbootsMovement,AbilityHaste"
-224637,Demonic Embrace,2500,False,"Health,SpellDamage"
-224644,Crown of the Shattered Queen,2500,False,"Health,SpellDamage,Mana,AbilityHaste"
-224645,Shadowflame,2500,True,"SpellDamage,MagicPenetration"
-224646,Stormsurge,2500,True,"SpellDamage,GoldPer,NonbootsMovement,MagicPenetration"
-226035,Silvermere Dawn,2500,False,"Health,SpellBlock,Damage,Active,Tenacity"
-226333,Death's Dance,2500,True,"Armor,Damage,AbilityHaste"
-226609,Chempunk Chainsword,2500,True,"Health,Damage,CooldownReduction,AbilityHaste"
-226610,Sundered Sky,2500,True,"Health,Damage,CooldownReduction,AbilityHaste"
-226616,Staff of Flowing Water,2500,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-226617,Moonstone Renewer,2500,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-226620,Echoes of Helia,2500,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-226621,Dawncore,2500,True,"SpellDamage,ManaRegen"
-226630,Goredrinker,2750,True,"Health,Damage,Active,CooldownReduction,AbilityHaste"
-226631,Stridebreaker,2500,True,"Health,Damage,AttackSpeed,Slow,NonbootsMovement"
-226632,Divine Sunderer,2500,False,"Health,Damage,CooldownReduction,OnHit,MagicPenetration,ArmorPenetration,AbilityHaste"
-226653,Liandry's Anguish,2500,True,"Health,SpellDamage"
-226655,Luden's Echo,2500,True,"SpellDamage,Mana,CooldownReduction,AbilityHaste"
-226656,Everfrost,2500,False,"Health,SpellDamage,Mana,Active,CooldownReduction,Slow,AbilityHaste"
-226657,Rod of Ages,2500,True,"Health,HealthRegen,SpellDamage,Mana,ManaRegen"
-226660,,0,False,"Health,AbilityHaste"
-226662,Iceborn Gauntlet,2500,True,"Health,Armor,CooldownReduction,Slow,OnHit,AbilityHaste"
-226664,Hollow Radiance,2500,True,"Health,SpellBlock,Aura,MagicResist,AbilityHaste"
-226665,"Jak'Sho, The Protean",2500,True,"Health,SpellBlock,Armor,MagicResist"
-226667,Radiant Virtue,2500,False,"Health,SpellBlock,Armor,Aura,CooldownReduction,AbilityHaste"
-226671,Galeforce,2500,False,"Damage,CriticalStrike,AttackSpeed,Active,NonbootsMovement"
-226672,Kraken Slayer,2500,True,"Damage,AttackSpeed,OnHit,NonbootsMovement"
-226673,Immortal Shieldbow,2500,True,"Damage,CriticalStrike"
-226675,Navori Flickerblades,2500,True,"CriticalStrike,AttackSpeed,NonbootsMovement"
-226676,The Collector,2500,True,"Damage,CriticalStrike,ArmorPenetration"
-226691,Duskblade of Draktharr,2500,False,"Damage,Stealth,CooldownReduction,Slow,ArmorPenetration,AbilityHaste"
-226692,Eclipse,2500,True,"Damage,CooldownReduction,AbilityHaste"
-226693,Prowler's Claw,2750,True,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste"
-226694,Serylda's Grudge,2500,True,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste"
-226695,Serpent's Fang,2500,True,"Damage,ArmorPenetration"
-226696,Axiom Arc,2500,True,"Damage,ArmorPenetration,AbilityHaste"
-226697,Hubris,2500,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
-226698,Profane Hydra,2500,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
-226699,Voltaic Cyclosword,2500,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste"
-226701,Opportunity,2500,True,"Damage,Active,NonbootsMovement,ArmorPenetration"
-228001,Anathema's Chains,2500,True,"Health,Active,CooldownReduction,AbilityHaste"
-228002,Wooglet's Witchcap,6000,True,"Armor,SpellDamage,Active"
-228003,Deathblade,9000,False,"Damage,CriticalStrike,ArmorPenetration"
-228004,Adaptive Helm,6000,False,"Health,SpellBlock,Armor,MagicResist"
-228005,Obsidian Cleaver,3000,False,"Health,Damage,CooldownReduction,OnHit,NonbootsMovement,ArmorPenetration,AbilityHaste"
-228006,Sanguine Blade,3000,False,"Damage,LifeSteal,CooldownReduction,OnHit,AbilityHaste"
-228008,Runeglaive,9000,False,"Health,Damage,AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,AbilityHaste"
-228009,Multitool,2500,True,
-228020,Abyssal Mask,2500,True,"Health,SpellBlock,SpellDamage,CooldownReduction,MagicResist,AbilityHaste"
-322065,Shurelya's Battlesong,2600,True,"SpellDamage,ManaRegen,Active,CooldownReduction,NonbootsMovement,AbilityHaste"
-322526,Whispering Circlet,2250,True,"Health,Mana,ManaRegen"
-322530,Diadem of Songs,2250,False,"Health,Mana,ManaRegen,AbilityHaste"
-323002,Trailblazer,2600,False,"Health,Armor,NonbootsMovement"
-323003,Archangel's Staff,2900,True,"SpellDamage,Mana,AbilityHaste"
-323004,Manamune,2900,True,"Damage,Mana,CooldownReduction,OnHit,AbilityHaste"
-323040,Seraph's Embrace,2900,False,"SpellDamage,Mana,AbilityHaste"
-323042,Muramana,2900,False,"Damage,Mana,CooldownReduction,OnHit,ArmorPenetration"
-323050,Zeke's Convergence,2300,True,"Health,SpellBlock,Armor,AbilityHaste"
-323070,Tear of the Goddess,400,True,"Mana,ManaRegen"
-323075,Thornmail,2650,True,"Health,Armor"
-323107,Redemption,2800,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-323109,Knight's Vow,2900,True,"Health,HealthRegen,Armor,Aura,Active,CooldownReduction,AbilityHaste"
-323110,Frozen Heart,2700,True,"Armor,Mana,Aura,CooldownReduction,AbilityHaste"
-323119,Winter's Approach,2400,True,"Health,Mana,AbilityHaste"
-323121,Fimbulwinter,2400,False,"Health,Mana,AbilityHaste"
-323190,Locket of the Iron Solari,2600,True,"Health,SpellBlock,Armor,Aura,Active,MagicResist,AbilityHaste"
-323222,Mikael's Blessing,2800,True,"Health,ManaRegen,Active,CooldownReduction,Tenacity,AbilityHaste"
-323504,Ardent Censer,2600,True,"AttackSpeed,SpellDamage,ManaRegen,NonbootsMovement"
-324005,Imperial Mandate,2400,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-326616,Staff of Flowing Water,2600,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-326617,Moonstone Renewer,2900,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-326620,Echoes of Helia,2600,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste"
-326621,Dawncore,2900,True,"SpellDamage,ManaRegen"
-326657,Rod of Ages,2600,True,"Health,HealthRegen,SpellDamage,Mana,ManaRegen"
-328020,Abyssal Mask,2850,True,"Health,SpellBlock,CooldownReduction,MagicResist,AbilityHaste"
-443054,Darksteel Talons,2750,True,"Armor,AttackSpeed,NonbootsMovement"
-443055,Fulmination,2750,True,"Damage,AttackSpeed,NonbootsMovement"
-443056,Demon King's Crown,2750,True,"Health,Armor,Damage,AttackSpeed,SpellDamage,MagicResist,AbilityHaste"
-443058,Shield of Molten Stone,2750,True,"Health,Armor"
-443059,Cloak of Starry Night,2750,True,"Health,SpellBlock"
-443060,Sword of the Divine,2750,True,"Damage,CriticalStrike,SpellDamage"
-443061,Force Of Entropy,2750,True,"Health,SpellBlock,Armor,CriticalStrike"
-443062,Sanguine Gift,2750,True,"SpellDamage,SpellVamp,AbilityHaste"
-443063,Eleisa's Miracle,2750,True,"SpellBlock,Armor,AbilityHaste"
-443064,Talisman Of Ascension,2750,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Active,CooldownReduction,SpellVamp,NonbootsMovement,MagicPenetration,ArmorPenetration,MagicResist,AbilityHaste"
-443069,Hamstringer,2750,True,"Damage,CriticalStrike,AttackSpeed"
-443079,Turbo Chemtank,2750,True,"Health,Active,NonbootsMovement"
-443080,Twin Mask,2750,False,"Health,Armor,Damage,AttackSpeed,SpellDamage,MagicResist,AbilityHaste"
-443081,Hexbolt Companion,2750,True,"Health,AttackSpeed,NonbootsMovement"
-443083,Warmog's Armor,2750,True,"Health,HealthRegen,NonbootsMovement"
-443090,Reaper's Toll,2750,True,"Damage,AttackSpeed,SpellDamage,OnHit,NonbootsMovement"
-443193,Gargoyle Stoneplate,2750,True,"SpellBlock,Armor,Active,CooldownReduction,AbilityHaste"
-444636,Night Harvester,2750,True,"Health,SpellDamage,CooldownReduction,NonbootsMovement,AbilityHaste"
-444637,Demonic Embrace,2750,True,"Health,SpellDamage"
-444644,Crown of the Shattered Queen,2750,True,"Health,SpellDamage,Mana,AbilityHaste"
-446632,Divine Sunderer,2750,True,"Health,Damage,CooldownReduction,OnHit,MagicPenetration,ArmorPenetration,AbilityHaste"
-446656,Everfrost,2750,True,"Health,SpellDamage,Mana,Active,CooldownReduction,Slow,AbilityHaste"
-446667,Radiant Virtue,2750,True,"Health,SpellBlock,Armor,Aura,CooldownReduction,AbilityHaste"
-446671,Galeforce,2750,True,"Damage,CriticalStrike,AttackSpeed,Active,NonbootsMovement"
-446691,Duskblade of Draktharr,2750,True,"Damage,Stealth,CooldownReduction,Slow,ArmorPenetration,AbilityHaste"
-446693,Prowler's Claw,1000,True,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste"
-447100,Mirage Blade,2750,True,"Damage,AttackSpeed,SpellDamage,NonbootsMovement,AbilityHaste"
-447101,Gambler's Blade,2750,True,"AttackSpeed,NonbootsMovement,AbilityHaste"
-447102,Reality Fracture,2750,True,"Health,AttackSpeed,SpellDamage"
-447103,Hemomancer's Helm,2750,True,"Damage,SpellVamp,AbilityHaste"
-447104,Innervating Locket,2750,True,"Health,SpellDamage,AbilityHaste"
-447105,Empyrean Promise,2750,True,"SpellDamage,ManaRegen,AbilityHaste"
-447106,Dragonheart,2750,True,"Health,HealthRegen,Armor,Damage,AttackSpeed,MagicResist,AbilityHaste"
-447107,Decapitator,2750,True,"Damage,AttackSpeed,SpellDamage,NonbootsMovement"
-447108,Runecarver,2750,True,"SpellDamage,NonbootsMovement"
-447109,Cruelty,2750,True,"Armor,SpellDamage,MagicResist"
-447110,Moonflair Spellblade,2750,True,"Health,SpellDamage,Tenacity"
-447111,Overlord's Bloodmail,2500,True,"Health,Damage"
-447112,Flesheater,2750,True,"Damage,SpellDamage,MagicPenetration,ArmorPenetration"
-447113,Detonation Orb,2750,True,"SpellDamage,Mana,MagicPenetration"
-447114,Reverberation,2750,True,"Health,Armor,AttackSpeed,OnHit,MagicResist"
-447115,Regicide,2750,True,"Damage,NonbootsMovement,ArmorPenetration"
-447116,Kinkou Jitte,2750,True,"Health,Damage,SpellDamage,AbilityHaste"
-447118,Pyromancer's Cloak,2750,True,"Health,Damage,SpellDamage,SpellVamp"
-447119,Lightning Rod,2750,True,"Damage,AttackSpeed"
-447120,Diamond-Tipped Spear,2750,True,"Damage,AttackSpeed"
-447121,Twilight's Edge,2750,True,"Health,Armor,Damage,AttackSpeed,SpellDamage,MagicResist,AbilityHaste"
-447122,Black Hole Gauntlet,2750,True,"SpellBlock,AttackSpeed,OnHit,AbilityHaste"
-447123,Puppeteer,2750,True,"SpellDamage,ManaRegen,AbilityHaste"
-550001,Healthbar Splash: Blue,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste"
-550002,Healthbar Splash: Orange,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste"
-550003,Healthbar Splash: Green,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste"
-550004,Healthbar Splash: Pink,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste"
-550005,Healthbar Cleanup: Reset Color,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste"
-550006,Healthbar Splash: Rainbow,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste"
-550007,Party Favor,10,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste"
-663039,Atma's Reckoning,2500,True,"Health,CriticalStrike,Lane"
-663056,Demon King's Crown,2500,True,"Health,Armor,Damage,AttackSpeed,SpellDamage,MagicResist,AbilityHaste"
-663058,Shield of Molten Stone,2500,True,"Health,Armor"
-663059,Cloak of Starry Night,2500,True,"Health,SpellBlock"
-663060,Sword of the Divine,2500,True,"Damage,CriticalStrike,SpellDamage"
-663064,Veigar's Talisman of Ascension,900,True,
-663146,Hextech Gunblade,2500,True,"Damage,LifeSteal,SpellDamage,Active,SpellVamp"
-663172,Zephyr,2500,True,"AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,Tenacity"
-663193,Gargoyle Stoneplate,2500,True,"SpellBlock,Armor,Active,CooldownReduction,AbilityHaste"
-664011,Sword of Blossoming Dawn,2500,True,"Health,SpellDamage,CooldownReduction,OnHit,AbilityHaste"
-664403,The Golden Spatula,2500,False,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,CooldownReduction,NonbootsMovement"
-664644,Crown of the Shattered Queen,2500,True,"Health,SpellDamage,Mana,AbilityHaste"
-667101,Gambler's Blade,2500,True,"Damage,NonbootsMovement,MagicPenetration,ArmorPenetration,AbilityHaste"
-667109,Cruelty,2500,True,"Armor,SpellDamage,MagicResist"
-667112,Flesheater,2500,True,"Damage,SpellDamage,MagicPenetration,ArmorPenetration"
-667666,The Collector,3000,True,"Damage,CriticalStrike,ArmorPenetration"
-994403,Golden Spatula,2500,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,CooldownReduction,NonbootsMovement"
+item_id,item_name,gold_total,purchasable,tags,image
+1001,Boots,300,True,Boots,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1001.png
+1004,Faerie Charm,200,True,ManaRegen,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1004.png
+1006,Rejuvenation Bead,300,True,HealthRegen,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1006.png
+1011,Giant's Belt,900,True,Health,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1011.png
+1018,Cloak of Agility,600,True,CriticalStrike,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1018.png
+1026,Blasting Wand,850,True,SpellDamage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1026.png
+1027,Sapphire Crystal,300,True,Mana,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1027.png
+1028,Ruby Crystal,400,True,Health,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1028.png
+1029,Cloth Armor,300,True,Armor,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1029.png
+1031,Chain Vest,800,True,Armor,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1031.png
+1033,Null-Magic Mantle,400,True,SpellBlock,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1033.png
+1035,Emberknife,350,False,"LifeSteal,SpellVamp,Jungle",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1035.png
+1036,Long Sword,350,True,"Damage,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1036.png
+1037,Pickaxe,875,True,Damage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1037.png
+1038,B. F. Sword,1300,True,Damage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1038.png
+1039,Hailblade,350,False,"LifeSteal,SpellVamp,Jungle",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1039.png
+1040,Obsidian Edge,350,True,"LifeSteal,SpellVamp,Jungle",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1040.png
+1042,Dagger,250,True,AttackSpeed,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1042.png
+1043,Recurve Bow,700,True,"AttackSpeed,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1043.png
+1052,Amplifying Tome,400,True,SpellDamage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1052.png
+1053,Vampiric Scepter,900,True,"Damage,LifeSteal",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1053.png
+1054,Doran's Shield,450,True,"Health,HealthRegen,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1054.png
+1055,Doran's Blade,450,True,"Health,Damage,LifeSteal,SpellVamp,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1055.png
+1056,Doran's Ring,400,True,"Health,Lane,ManaRegen,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1056.png
+1057,Negatron Cloak,850,True,SpellBlock,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1057.png
+1058,Needlessly Large Rod,1200,True,SpellDamage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1058.png
+1082,Dark Seal,350,True,"Health,SpellDamage,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1082.png
+1083,Cull,450,True,"Damage,OnHit,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1083.png
+1086,Doran's Bow,400,True,"Damage,AttackSpeed,SpellVamp,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1086.png
+1090,Quest: Top,0,True,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1090.png
+1091,Quest: Mid,0,True,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1091.png
+1092,Quest: Bot,0,True,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1092.png
+1093,Quest: Support,0,True,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1093.png
+1094,Quest: Jungle,0,True,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1094.png
+1101,Scorchclaw Pup,450,True,Jungle,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1101.png
+1102,Gustwalker Hatchling,450,True,Jungle,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1102.png
+1103,Mosstomper Seedling,450,True,Jungle,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1103.png
+1104,Eye of the Herald,0,False,"Trinket,Active",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1104.png
+1105,Mosstomper Seedling,450,True,Jungle,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1105.png
+1106,Gustwalker Hatchling,450,True,Jungle,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1106.png
+1107,Scorchclaw Pup,450,True,Jungle,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1107.png
+1111,Jarvan I's,300,False,"Armor,AttackSpeed,Boots,Tenacity,MagicPenetration,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1111.png
+1120,Doran's Helm,450,True,"Health,SpellBlock,Armor,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1120.png
+1200,Top Lane Quest,0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1200.png
+1201,Mid Lane Quest,0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1201.png
+1202,Bot Lane Quest,0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1202.png
+1203,Support Quest,0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1203.png
+1204,Jungle Quest,0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1204.png
+1205,Jungle Quest Reward,0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1205.png
+1206,Mid Lane Quest Reward,0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1206.png
+1207,Bot Lane Quest Reward,0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1207.png
+1208,Support Quest Reward,0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1208.png
+1209,Jungle Quest Reward,0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1209.png
+1210,Jungle Quest Reward,0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1210.png
+1211,Jungle Quest Reward,0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1211.png
+1220,Unleashed Teleport (Top Lane Quest Reward),0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1220.png
+1221,Top Lane Quest Reward,0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1221.png
+1222,Top Lane Quest,0,False,Lane,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1222.png
+1500,Penetrating Bullets,0,False,"HealthRegen,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1500.png
+1501,Fortification,0,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1501.png
+1502,Reinforced Armor,0,False,"Armor,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1502.png
+1503,Warden's Eye,0,False,"HealthRegen,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1503.png
+1504,Vanguard,0,False,"Armor,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1504.png
+1505,Reinforced Armor,0,False,"Armor,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1505.png
+1506,Reinforced Armor,0,False,"Armor,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1506.png
+1507,Overcharged,0,False,"Armor,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1507.png
+1508,Anti-tower Socks,0,False,"Armor,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1508.png
+1509,Gusto,0,False,"Armor,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1509.png
+1510,Phreakish Gusto,0,False,"Armor,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1510.png
+1511,Super Mech Armor,0,False,"Armor,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1511.png
+1512,Super Mech Power Field,0,False,"Armor,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1512.png
+1515,Turret Plating,0,False,Armor,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1515.png
+1516,Structure Bounty,0,False,"HealthRegen,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1516.png
+1517,Structure Bounty,0,False,"HealthRegen,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1517.png
+1518,Structure Bounty,0,False,"HealthRegen,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1518.png
+1519,Structure Bounty,0,False,"HealthRegen,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1519.png
+1520,OvererchargedHA,0,False,"Armor,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1520.png
+1521,Fortification,0,False,OnHit,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1521.png
+1522,Tower Power-Up,0,False,"Armor,Damage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1522.png
+1523,Overcharged,0,False,"Armor,ManaRegen,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1523.png
+1524,Overgrowth,0,False,"Armor,Damage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/1524.png
+2001,Recall,60,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2001.png
+2002,Enhanced Recall,60,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2002.png
+2003,Health Potion,50,True,"HealthRegen,Consumable,Lane,Jungle",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2003.png
+2007,Disabled Recall,60,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2007.png
+2008,,60,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2008.png
+2010,Total Biscuit of Everlasting Will,50,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2010.png
+2015,Kircheis Shard,700,False,"Damage,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2015.png
+2019,Steel Sigil,1100,True,"Armor,Damage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2019.png
+2020,The Brutalizer,1337,True,"Damage,CooldownReduction,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2020.png
+2021,Tunneler,1150,True,"Health,Damage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2021.png
+2022,Glowing Mote,250,True,CooldownReduction,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2022.png
+2031,Refillable Potion,150,True,"HealthRegen,Consumable,Active,Lane,Jungle",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2031.png
+2033,Corrupting Potion,500,False,"Active,Consumable,HealthRegen,Lane,ManaRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2033.png
+2049,Guardian's Amulet,500,True,"SpellDamage,ManaRegen,CooldownReduction,Lane,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2049.png
+2050,Guardian's Shroud,500,True,"Health,SpellDamage,CooldownReduction,Lane,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2050.png
+2051,Guardian's Horn,950,True,"Health,HealthRegen,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2051.png
+2052,Poro-Snax,0,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2052.png
+2055,Control Ward,75,True,"Consumable,Lane,Stealth,Vision",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2055.png
+2056,Stealth Ward,40,False,"Consumable,Lane,Stealth,Vision",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2056.png
+2065,Shurelya's Battlesong,2200,True,"SpellDamage,ManaRegen,Active,CooldownReduction,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2065.png
+2138,Elixir of Iron,500,True,"Health,Consumable,NonbootsMovement,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2138.png
+2139,Elixir of Sorcery,500,True,"Consumable,ManaRegen,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2139.png
+2140,Elixir of Wrath,500,True,"Consumable,Damage,LifeSteal,SpellVamp",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2140.png
+2141,Cappa Juice,300,True,"Damage,Consumable",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2141.png
+2142,Juice of Power,500,True,"SpellDamage,Consumable",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2142.png
+2143,Juice of Vitality,500,True,"Health,Consumable",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2143.png
+2144,Juice of Haste,500,True,"Consumable,CooldownReduction",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2144.png
+2145,Lucky Dice,0,False,Consumable,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2145.png
+2146,Enhanced Lucky Dice,0,False,Consumable,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2146.png
+2147,Augment Level,1250,True,Consumable,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2147.png
+2150,Elixir of Skill,0,False,Consumable,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2150.png
+2151,Elixir of Avarice,50,False,"Health,Consumable,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2151.png
+2152,Elixir of Force,50,False,"Consumable,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2152.png
+2161,Bandle Juice of Power,1000,True,"SpellDamage,Consumable",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2161.png
+2162,Bandle Juice of Vitality,1000,True,"Health,Consumable",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2162.png
+2163,Bandle Juice of Haste,1000,True,"Consumable,CooldownReduction",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2163.png
+2403,Minion Dematerializer,0,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2403.png
+2420,Seeker's Armguard,1600,True,"Armor,SpellDamage,Active",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2420.png
+2421,Shattered Armguard,1600,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2421.png
+2422,Slightly Magical Footwear,300,False,Boots,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2422.png
+2501,Overlord's Bloodmail,3300,True,"Health,Damage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2501.png
+2502,Unending Despair,2800,True,"Health,Armor,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2502.png
+2503,Blackfire Torch,2800,True,"SpellDamage,Mana,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2503.png
+2504,Kaenic Rookern,2900,True,"Health,SpellBlock,HealthRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2504.png
+2508,Fated Ashes,900,True,SpellDamage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2508.png
+2510,Dusk and Dawn,3100,True,"Health,AttackSpeed,SpellDamage,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2510.png
+2512,Fiendhunter Bolts,2650,True,"CriticalStrike,AttackSpeed,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2512.png
+2517,Endless Hunger,3100,True,"Damage,LifeSteal,SpellVamp,Tenacity,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2517.png
+2520,Bastionbreaker,3200,True,"Damage,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2520.png
+2522,Actualizer,2800,True,"SpellDamage,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2522.png
+2523,Hexoptics C44,2800,True,"Damage,CriticalStrike",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2523.png
+2524,Bandlepipes,2300,True,"Health,SpellBlock,Armor,AttackSpeed,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2524.png
+2525,Protoplasm Harness,2600,True,"Health,NonbootsMovement,Tenacity,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2525.png
+2526,Whispering Circlet,2250,True,"Health,Mana,ManaRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2526.png
+2530,Diadem of Songs,2250,False,"Health,Mana,ManaRegen,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/2530.png
+3001,Evenshroud,2300,False,"Health,SpellBlock,Armor,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3001.png
+3002,Trailblazer,2400,False,"Health,Armor,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3002.png
+3003,Archangel's Staff,2900,True,"SpellDamage,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3003.png
+3004,Manamune,2900,True,"Damage,Mana,CooldownReduction,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3004.png
+3005,Ghostcrawlers,1000,True,Boots,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3005.png
+3006,Berserker's Greaves,1100,True,"AttackSpeed,Boots",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3006.png
+3008,Gluttonous Greaves,1000,True,"LifeSteal,SpellVamp,Boots",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3008.png
+3009,Boots of Swiftness,1000,True,Boots,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3009.png
+3010,Symbiotic Soles,900,False,Boots,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3010.png
+3011,Chemtech Putrifier,1900,False,"SpellDamage,ManaRegen,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3011.png
+3012,Chalice of Blessing,900,False,"Health,ManaRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3012.png
+3013,Synchronized Souls,900,False,Boots,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3013.png
+3020,Sorcerer's Shoes,1100,True,"Boots,MagicPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3020.png
+3023,Lifewell Pendant,1050,False,"Health,Armor,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3023.png
+3024,Glacial Buckler,900,True,"Armor,Mana,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3024.png
+3026,Guardian Angel,3200,True,"Armor,Damage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3026.png
+3031,Infinity Edge,3500,True,"CriticalStrike,Damage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3031.png
+3032,Yun Tal Wildarrows,3100,True,"Damage,CriticalStrike,AttackSpeed",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3032.png
+3033,Mortal Reminder,3000,True,"Damage,CriticalStrike,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3033.png
+3035,Last Whisper,1450,True,"ArmorPenetration,Damage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3035.png
+3036,Lord Dominik's Regards,3300,True,"Damage,CriticalStrike,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3036.png
+3039,Atma's Reckoning,2900,True,"Health,CriticalStrike",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3039.png
+3040,Seraph's Embrace,2900,False,"SpellDamage,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3040.png
+3041,Mejai's Soulstealer,1500,True,"Health,SpellDamage,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3041.png
+3042,Muramana,2900,False,"Damage,Mana,CooldownReduction,OnHit,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3042.png
+3044,Phage,1100,True,"Health,Damage,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3044.png
+3046,Phantom Dancer,2650,True,"CriticalStrike,AttackSpeed,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3046.png
+3047,Plated Steelcaps,1200,True,"Armor,Boots",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3047.png
+3050,Zeke's Convergence,2200,True,"Health,SpellBlock,Armor,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3050.png
+3051,Hearthbound Axe,1200,True,"Damage,AttackSpeed",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3051.png
+3053,Sterak's Gage,3200,True,"Health,Damage,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3053.png
+3057,Sheen,900,True,"OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3057.png
+3065,Spirit Visage,2700,True,"Health,SpellBlock,HealthRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3065.png
+3066,Winged Moonplate,800,True,"Health,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3066.png
+3067,Kindlegem,800,True,"Health,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3067.png
+3068,Sunfire Aegis,2700,True,"Health,Armor,Aura,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3068.png
+3070,Tear of the Goddess,400,True,"Mana,ManaRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3070.png
+3071,Black Cleaver,3000,True,"Health,Damage,CooldownReduction,OnHit,NonbootsMovement,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3071.png
+3072,Bloodthirster,3400,True,"Damage,LifeSteal",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3072.png
+3073,Experimental Hexplate,3000,True,"Health,Damage,AttackSpeed,CooldownReduction,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3073.png
+3074,Ravenous Hydra,3300,True,"Damage,LifeSteal,CooldownReduction,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3074.png
+3075,Thornmail,2450,True,"Health,Armor",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3075.png
+3076,Bramble Vest,800,True,Armor,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3076.png
+3077,Tiamat,1200,True,"Damage,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3077.png
+3078,Trinity Force,3333,True,"Health,Damage,AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3078.png
+3082,Warden's Mail,1000,True,Armor,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3082.png
+3083,Warmog's Armor,3100,True,"Health,HealthRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3083.png
+3084,Heartsteel,3000,True,"Health,HealthRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3084.png
+3085,Runaan's Hurricane,2650,True,"CriticalStrike,AttackSpeed,OnHit,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3085.png
+3086,Zeal,1200,True,"CriticalStrike,AttackSpeed,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3086.png
+3087,Statikk Shiv,3000,True,"Damage,AttackSpeed,SpellDamage,OnHit,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3087.png
+3089,Rabadon's Deathcap,3500,True,SpellDamage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3089.png
+3091,Wit's End,2800,True,"SpellBlock,AttackSpeed,OnHit,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3091.png
+3094,Rapid Firecannon,2650,True,"CriticalStrike,AttackSpeed,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3094.png
+3095,Deprecated item,3000,True,"Damage,CriticalStrike,AttackSpeed,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3095.png
+3097,Stormrazor,3200,True,"Damage,CriticalStrike,AttackSpeed,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3097.png
+3100,Lich Bane,2900,True,"SpellDamage,OnHit,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3100.png
+3102,Banshee's Veil,3000,True,"SpellBlock,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3102.png
+3105,Aegis of the Legion,1100,True,"SpellBlock,Armor,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3105.png
+3107,Redemption,2300,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3107.png
+3108,Fiendish Codex,850,True,"SpellDamage,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3108.png
+3109,Knight's Vow,2300,True,"Health,HealthRegen,Armor,Aura,Active,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3109.png
+3110,Frozen Heart,2500,True,"Armor,Mana,Aura,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3110.png
+3111,Mercury's Treads,1250,True,"Boots,SpellBlock,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3111.png
+3112,Guardian's Orb,950,True,"Health,SpellDamage,ManaRegen,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3112.png
+3113,Aether Wisp,900,True,"NonbootsMovement,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3113.png
+3114,Forbidden Idol,600,True,ManaRegen,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3114.png
+3115,Nashor's Tooth,2900,True,"AttackSpeed,SpellDamage,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3115.png
+3116,Rylai's Crystal Scepter,2600,True,"Health,SpellDamage,Slow",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3116.png
+3117,Mobility Boots,1000,False,Boots,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3117.png
+3118,Malignance,2700,True,"SpellDamage,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3118.png
+3119,Winter's Approach,2400,True,"Health,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3119.png
+3121,Fimbulwinter,2400,False,"Health,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3121.png
+3123,Executioner's Calling,800,True,Damage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3123.png
+3124,Guinsoo's Rageblade,3000,True,"Damage,AttackSpeed,SpellDamage,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3124.png
+3128,Deathfire Grasp,2900,True,"SpellDamage,CooldownReduction",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3128.png
+3131,Sword of the Divine,2300,True,"Damage,CriticalStrike,AttackSpeed",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3131.png
+3133,Caulfield's Warhammer,1050,True,"Damage,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3133.png
+3134,Serrated Dirk,1000,True,"Damage,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3134.png
+3135,Void Staff,3000,True,"MagicPenetration,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3135.png
+3137,Cryptbloom,3000,True,"SpellDamage,MagicPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3137.png
+3139,Mercurial Scimitar,3200,True,"SpellBlock,Damage,LifeSteal,Active,NonbootsMovement,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3139.png
+3140,Quicksilver Sash,1300,True,"Active,SpellBlock",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3140.png
+3142,Youmuu's Ghostblade,2800,True,"Damage,Active,NonbootsMovement,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3142.png
+3143,Randuin's Omen,2700,True,"Health,Armor,Active,Slow",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3143.png
+3144,Scout's Slingshot,600,True,AttackSpeed,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3144.png
+3145,Hextech Alternator,1100,True,SpellDamage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3145.png
+3146,Hextech Gunblade,3000,True,"Damage,LifeSteal,SpellDamage,Active,SpellVamp",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3146.png
+3147,Haunting Guise,1300,True,"Health,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3147.png
+3152,Hextech Rocketbelt,2650,True,"Health,SpellDamage,Active,CooldownReduction,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3152.png
+3153,Blade of The Ruined King,3200,True,"Damage,AttackSpeed,LifeSteal,Slow,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3153.png
+3155,Hexdrinker,1300,True,"Damage,SpellBlock",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3155.png
+3156,Maw of Malmortius,3100,True,"SpellBlock,Damage,LifeSteal,SpellVamp,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3156.png
+3157,Zhonya's Hourglass,3250,True,"Armor,SpellDamage,Active",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3157.png
+3158,Ionian Boots of Lucidity,900,True,"Boots,CooldownReduction",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3158.png
+3161,Spear of Shojin,3100,True,"Health,Damage,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3161.png
+3165,Morellonomicon,2850,True,"Health,SpellDamage,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3165.png
+3168,Immortal Path,1000,True,"LifeSteal,SpellVamp,Boots",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3168.png
+3170,Swiftmarch,1000,True,Boots,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3170.png
+3171,Crimson Lucidity,900,True,"CooldownReduction,Boots",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3171.png
+3172,Gunmetal Greaves,1100,True,"AttackSpeed,LifeSteal,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3172.png
+3173,Chainlaced Crushers,1250,True,"SpellBlock,Boots,Tenacity,MagicResist",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3173.png
+3174,Armored Advance,1200,True,"Armor,Boots",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3174.png
+3175,Spellslinger's Shoes,1100,True,"Boots,MagicPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3175.png
+3176,Forever Forward,900,False,Boots,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3176.png
+3177,Guardian's Blade,950,True,"Health,Damage,Lane,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3177.png
+3179,Umbral Glaive,2800,True,"Damage,Vision,CooldownReduction,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3179.png
+3181,Hullbreaker,3000,True,"Health,Damage,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3181.png
+3184,Guardian's Hammer,950,True,"Health,Damage,LifeSteal,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3184.png
+3190,Locket of the Iron Solari,2200,True,"Health,SpellBlock,Armor,Aura,Active,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3190.png
+3193,Gargoyle Stoneplate,3150,False,"SpellBlock,Armor,Active,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3193.png
+3211,Spectre's Cowl,1250,True,"Health,HealthRegen,SpellBlock",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3211.png
+3222,Mikael's Blessing,2300,True,"Health,ManaRegen,Active,CooldownReduction,Tenacity,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3222.png
+3302,Terminus,3000,True,"Damage,AttackSpeed,OnHit,MagicPenetration,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3302.png
+3330,Scarecrow Effigy,0,True,"Active,Jungle,Lane,Trinket,Vision",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3330.png
+3340,Stealth Ward,0,True,"Active,Jungle,Lane,Trinket,Vision",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3340.png
+3348,Arcane Sweeper,0,False,"Active,Jungle,Lane,Trinket,Vision",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3348.png
+3349,Lucent Singularity,0,False,"Active,Jungle,Lane,Trinket,Vision",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3349.png
+3363,Farsight Alteration,0,True,"Active,Trinket,Vision",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3363.png
+3364,Oracle Lens,0,True,"Active,Trinket,Vision",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3364.png
+3398,Small Party Favor,0,False,"Consumable,GoldPer",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3398.png
+3399,Party Favor,0,False,"Consumable,GoldPer",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3399.png
+3400,Your Cut,0,False,"Consumable,GoldPer",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3400.png
+3430,Rite Of Ruin,2500,True,"CriticalStrike,SpellDamage,CooldownReduction",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3430.png
+3504,Ardent Censer,2200,True,"AttackSpeed,SpellDamage,ManaRegen,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3504.png
+3508,Essence Reaver,3050,True,"Damage,CriticalStrike,ManaRegen,CooldownReduction,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3508.png
+3513,Eye of the Herald,0,False,"Trinket,Active",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3513.png
+3599,Kalista's Black Spear,0,True,Consumable,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3599.png
+3600,Kalista's Black Spear,0,True,Consumable,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3600.png
+3742,Dead Man's Plate,2900,True,"Health,Armor,Slow,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3742.png
+3748,Titanic Hydra,3300,True,"Health,HealthRegen,Damage,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3748.png
+3801,Crystalline Bracer,800,True,"Health,HealthRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3801.png
+3802,Lost Chapter,1200,True,"SpellDamage,Mana,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3802.png
+3803,Catalyst of Aeons,1300,True,"Health,HealthRegen,Mana,ManaRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3803.png
+3814,Edge of Night,3000,True,"Health,Damage,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3814.png
+3850,Spellthief's Edge,400,False,"Health,SpellDamage,ManaRegen,Vision,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3850.png
+3851,Frostfang,400,False,"GoldPer,Lane,ManaRegen,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3851.png
+3853,Shard of True Ice,400,False,"GoldPer,Lane,ManaRegen,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3853.png
+3854,Steel Shoulderguards,400,False,"Health,HealthRegen,Damage,Vision,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3854.png
+3855,Runesteel Spaulders,400,False,"Health,HealthRegen,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3855.png
+3857,Pauldrons of Whiterock,400,False,"Health,HealthRegen,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3857.png
+3858,Relic Shield,400,False,"Health,HealthRegen,SpellDamage,Vision,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3858.png
+3859,Targon's Buckler,400,False,"Health,HealthRegen,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3859.png
+3860,Bulwark of the Mountain,400,False,"Health,HealthRegen,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3860.png
+3862,Spectral Sickle,400,False,"Health,Damage,ManaRegen,Vision,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3862.png
+3863,Harrowing Crescent,400,False,"Health,ManaRegen,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3863.png
+3864,Black Mist Scythe,400,False,"Health,ManaRegen,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3864.png
+3865,World Atlas,400,True,"Health,ManaRegen,Vision,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3865.png
+3866,Runic Compass,400,False,"SpellDamage,ManaRegen,Vision,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3866.png
+3867,Bounty of Worlds,400,False,"SpellDamage,ManaRegen,Vision,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3867.png
+3869,Celestial Opposition,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3869.png
+3870,Dream Maker,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3870.png
+3871,Zaz'Zak's Realmspike,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3871.png
+3876,Solstice Sleigh,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3876.png
+3877,Bloodsong,400,True,"Health,HealthRegen,ManaRegen,Vision,GoldPer,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3877.png
+3901,<rarityLegendary>Fire at Will</rarityLegendary><br><subtitleLeft><silver>500 Silver Serpents</silver></subtitleLeft>,0,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3901.png
+3902,<rarityLegendary>Death's Daughter</rarityLegendary><br><subtitleLeft><silver>500 Silver Serpents</silver></subtitleLeft>,0,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3902.png
+3903,<rarityLegendary>Raise Morale</rarityLegendary><br><subtitleLeft><silver>500 Silver Serpents</silver></subtitleLeft>,0,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3903.png
+3916,Oblivion Orb,800,True,SpellDamage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/3916.png
+4003,Lifeline,1600,True,"Damage,NonbootsMovement,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4003.png
+4004,Spectral Cutlass,2800,True,"Damage,NonbootsMovement,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4004.png
+4005,Imperial Mandate,2400,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4005.png
+4010,Bloodletter's Curse,2500,True,"SpellBlock,SpellDamage,CooldownReduction,MagicPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4010.png
+4011,Sword of Blossoming Dawn,2500,True,"Health,SpellDamage,CooldownReduction,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4011.png
+4012,Sin Eater,3000,True,"Health,SpellBlock,Armor,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4012.png
+4013,Lightning Braid,3000,True,"SpellBlock,Armor,SpellDamage,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4013.png
+4014,Frozen Mallet,3000,False,"Health,Damage,AttackSpeed,Slow",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4014.png
+4015,Perplexity,2500,True,"SpellDamage,CooldownReduction,NonbootsMovement,MagicPenetration,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4015.png
+4016,Wordless Promise,2500,True,"SpellDamage,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4016.png
+4017,Hellfire Hatchet,2500,True,"Damage,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4017.png
+4401,Force of Nature,2800,True,"Health,SpellBlock,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4401.png
+4402,Innervating Locket,2950,True,"Health,Damage,Mana,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4402.png
+4403,The Golden Spatula,7187,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,CooldownReduction,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4403.png
+4628,Horizon Focus,2700,True,"SpellDamage,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4628.png
+4629,Cosmic Drive,3000,True,"Health,SpellDamage,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4629.png
+4630,Blighting Jewel,1100,True,"MagicPenetration,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4630.png
+4632,Verdant Barrier,1600,True,"SpellBlock,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4632.png
+4633,Riftmaker,3100,True,"Health,SpellDamage,CooldownReduction,SpellVamp",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4633.png
+4635,Leeching Leer,1265,False,"Health,SpellDamage,SpellVamp",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4635.png
+4636,Night Harvester,2765,False,"Health,SpellDamage,CooldownReduction,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4636.png
+4637,Demonic Embrace,3000,False,"Health,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4637.png
+4638,Watchful Wardstone,1100,True,"Health,SpellBlock,Armor,Vision,Active,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4638.png
+4641,Stirring Wardstone,350,False,"Health,Damage,SpellDamage,ManaRegen,Vision,Active,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4641.png
+4642,Bandleglass Mirror,900,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4642.png
+4643,Vigilant Wardstone,2300,True,"Health,SpellBlock,Armor,Vision,Active,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4643.png
+4644,Crown of the Shattered Queen,2865,False,"Health,SpellDamage,Mana,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4644.png
+4645,Shadowflame,3200,True,"SpellDamage,MagicPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4645.png
+4646,Stormsurge,2800,True,"SpellDamage,GoldPer,NonbootsMovement,MagicPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/4646.png
+6029,Ironspike Whip,1100,False,"Damage,Active",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6029.png
+6032,Stat Bonus,750,True,"Health,SpellBlock,Armor,Damage,CriticalStrike,AttackSpeed,SpellDamage,Mana,Consumable,CooldownReduction,SpellVamp,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6032.png
+6035,Silvermere Dawn,3000,False,"Health,SpellBlock,Damage,Active,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6035.png
+6333,Death's Dance,3300,True,"Armor,Damage,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6333.png
+6609,Chempunk Chainsword,3000,True,"Health,Damage,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6609.png
+6610,Sundered Sky,3100,True,"Health,Damage,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6610.png
+6616,Staff of Flowing Water,2250,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6616.png
+6617,Moonstone Renewer,2200,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6617.png
+6620,Echoes of Helia,2200,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6620.png
+6621,Dawncore,2500,True,"SpellDamage,ManaRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6621.png
+6630,Goredrinker,3200,False,"Health,Damage,LifeSteal,Active,CooldownReduction,SpellVamp,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6630.png
+6631,Stridebreaker,3300,True,"Health,Damage,AttackSpeed,Slow",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6631.png
+6632,Divine Sunderer,3450,False,"Health,Damage,CooldownReduction,OnHit,MagicPenetration,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6632.png
+6653,Liandry's Torment,3000,True,"Health,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6653.png
+6655,Luden's Echo,2750,True,"SpellDamage,Mana,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6655.png
+6656,Everfrost,2865,False,"Health,SpellDamage,Mana,Active,CooldownReduction,Slow,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6656.png
+6657,Rod of Ages,2600,True,"Health,HealthRegen,SpellDamage,Mana,ManaRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6657.png
+6660,Bami's Cinder,900,True,"Health,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6660.png
+6662,Iceborn Gauntlet,2900,True,"Health,Armor,CooldownReduction,Slow,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6662.png
+6664,Hollow Radiance,2800,True,"Health,SpellBlock,HealthRegen,Aura,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6664.png
+6665,"Jak'Sho, The Protean",3200,True,"Health,SpellBlock,Armor,MagicResist",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6665.png
+6667,Radiant Virtue,2600,False,"Health,SpellBlock,Armor,Aura,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6667.png
+6670,Noonquiver,1300,True,"Damage,CriticalStrike",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6670.png
+6671,Galeforce,3500,False,"Damage,CriticalStrike,AttackSpeed,Active,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6671.png
+6672,Kraken Slayer,3000,True,"Damage,AttackSpeed,OnHit,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6672.png
+6673,Immortal Shieldbow,3000,True,"Damage,CriticalStrike",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6673.png
+6675,Navori Flickerblade,2650,True,"CriticalStrike,AttackSpeed,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6675.png
+6676,The Collector,3000,True,"Damage,CriticalStrike,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6676.png
+6677,Rageknife,1100,False,"AttackSpeed,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6677.png
+6690,Rectrix,775,True,"Damage,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6690.png
+6691,Duskblade of Draktharr,2950,False,"Damage,Stealth,CooldownReduction,Slow,NonbootsMovement,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6691.png
+6692,Eclipse,2900,True,"Damage,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6692.png
+6693,Prowler's Claw,2850,False,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6693.png
+6694,Serylda's Grudge,3000,True,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6694.png
+6695,Serpent's Fang,2500,True,"Damage,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6695.png
+6696,Axiom Arc,2750,True,"Damage,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6696.png
+6697,Hubris,2800,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6697.png
+6698,Profane Hydra,2850,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6698.png
+6699,Voltaic Cyclosword,3000,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6699.png
+6700,Shield of the Rakkor,2675,False,"Armor,Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6700.png
+6701,Opportunity,2700,False,"Damage,Active,NonbootsMovement,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6701.png
+6702,Scouting Ahead,0,False,"Active,Jungle,Lane,Trinket,Vision",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/6702.png
+7050,Gangplank Placeholder,0,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/7050.png
+8001,Anathema's Chains,2500,False,"Health,Active,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/8001.png
+8010,Bloodletter's Curse,2900,True,"Health,SpellDamage,CooldownReduction,MagicPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/8010.png
+8020,Abyssal Mask,2650,True,"Health,SpellBlock,CooldownReduction,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/8020.png
+9168,Locked Weapon Slot,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9168.png
+9171,Cyclonic Slicers,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9171.png
+9172,YuumiBot,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9172.png
+9173,Radiant Field,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9173.png
+9174,Statikk Sword,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9174.png
+9175,Lioness's Lament,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9175.png
+9176,Gatling Bunny-Guns,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9176.png
+9177,Searing Shortbow,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9177.png
+9178,The Annihilator,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9178.png
+9179,Battle Bunny Crossbow,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9179.png
+9180,UwU Blaster,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9180.png
+9181,Vortex Glove,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9181.png
+9183,Blade-o-rang,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9183.png
+9184,Bunny Mega-Blast,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9184.png
+9185,Anti-Shark Sea Mine,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9185.png
+9187,T.I.B.B.E.R.S,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9187.png
+9188,Ani-Mines,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9188.png
+9189,Final City Transit,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9189.png
+9190,Echoing Batblades,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9190.png
+9192,Paw Print Poisoner,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9192.png
+9193,Iceblast Armor,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9193.png
+9271,Unceasing Cyclone,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9271.png
+9272,YuumiBot_Final_FINAL,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9272.png
+9273,Explosive Embrace,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9273.png
+9274,Prumbis's Electrocarver,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9274.png
+9275,Enveloping Light,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9275.png
+9276,Double Bun-Bun Barrage,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9276.png
+9277,Evolved Embershot,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9277.png
+9278,Animapocalypse,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9278.png
+9279,Bunny Prime Ballista,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9279.png
+9280,OwO Blaster,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9280.png
+9281,Tempest's Gauntlet,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9281.png
+9283,Quad-o-rang,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9283.png
+9284,Rapid Rabbit Raindown,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9284.png
+9285,Neverending Mobstomper,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9285.png
+9287,T.I.B.B.E.R.S (B.E.E.G Edition),0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9287.png
+9288,Jinx's Tri-Namite,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9288.png
+9289,FC Limited Express,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9289.png
+9290,Vayne's Chromablades,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9290.png
+9292,Bearfoot Chem-Dispenser,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9292.png
+9293,Deep Freeze,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9293.png
+9300,Meow Meow,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9300.png
+9301,Shield Slam,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9301.png
+9302,Sound Wave,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9302.png
+9303,Pillory Swipe,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9303.png
+9304,Steel Tempest,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9304.png
+9305,Tentacle Slam,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9305.png
+9306,Winged Dagger,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9306.png
+9307,Guiding Hex,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9307.png
+9308,Bunny Hop,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9308.png
+9400,Battle Cat Barrage,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9400.png
+9401,Light of the Lion,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9401.png
+9402,Anima Echo,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9402.png
+9403,Savage Slice,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9403.png
+9404,Wandering Storms,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9404.png
+9405,Grizzly Smash,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9405.png
+9406,Lover's Ricochet,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9406.png
+9407,Hopped-Up Hex,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9407.png
+9408,Carrot Crash,0,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/9408.png
+123430,Rite of Ruin,3000,True,"CriticalStrike,SpellDamage,CooldownReduction,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/123430.png
+124011,Sword of Blossoming Dawn,2350,True,"Health,SpellDamage,CooldownReduction,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/124011.png
+126697,Hubris,2950,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/126697.png
+220000,Stat Bonus,750,True,"Health,SpellBlock,Armor,Damage,CriticalStrike,AttackSpeed,SpellDamage,Mana,Consumable,CooldownReduction,SpellVamp,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/220000.png
+220001,Legendary Fighter Item,2250,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/220001.png
+220002,Legendary Marksman Item,2250,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/220002.png
+220003,Legendary Assassin Item,2250,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/220003.png
+220004,Legendary Mage Item,2250,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/220004.png
+220005,Legendary Tank Item,2250,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/220005.png
+220006,Legendary Support Item,2250,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/220006.png
+220007,Prismatic Item,4000,True,Consumable,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/220007.png
+220008,Anvil Voucher,750,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/220008.png
+220009,Gold Stat Anvil Voucher,750,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/220009.png
+220010,Prismatic Stat Voucher,750,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/220010.png
+220011,Bravery Voucher,750,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/220011.png
+220012,Shardblade,2500,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/220012.png
+220013,Poro-Snax,0,False,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/220013.png
+221011,Giant's Belt,500,False,Health,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/221011.png
+221026,Blasting Wand,500,False,SpellDamage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/221026.png
+221031,Chain Vest,500,False,Armor,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/221031.png
+221038,B. F. Sword,1300,True,Damage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/221038.png
+221043,Recurve Bow,500,False,"AttackSpeed,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/221043.png
+221053,Vampiric Scepter,500,False,"Damage,LifeSteal",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/221053.png
+221057,Negatron Cloak,450,False,SpellBlock,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/221057.png
+221058,Needlessly Large Rod,500,False,SpellDamage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/221058.png
+222022,Glowing Mote,250,False,CooldownReduction,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222022.png
+222051,Guardian's Horn,500,True,"Health,HealthRegen,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222051.png
+222065,Shurelya's Battlesong,2500,True,"SpellDamage,ManaRegen,Active,CooldownReduction,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222065.png
+222141,Cappa Juice,500,True,Consumable,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222141.png
+222502,Unending Despair,2500,True,"Health,Armor,CooldownReduction,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222502.png
+222503,Blackfire Torch,2500,True,"SpellDamage,Mana,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222503.png
+222504,Kaenic Rookern,2500,True,"Health,SpellBlock,HealthRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222504.png
+222510,Dusk and Dawn,2500,True,"Health,AttackSpeed,SpellDamage,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222510.png
+222512,Fiendhunter Bolts,2500,True,"CriticalStrike,AttackSpeed,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222512.png
+222517,Endless Hunger,2500,True,"Damage,LifeSteal,SpellVamp,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222517.png
+222522,Actualizer,2500,True,"SpellDamage,Mana,Active,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222522.png
+222523,Hexoptics C44,2500,True,"Damage,CriticalStrike",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222523.png
+222524,Bandlepipes,2500,True,"Health,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222524.png
+222525,Protoplasm Harness,2500,True,"Health,NonbootsMovement,Tenacity,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222525.png
+222526,Whispering Circlet,2500,True,"Health,Mana,ManaRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222526.png
+222530,Diadem of Songs,2500,False,"Health,Mana,ManaRegen,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/222530.png
+223001,Evenshroud,2500,False,"Health,SpellBlock,Armor,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223001.png
+223002,Trailblazer,2500,True,"Health,Armor,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223002.png
+223003,Archangel's Staff,2500,True,"SpellDamage,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223003.png
+223004,Manamune,2500,True,"Damage,Mana,CooldownReduction,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223004.png
+223005,Ghostcrawlers,500,True,Boots,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223005.png
+223006,Berserker's Greaves,500,True,"AttackSpeed,Boots",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223006.png
+223008,Gluttonous Greaves,500,True,"LifeSteal,SpellVamp,Boots",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223008.png
+223009,Boots of Swiftness,500,True,Boots,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223009.png
+223011,Chemtech Putrifier,1900,False,"SpellDamage,ManaRegen,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223011.png
+223020,Sorcerer's Shoes,500,True,"Boots,MagicPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223020.png
+223026,Guardian Angel,2500,True,"Armor,Damage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223026.png
+223031,Infinity Edge,2500,True,"CriticalStrike,Damage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223031.png
+223032,Yun Tal Wildarrows,2500,True,"Damage,CriticalStrike",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223032.png
+223033,Mortal Reminder,2500,True,"Damage,CriticalStrike,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223033.png
+223036,Lord Dominik's Regards,2500,True,"Damage,CriticalStrike,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223036.png
+223039,Atma's Reckoning,2500,True,"Health,CriticalStrike,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223039.png
+223040,Seraph's Embrace,2500,False,"SpellDamage,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223040.png
+223042,Muramana,2500,False,"Damage,Mana,CooldownReduction,OnHit,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223042.png
+223046,Phantom Dancer,2500,True,"CriticalStrike,AttackSpeed,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223046.png
+223047,Plated Steelcaps,500,True,"Armor,Boots",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223047.png
+223050,Zeke's Convergence,2500,True,"Health,SpellBlock,Armor,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223050.png
+223053,Sterak's Gage,2500,True,"Health,Damage,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223053.png
+223057,Sheen,2500,False,"OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223057.png
+223065,Spirit Visage,2500,True,"Health,SpellBlock,HealthRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223065.png
+223067,Kindlegem,500,False,"Health,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223067.png
+223068,Sunfire Aegis,2500,True,"Health,Armor,Aura,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223068.png
+223069,Void Immolation,6000,True,"Health,SpellBlock,HealthRegen,Armor,Aura,CooldownReduction,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223069.png
+223071,Black Cleaver,2500,True,"Health,Damage,CooldownReduction,OnHit,NonbootsMovement,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223071.png
+223072,Bloodthirster,2500,True,"Damage,LifeSteal",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223072.png
+223073,Experimental Hexplate,2500,True,"Health,Damage,AttackSpeed,CooldownReduction,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223073.png
+223074,Ravenous Hydra,2500,True,"Damage,LifeSteal,CooldownReduction,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223074.png
+223075,Thornmail,2500,True,"Health,Armor",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223075.png
+223078,Trinity Force,2500,True,"Health,Damage,AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223078.png
+223084,Heartsteel,2500,True,Health,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223084.png
+223085,Runaan's Hurricane,2500,True,"CriticalStrike,AttackSpeed,OnHit,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223085.png
+223087,Statikk Shiv,2500,True,"Damage,AttackSpeed,OnHit,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223087.png
+223089,Rabadon's Deathcap,2500,True,SpellDamage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223089.png
+223091,Wit's End,2500,True,"SpellBlock,AttackSpeed,OnHit,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223091.png
+223094,Rapid Firecannon,2500,True,"CriticalStrike,AttackSpeed,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223094.png
+223095,Stormrazor,2500,True,"Damage,CriticalStrike",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223095.png
+223100,Lich Bane,2500,True,"SpellDamage,OnHit,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223100.png
+223102,Banshee's Veil,2500,True,"SpellBlock,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223102.png
+223105,Aegis of the Legion,500,False,"SpellBlock,Armor,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223105.png
+223107,Redemption,2500,True,"Health,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223107.png
+223109,Knight's Vow,2500,True,"Health,Armor,Aura,Active,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223109.png
+223110,Frozen Heart,2500,True,"Armor,Mana,Aura,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223110.png
+223111,Mercury's Treads,500,True,"Boots,SpellBlock,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223111.png
+223112,Guardian's Orb,500,True,"SpellDamage,ManaRegen,CooldownReduction,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223112.png
+223115,Nashor's Tooth,2500,True,"AttackSpeed,SpellDamage,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223115.png
+223116,Rylai's Crystal Scepter,2500,True,"Health,SpellDamage,Slow",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223116.png
+223118,Malignance,2500,True,"SpellDamage,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223118.png
+223119,Winter's Approach,2500,True,"Health,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223119.png
+223121,Fimbulwinter,2500,False,"Health,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223121.png
+223124,Guinsoo's Rageblade,2500,True,"Damage,AttackSpeed,SpellDamage,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223124.png
+223135,Void Staff,2500,True,"MagicPenetration,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223135.png
+223137,Cryptbloom,2500,True,"SpellDamage,MagicPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223137.png
+223139,Mercurial Scimitar,2500,True,"SpellBlock,Damage,LifeSteal,Active,NonbootsMovement,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223139.png
+223142,Youmuu's Ghostblade,2500,True,"Damage,Active,NonbootsMovement,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223142.png
+223143,Randuin's Omen,2500,True,"Health,Armor,Active,Slow",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223143.png
+223146,Hextech Gunblade,2500,True,"Damage,LifeSteal,SpellDamage,Active,SpellVamp",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223146.png
+223152,Hextech Rocketbelt,2500,True,"Health,SpellDamage,Active,CooldownReduction,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223152.png
+223153,Blade of The Ruined King,2500,True,"Damage,AttackSpeed,LifeSteal,Slow,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223153.png
+223156,Maw of Malmortius,2500,True,"SpellBlock,Damage,LifeSteal,SpellVamp,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223156.png
+223157,Zhonya's Hourglass,2500,True,"Armor,SpellDamage,Active",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223157.png
+223158,Ionian Boots of Lucidity,500,True,"Boots,CooldownReduction",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223158.png
+223161,Spear of Shojin,2500,True,"Health,Damage,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223161.png
+223165,Morellonomicon,2500,True,"Health,SpellDamage,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223165.png
+223172,Zephyr,2500,True,"AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223172.png
+223177,Guardian's Blade,500,True,"Health,Damage,Lane,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223177.png
+223181,Hullbreaker,2500,True,"Health,Damage,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223181.png
+223184,Guardian's Hammer,500,True,"Health,Damage,LifeSteal,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223184.png
+223185,Guardian's Dirk,500,True,"Damage,ArmorPenetration,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223185.png
+223190,Locket of the Iron Solari,2500,True,"Health,SpellBlock,Armor,Aura,Active,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223190.png
+223193,Gargoyle Stoneplate,2500,False,"SpellBlock,Armor,Active,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223193.png
+223222,Mikael's Blessing,2500,True,"Health,ManaRegen,Active,CooldownReduction,Tenacity,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223222.png
+223302,Terminus,2500,True,"Damage,AttackSpeed,OnHit,MagicPenetration,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223302.png
+223504,Ardent Censer,2500,True,"AttackSpeed,SpellDamage,ManaRegen,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223504.png
+223508,Essence Reaver,2500,True,"Damage,CriticalStrike,ManaRegen,CooldownReduction,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223508.png
+223742,Dead Man's Plate,2500,True,"Health,Armor,Slow,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223742.png
+223748,Titanic Hydra,2500,True,"Health,HealthRegen,Damage,OnHit",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223748.png
+223814,Edge of Night,2500,True,"Health,Damage,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/223814.png
+224004,Spectral Cutlass,2500,True,"Damage,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/224004.png
+224005,Imperial Mandate,2500,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/224005.png
+224401,Force of Nature,2500,True,"Health,SpellBlock,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/224401.png
+224403,The Golden Spatula,2500,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,CooldownReduction,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/224403.png
+224628,Horizon Focus,2500,True,"SpellDamage,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/224628.png
+224629,Cosmic Drive,2500,True,"Health,SpellDamage,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/224629.png
+224633,Riftmaker,2500,True,"Health,SpellDamage,CooldownReduction,SpellVamp",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/224633.png
+224636,Night Harvester,2500,False,"Health,SpellDamage,CooldownReduction,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/224636.png
+224637,Demonic Embrace,2500,False,"Health,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/224637.png
+224644,Crown of the Shattered Queen,2500,False,"Health,SpellDamage,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/224644.png
+224645,Shadowflame,2500,True,"SpellDamage,MagicPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/224645.png
+224646,Stormsurge,2500,True,"SpellDamage,GoldPer,NonbootsMovement,MagicPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/224646.png
+226035,Silvermere Dawn,2500,False,"Health,SpellBlock,Damage,Active,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226035.png
+226333,Death's Dance,2500,True,"Armor,Damage,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226333.png
+226609,Chempunk Chainsword,2500,True,"Health,Damage,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226609.png
+226610,Sundered Sky,2500,True,"Health,Damage,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226610.png
+226616,Staff of Flowing Water,2500,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226616.png
+226617,Moonstone Renewer,2500,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226617.png
+226620,Echoes of Helia,2500,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226620.png
+226621,Dawncore,2500,True,"SpellDamage,ManaRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226621.png
+226630,Goredrinker,2750,True,"Health,Damage,Active,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226630.png
+226631,Stridebreaker,2500,True,"Health,Damage,AttackSpeed,Slow,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226631.png
+226632,Divine Sunderer,2500,False,"Health,Damage,CooldownReduction,OnHit,MagicPenetration,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226632.png
+226653,Liandry's Anguish,2500,True,"Health,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226653.png
+226655,Luden's Echo,2500,True,"SpellDamage,Mana,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226655.png
+226656,Everfrost,2500,False,"Health,SpellDamage,Mana,Active,CooldownReduction,Slow,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226656.png
+226657,Rod of Ages,2500,True,"Health,HealthRegen,SpellDamage,Mana,ManaRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226657.png
+226660,,0,False,"Health,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226660.png
+226662,Iceborn Gauntlet,2500,True,"Health,Armor,CooldownReduction,Slow,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226662.png
+226664,Hollow Radiance,2500,True,"Health,SpellBlock,Aura,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226664.png
+226665,"Jak'Sho, The Protean",2500,True,"Health,SpellBlock,Armor,MagicResist",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226665.png
+226667,Radiant Virtue,2500,False,"Health,SpellBlock,Armor,Aura,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226667.png
+226671,Galeforce,2500,False,"Damage,CriticalStrike,AttackSpeed,Active,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226671.png
+226672,Kraken Slayer,2500,True,"Damage,AttackSpeed,OnHit,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226672.png
+226673,Immortal Shieldbow,2500,True,"Damage,CriticalStrike",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226673.png
+226675,Navori Flickerblades,2500,True,"CriticalStrike,AttackSpeed,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226675.png
+226676,The Collector,2500,True,"Damage,CriticalStrike,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226676.png
+226691,Duskblade of Draktharr,2500,False,"Damage,Stealth,CooldownReduction,Slow,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226691.png
+226692,Eclipse,2500,True,"Damage,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226692.png
+226693,Prowler's Claw,2750,True,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226693.png
+226694,Serylda's Grudge,2500,True,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226694.png
+226695,Serpent's Fang,2500,True,"Damage,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226695.png
+226696,Axiom Arc,2500,True,"Damage,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226696.png
+226697,Hubris,2500,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226697.png
+226698,Profane Hydra,2500,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226698.png
+226699,Voltaic Cyclosword,2500,True,"Damage,Active,CooldownReduction,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226699.png
+226701,Opportunity,2500,True,"Damage,Active,NonbootsMovement,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/226701.png
+228001,Anathema's Chains,2500,True,"Health,Active,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/228001.png
+228002,Wooglet's Witchcap,6000,True,"Armor,SpellDamage,Active",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/228002.png
+228003,Deathblade,9000,False,"Damage,CriticalStrike,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/228003.png
+228004,Adaptive Helm,6000,False,"Health,SpellBlock,Armor,MagicResist",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/228004.png
+228005,Obsidian Cleaver,3000,False,"Health,Damage,CooldownReduction,OnHit,NonbootsMovement,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/228005.png
+228006,Sanguine Blade,3000,False,"Damage,LifeSteal,CooldownReduction,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/228006.png
+228008,Runeglaive,9000,False,"Health,Damage,AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/228008.png
+228009,Multitool,2500,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/228009.png
+228020,Abyssal Mask,2500,True,"Health,SpellBlock,SpellDamage,CooldownReduction,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/228020.png
+322065,Shurelya's Battlesong,2600,True,"SpellDamage,ManaRegen,Active,CooldownReduction,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/322065.png
+322526,Whispering Circlet,2250,True,"Health,Mana,ManaRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/322526.png
+322530,Diadem of Songs,2250,False,"Health,Mana,ManaRegen,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/322530.png
+323002,Trailblazer,2600,False,"Health,Armor,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323002.png
+323003,Archangel's Staff,2900,True,"SpellDamage,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323003.png
+323004,Manamune,2900,True,"Damage,Mana,CooldownReduction,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323004.png
+323040,Seraph's Embrace,2900,False,"SpellDamage,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323040.png
+323042,Muramana,2900,False,"Damage,Mana,CooldownReduction,OnHit,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323042.png
+323050,Zeke's Convergence,2300,True,"Health,SpellBlock,Armor,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323050.png
+323070,Tear of the Goddess,400,True,"Mana,ManaRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323070.png
+323075,Thornmail,2650,True,"Health,Armor",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323075.png
+323107,Redemption,2800,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323107.png
+323109,Knight's Vow,2900,True,"Health,HealthRegen,Armor,Aura,Active,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323109.png
+323110,Frozen Heart,2700,True,"Armor,Mana,Aura,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323110.png
+323119,Winter's Approach,2400,True,"Health,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323119.png
+323121,Fimbulwinter,2400,False,"Health,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323121.png
+323190,Locket of the Iron Solari,2600,True,"Health,SpellBlock,Armor,Aura,Active,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323190.png
+323222,Mikael's Blessing,2800,True,"Health,ManaRegen,Active,CooldownReduction,Tenacity,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323222.png
+323504,Ardent Censer,2600,True,"AttackSpeed,SpellDamage,ManaRegen,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/323504.png
+324005,Imperial Mandate,2400,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/324005.png
+326616,Staff of Flowing Water,2600,True,"SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/326616.png
+326617,Moonstone Renewer,2900,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/326617.png
+326620,Echoes of Helia,2600,True,"Health,SpellDamage,ManaRegen,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/326620.png
+326621,Dawncore,2900,True,"SpellDamage,ManaRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/326621.png
+326657,Rod of Ages,2600,True,"Health,HealthRegen,SpellDamage,Mana,ManaRegen",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/326657.png
+328020,Abyssal Mask,2850,True,"Health,SpellBlock,CooldownReduction,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/328020.png
+443054,Darksteel Talons,2750,True,"Armor,AttackSpeed,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443054.png
+443055,Fulmination,2750,True,"Damage,AttackSpeed,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443055.png
+443056,Demon King's Crown,2750,True,"Health,Armor,Damage,AttackSpeed,SpellDamage,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443056.png
+443058,Shield of Molten Stone,2750,True,"Health,Armor",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443058.png
+443059,Cloak of Starry Night,2750,True,"Health,SpellBlock",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443059.png
+443060,Sword of the Divine,2750,True,"Damage,CriticalStrike,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443060.png
+443061,Force Of Entropy,2750,True,"Health,SpellBlock,Armor,CriticalStrike",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443061.png
+443062,Sanguine Gift,2750,True,"SpellDamage,SpellVamp,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443062.png
+443063,Eleisa's Miracle,2750,True,"SpellBlock,Armor,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443063.png
+443064,Talisman Of Ascension,2750,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Active,CooldownReduction,SpellVamp,NonbootsMovement,MagicPenetration,ArmorPenetration,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443064.png
+443069,Hamstringer,2750,True,"Damage,CriticalStrike,AttackSpeed",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443069.png
+443079,Turbo Chemtank,2750,True,"Health,Active,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443079.png
+443080,Twin Mask,2750,False,"Health,Armor,Damage,AttackSpeed,SpellDamage,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443080.png
+443081,Hexbolt Companion,2750,True,"Health,AttackSpeed,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443081.png
+443083,Warmog's Armor,2750,True,"Health,HealthRegen,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443083.png
+443090,Reaper's Toll,2750,True,"Damage,AttackSpeed,SpellDamage,OnHit,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443090.png
+443193,Gargoyle Stoneplate,2750,True,"SpellBlock,Armor,Active,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/443193.png
+444636,Night Harvester,2750,True,"Health,SpellDamage,CooldownReduction,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/444636.png
+444637,Demonic Embrace,2750,True,"Health,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/444637.png
+444644,Crown of the Shattered Queen,2750,True,"Health,SpellDamage,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/444644.png
+446632,Divine Sunderer,2750,True,"Health,Damage,CooldownReduction,OnHit,MagicPenetration,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/446632.png
+446656,Everfrost,2750,True,"Health,SpellDamage,Mana,Active,CooldownReduction,Slow,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/446656.png
+446667,Radiant Virtue,2750,True,"Health,SpellBlock,Armor,Aura,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/446667.png
+446671,Galeforce,2750,True,"Damage,CriticalStrike,AttackSpeed,Active,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/446671.png
+446691,Duskblade of Draktharr,2750,True,"Damage,Stealth,CooldownReduction,Slow,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/446691.png
+446693,Prowler's Claw,1000,True,"Damage,CooldownReduction,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/446693.png
+447100,Mirage Blade,2750,True,"Damage,AttackSpeed,SpellDamage,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447100.png
+447101,Gambler's Blade,2750,True,"AttackSpeed,NonbootsMovement,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447101.png
+447102,Reality Fracture,2750,True,"Health,AttackSpeed,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447102.png
+447103,Hemomancer's Helm,2750,True,"Damage,SpellVamp,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447103.png
+447104,Innervating Locket,2750,True,"Health,SpellDamage,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447104.png
+447105,Empyrean Promise,2750,True,"SpellDamage,ManaRegen,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447105.png
+447106,Dragonheart,2750,True,"Health,HealthRegen,Armor,Damage,AttackSpeed,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447106.png
+447107,Decapitator,2750,True,"Damage,AttackSpeed,SpellDamage,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447107.png
+447108,Runecarver,2750,True,"SpellDamage,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447108.png
+447109,Cruelty,2750,True,"Armor,SpellDamage,MagicResist",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447109.png
+447110,Moonflair Spellblade,2750,True,"Health,SpellDamage,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447110.png
+447111,Overlord's Bloodmail,2500,True,"Health,Damage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447111.png
+447112,Flesheater,2750,True,"Damage,SpellDamage,MagicPenetration,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447112.png
+447113,Detonation Orb,2750,True,"SpellDamage,Mana,MagicPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447113.png
+447114,Reverberation,2750,True,"Health,Armor,AttackSpeed,OnHit,MagicResist",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447114.png
+447115,Regicide,2750,True,"Damage,NonbootsMovement,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447115.png
+447116,Kinkou Jitte,2750,True,"Health,Damage,SpellDamage,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447116.png
+447118,Pyromancer's Cloak,2750,True,"Health,Damage,SpellDamage,SpellVamp",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447118.png
+447119,Lightning Rod,2750,True,"Damage,AttackSpeed",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447119.png
+447120,Diamond-Tipped Spear,2750,True,"Damage,AttackSpeed",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447120.png
+447121,Twilight's Edge,2750,True,"Health,Armor,Damage,AttackSpeed,SpellDamage,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447121.png
+447122,Black Hole Gauntlet,2750,True,"SpellBlock,AttackSpeed,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447122.png
+447123,Puppeteer,2750,True,"SpellDamage,ManaRegen,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/447123.png
+550001,Healthbar Splash: Blue,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/550001.png
+550002,Healthbar Splash: Orange,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/550002.png
+550003,Healthbar Splash: Green,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/550003.png
+550004,Healthbar Splash: Pink,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/550004.png
+550005,Healthbar Cleanup: Reset Color,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/550005.png
+550006,Healthbar Splash: Rainbow,0,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/550006.png
+550007,Party Favor,10,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,Consumable,Aura,Vision,Trinket,Stealth,Active,GoldPer,CooldownReduction,Slow,SpellVamp,OnHit,Boots,NonbootsMovement,Tenacity,MagicPenetration,ArmorPenetration,Lane,Jungle,Bilgewater,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/550007.png
+663039,Atma's Reckoning,2500,True,"Health,CriticalStrike,Lane",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/663039.png
+663056,Demon King's Crown,2500,True,"Health,Armor,Damage,AttackSpeed,SpellDamage,MagicResist,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/663056.png
+663058,Shield of Molten Stone,2500,True,"Health,Armor",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/663058.png
+663059,Cloak of Starry Night,2500,True,"Health,SpellBlock",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/663059.png
+663060,Sword of the Divine,2500,True,"Damage,CriticalStrike,SpellDamage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/663060.png
+663064,Veigar's Talisman of Ascension,900,True,,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/663064.png
+663146,Hextech Gunblade,2500,True,"Damage,LifeSteal,SpellDamage,Active,SpellVamp",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/663146.png
+663172,Zephyr,2500,True,"AttackSpeed,CooldownReduction,OnHit,NonbootsMovement,Tenacity",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/663172.png
+663193,Gargoyle Stoneplate,2500,True,"SpellBlock,Armor,Active,CooldownReduction,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/663193.png
+664011,Sword of Blossoming Dawn,2500,True,"Health,SpellDamage,CooldownReduction,OnHit,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/664011.png
+664403,The Golden Spatula,2500,False,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,CooldownReduction,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/664403.png
+664644,Crown of the Shattered Queen,2500,True,"Health,SpellDamage,Mana,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/664644.png
+667101,Gambler's Blade,2500,True,"Damage,NonbootsMovement,MagicPenetration,ArmorPenetration,AbilityHaste",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/667101.png
+667109,Cruelty,2500,True,"Armor,SpellDamage,MagicResist",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/667109.png
+667112,Flesheater,2500,True,"Damage,SpellDamage,MagicPenetration,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/667112.png
+667666,The Collector,3000,True,"Damage,CriticalStrike,ArmorPenetration",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/667666.png
+994403,Golden Spatula,2500,True,"Health,SpellBlock,HealthRegen,Armor,Damage,CriticalStrike,AttackSpeed,LifeSteal,SpellDamage,Mana,ManaRegen,CooldownReduction,NonbootsMovement",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/item/994403.png

@@ -9,6 +9,8 @@ import streamlit as st
 
 # Витрины звёздной схемы лежат в outputs/sql/star/*.parquet (в корне проекта).
 STAR_DIR = Path(__file__).resolve().parent.parent / "outputs" / "sql" / "star"
+# Справочники Data Dragon (champions.csv/items.csv содержат столбец image с URL картинки).
+REFERENCE_DIR = Path(__file__).resolve().parent.parent / "data" / "reference"
 
 TABLES = [
     "fact_participant", "dim_champion", "dim_match", "dim_player", "dim_role",
@@ -44,6 +46,30 @@ def get_connection() -> duckdb.DuckDBPyConnection:
 
 def table_exists(name: str) -> bool:
     return (STAR_DIR / f"{name}.parquet").exists()
+
+
+@st.cache_data
+def champion_images() -> dict:
+    """Словарь {champion_id: URL картинки} из справочника Data Dragon.
+
+    Ключ — числовой champion_id, а не имя: в звёздной схеме имена нормализованы
+    (RekSai, LeeSin), а в справочнике — с пробелами/апострофами (Rek'Sai, Lee Sin).
+    """
+    p = REFERENCE_DIR / "champions.csv"
+    if not p.exists():
+        return {}
+    df = pd.read_csv(p, usecols=["champion_id", "image"])
+    return dict(zip(df["champion_id"], df["image"]))
+
+
+@st.cache_data
+def item_images() -> dict:
+    """Словарь {item_id: URL иконки} из справочника Data Dragon."""
+    p = REFERENCE_DIR / "items.csv"
+    if not p.exists():
+        return {}
+    df = pd.read_csv(p, usecols=["item_id", "image"])
+    return dict(zip(df["item_id"], df["image"]))
 
 
 @st.cache_data

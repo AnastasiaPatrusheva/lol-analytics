@@ -15,7 +15,7 @@ def render(source: str) -> None:
     if not dur.empty:
         box = (
             alt.Chart(dur)
-            .mark_boxplot(extent="min-max", size=40, color="#3fa45b")
+            .mark_boxplot(extent="min-max", size=40, color="#C8AA6E")
             .encode(x=alt.X("game_duration_min:Q", title="Длительность матча, мин"))
             .properties(height=140)
         )
@@ -33,7 +33,7 @@ def render(source: str) -> None:
     st.subheader("Кто сильнее в долгих играх, а кто в коротких")
     st.caption(
         "Разница winrate между долгими (>32 мин) и короткими (<25 мин) матчами. "
-        "Зелёный (плюс) — чемпион сильнее в долгой игре, красный (минус) — в короткой."
+        "Золотой (плюс) — чемпион сильнее в долгой игре, красный (минус) — в короткой."
     )
 
     scaling = run(f"""
@@ -70,21 +70,24 @@ def render(source: str) -> None:
         return
 
     top_s = scaling.iloc[0]
+    msg = (f"Больше всех выигрывает от долгой игры — **{top_s['champion_name']}** "
+           f"(+{top_s['delta']:.0%} winrate).")
     bot_s = scaling.iloc[-1]
-    st.success(
-        f"📈 Больше всех выигрывает от долгой игры — **{top_s['champion_name']}** "
-        f"(+{top_s['delta']:.0%} winrate); а **{bot_s['champion_name']}** наоборот сильнее "
-        f"в короткой ({bot_s['delta']:+.0%} в долгой)."
-    )
+    # «Сильнее в короткой» показываем только если это ДРУГОЙ чемпион и дельта реально
+    # отрицательная (иначе получалось «Senna сильнее в долгой И в короткой»).
+    if len(scaling) >= 2 and bot_s["delta"] < 0:
+        msg += (f" А **{bot_s['champion_name']}** наоборот сильнее в короткой "
+                f"({bot_s['delta']:+.0%}).")
+    st.success(msg)
     diverging = pd.concat([scaling.head(12), scaling.tail(12)])
     chart = (
         alt.Chart(diverging)
-        .mark_bar()
+        .mark_bar(cornerRadiusEnd=2)
         .encode(
             x=alt.X("delta:Q", title="Δ winrate (длинные − короткие)",
                     axis=alt.Axis(format="+%")),
             y=alt.Y("champion_name:N", sort="-x", title=None),
-            color=alt.condition("datum.delta > 0", alt.value("#3fa45b"), alt.value("#d9534f")),
+            color=alt.condition("datum.delta > 0", alt.value("#C8AA6E"), alt.value("#d9534f")),
             tooltip=[
                 "champion_name",
                 alt.Tooltip("wr_short:Q", format=".1%", title="короткие"),

@@ -1,173 +1,174 @@
-champion_id,champion_name,title,tags
-266,Aatrox,the Darkin Blade,Fighter
-103,Ahri,the Nine-Tailed Fox,"Mage,Assassin"
-84,Akali,the Rogue Assassin,Assassin
-166,Akshan,the Rogue Sentinel,"Marksman,Assassin"
-12,Alistar,the Minotaur,"Tank,Support"
-799,Ambessa,Matriarch of War,"Fighter,Assassin"
-32,Amumu,the Sad Mummy,"Tank,Support"
-34,Anivia,the Cryophoenix,Mage
-1,Annie,the Dark Child,"Mage,Support"
-523,Aphelios,the Weapon of the Faithful,Marksman
-22,Ashe,the Frost Archer,"Marksman,Support"
-136,Aurelion Sol,The Star Forger,Mage
-893,Aurora,the Witch Between Worlds,"Mage,Assassin"
-268,Azir,the Emperor of the Sands,"Mage,Marksman"
-432,Bard,the Wandering Caretaker,"Support,Mage"
-200,Bel'Veth,the Empress of the Void,Fighter
-53,Blitzcrank,the Great Steam Golem,"Tank,Support"
-63,Brand,the Burning Vengeance,"Mage,Support"
-201,Braum,the Heart of the Freljord,"Tank,Support"
-233,Briar,the Restrained Hunger,"Fighter,Assassin"
-51,Caitlyn,the Sheriff of Piltover,Marksman
-164,Camille,the Steel Shadow,"Fighter,Assassin"
-69,Cassiopeia,the Serpent's Embrace,Mage
-31,Cho'Gath,the Terror of the Void,"Tank,Mage"
-42,Corki,the Daring Bombardier,"Marksman,Mage"
-122,Darius,the Hand of Noxus,"Fighter,Tank"
-131,Diana,Scorn of the Moon,"Fighter,Assassin"
-36,Dr. Mundo,the Madman of Zaun,"Tank,Fighter"
-119,Draven,the Glorious Executioner,Marksman
-245,Ekko,the Boy Who Shattered Time,"Assassin,Mage"
-60,Elise,the Spider Queen,"Assassin,Mage"
-28,Evelynn,Agony's Embrace,"Assassin,Mage"
-81,Ezreal,the Prodigal Explorer,"Marksman,Mage"
-9,Fiddlesticks,the Ancient Fear,"Mage,Support"
-114,Fiora,the Grand Duelist,"Fighter,Assassin"
-105,Fizz,the Tidal Trickster,"Assassin,Fighter"
-3,Galio,the Colossus,"Tank,Mage"
-41,Gangplank,the Saltwater Scourge,Fighter
-86,Garen,The Might of Demacia,"Fighter,Tank"
-150,Gnar,the Missing Link,"Fighter,Tank"
-79,Gragas,the Rabble Rouser,"Fighter,Mage"
-104,Graves,the Outlaw,Marksman
-887,Gwen,The Hallowed Seamstress,Fighter
-120,Hecarim,the Shadow of War,"Fighter,Tank"
-74,Heimerdinger,the Revered Inventor,"Mage,Support"
-910,Hwei,the Visionary,"Mage,Support"
-420,Illaoi,the Kraken Priestess,"Fighter,Tank"
-39,Irelia,the Blade Dancer,"Fighter,Assassin"
-427,Ivern,the Green Father,"Support,Mage"
-40,Janna,the Storm's Fury,"Support,Mage"
-59,Jarvan IV,the Exemplar of Demacia,"Fighter,Tank"
-24,Jax,Grandmaster at Arms,Fighter
-126,Jayce,the Defender of Tomorrow,"Fighter,Marksman"
-202,Jhin,the Virtuoso,"Marksman,Mage"
-222,Jinx,the Loose Cannon,Marksman
-897,K'Sante,the Pride of Nazumah,"Tank,Fighter"
-145,Kai'Sa,Daughter of the Void,"Marksman,Mage"
-429,Kalista,the Spear of Vengeance,Marksman
-43,Karma,the Enlightened One,"Mage,Support"
-30,Karthus,the Deathsinger,Mage
-38,Kassadin,the Void Walker,"Assassin,Mage"
-55,Katarina,the Sinister Blade,"Assassin,Mage"
-10,Kayle,the Righteous,"Mage,Marksman"
-141,Kayn,the Shadow Reaper,"Fighter,Assassin"
-85,Kennen,the Heart of the Tempest,Mage
-121,Kha'Zix,the Voidreaver,Assassin
-203,Kindred,The Eternal Hunters,Marksman
-240,Kled,the Cantankerous Cavalier,Fighter
-96,Kog'Maw,the Mouth of the Abyss,"Marksman,Mage"
-7,LeBlanc,the Deceiver,"Assassin,Mage"
-64,Lee Sin,the Blind Monk,"Fighter,Assassin"
-89,Leona,the Radiant Dawn,"Tank,Support"
-876,Lillia,the Bashful Bloom,"Fighter,Mage"
-127,Lissandra,the Ice Witch,Mage
-236,Lucian,the Purifier,"Marksman,Assassin"
-117,Lulu,the Fae Sorceress,"Support,Mage"
-99,Lux,the Lady of Luminosity,"Mage,Support"
-54,Malphite,Shard of the Monolith,"Tank,Mage"
-90,Malzahar,the Prophet of the Void,Mage
-57,Maokai,the Twisted Treant,"Tank,Support"
-11,Master Yi,the Wuju Bladesman,"Fighter,Assassin"
-800,Mel,the Soul's Reflection,"Mage,Support"
-902,Milio,The Gentle Flame,"Support,Mage"
-21,Miss Fortune,the Bounty Hunter,"Marksman,Mage"
-82,Mordekaiser,the Iron Revenant,"Fighter,Mage"
-25,Morgana,the Fallen,"Support,Mage"
-950,Naafiri,the Hound of a Hundred Bites,"Assassin,Fighter"
-267,Nami,the Tidecaller,"Support,Mage"
-75,Nasus,the Curator of the Sands,"Fighter,Tank"
-111,Nautilus,the Titan of the Depths,"Tank,Support"
-518,Neeko,the Curious Chameleon,"Mage,Support"
-76,Nidalee,the Bestial Huntress,"Assassin,Mage"
-895,Nilah,the Joy Unbound,"Fighter,Assassin"
-56,Nocturne,the Eternal Nightmare,"Fighter,Assassin"
-20,Nunu & Willump,the Boy and His Yeti,"Tank,Mage"
-2,Olaf,the Berserker,"Fighter,Tank"
-61,Orianna,the Lady of Clockwork,"Mage,Support"
-516,Ornn,The Fire below the Mountain,Tank
-80,Pantheon,the Unbreakable Spear,"Fighter,Assassin"
-78,Poppy,Keeper of the Hammer,"Tank,Fighter"
-555,Pyke,the Bloodharbor Ripper,"Support,Assassin"
-246,Qiyana,Empress of the Elements,Assassin
-133,Quinn,Demacia's Wings,"Marksman,Assassin"
-497,Rakan,The Charmer,Support
-33,Rammus,the Armordillo,Tank
-421,Rek'Sai,the Void Burrower,"Fighter,Tank"
-526,Rell,the Iron Maiden,"Tank,Support"
-888,Renata Glasc,the Chem-Baroness,"Support,Mage"
-58,Renekton,the Butcher of the Sands,"Fighter,Tank"
-107,Rengar,the Pridestalker,"Assassin,Fighter"
-92,Riven,the Exile,"Fighter,Assassin"
-68,Rumble,the Mechanized Menace,"Fighter,Mage"
-13,Ryze,the Rune Mage,Mage
-360,Samira,the Desert Rose,"Marksman,Assassin"
-113,Sejuani,Fury of the North,Tank
-235,Senna,the Redeemer,"Support,Marksman"
-147,Seraphine,the Starry-Eyed Songstress,"Support,Mage"
-875,Sett,the Boss,"Fighter,Tank"
-35,Shaco,the Demon Jester,Assassin
-98,Shen,the Eye of Twilight,Tank
-102,Shyvana,the Half-Dragon,"Fighter,Tank"
-27,Singed,the Mad Chemist,"Tank,Mage"
-14,Sion,The Undead Juggernaut,"Tank,Fighter"
-15,Sivir,the Battle Mistress,Marksman
-72,Skarner,the Primordial Sovereign,"Tank,Fighter"
-901,Smolder,the Fiery Fledgling,"Marksman,Mage"
-37,Sona,Maven of the Strings,"Support,Mage"
-16,Soraka,the Starchild,"Support,Mage"
-50,Swain,the Noxian Grand General,"Mage,Support"
-517,Sylas,the Unshackled,"Mage,Assassin"
-134,Syndra,the Dark Sovereign,Mage
-223,Tahm Kench,The River King,"Tank,Support"
-163,Taliyah,the Stoneweaver,"Mage,Support"
-91,Talon,the Blade's Shadow,Assassin
-44,Taric,the Shield of Valoran,"Support,Tank"
-17,Teemo,the Swift Scout,"Marksman,Mage"
-412,Thresh,the Chain Warden,"Support,Tank"
-18,Tristana,the Yordle Gunner,"Marksman,Assassin"
-48,Trundle,the Troll King,"Fighter,Tank"
-23,Tryndamere,the Barbarian King,"Fighter,Assassin"
-4,Twisted Fate,the Card Master,"Mage,Marksman"
-29,Twitch,the Plague Rat,"Marksman,Assassin"
-77,Udyr,the Spirit Walker,"Fighter,Tank"
-6,Urgot,the Dreadnought,"Fighter,Tank"
-110,Varus,the Arrow of Retribution,"Marksman,Mage"
-67,Vayne,the Night Hunter,"Marksman,Assassin"
-45,Veigar,the Tiny Master of Evil,Mage
-161,Vel'Koz,the Eye of the Void,"Mage,Support"
-711,Vex,the Gloomist,Mage
-254,Vi,the Piltover Enforcer,"Fighter,Assassin"
-234,Viego,The Ruined King,"Fighter,Assassin"
-112,Viktor,the Herald of the Arcane,Mage
-8,Vladimir,the Crimson Reaper,"Mage,Fighter"
-106,Volibear,the Relentless Storm,"Fighter,Tank"
-19,Warwick,the Uncaged Wrath of Zaun,"Fighter,Tank"
-62,Wukong,the Monkey King,"Fighter,Tank"
-498,Xayah,the Rebel,Marksman
-101,Xerath,the Magus Ascendant,"Mage,Support"
-5,Xin Zhao,the Seneschal of Demacia,"Fighter,Tank"
-157,Yasuo,the Unforgiven,"Fighter,Assassin"
-777,Yone,the Unforgotten,"Fighter,Assassin"
-83,Yorick,Shepherd of Souls,"Fighter,Tank"
-804,Yunara,the Unbroken Faith,Marksman
-350,Yuumi,the Magical Cat,"Support,Mage"
-904,Zaahen,The Unsundered,"Fighter,Assassin"
-154,Zac,the Secret Weapon,"Tank,Fighter"
-238,Zed,the Master of Shadows,Assassin
-221,Zeri,The Spark of Zaun,Marksman
-115,Ziggs,the Hexplosives Expert,Mage
-26,Zilean,the Chronokeeper,"Support,Mage"
-142,Zoe,the Aspect of Twilight,Mage
-143,Zyra,Rise of the Thorns,"Mage,Support"
+champion_id,champion_name,title,tags,image
+266,Aatrox,the Darkin Blade,Fighter,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Aatrox.png
+103,Ahri,the Nine-Tailed Fox,"Mage,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Ahri.png
+84,Akali,the Rogue Assassin,Assassin,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Akali.png
+166,Akshan,the Rogue Sentinel,"Marksman,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Akshan.png
+12,Alistar,the Minotaur,"Tank,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Alistar.png
+799,Ambessa,Matriarch of War,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Ambessa.png
+32,Amumu,the Sad Mummy,"Tank,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Amumu.png
+34,Anivia,the Cryophoenix,Mage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Anivia.png
+1,Annie,the Dark Child,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Annie.png
+523,Aphelios,the Weapon of the Faithful,Marksman,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Aphelios.png
+22,Ashe,the Frost Archer,"Marksman,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Ashe.png
+136,Aurelion Sol,The Star Forger,Mage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/AurelionSol.png
+893,Aurora,the Witch Between Worlds,"Mage,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Aurora.png
+268,Azir,the Emperor of the Sands,"Mage,Marksman",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Azir.png
+432,Bard,the Wandering Caretaker,"Support,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Bard.png
+200,Bel'Veth,the Empress of the Void,Fighter,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Belveth.png
+53,Blitzcrank,the Great Steam Golem,"Tank,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Blitzcrank.png
+63,Brand,the Burning Vengeance,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Brand.png
+201,Braum,the Heart of the Freljord,"Tank,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Braum.png
+233,Briar,the Restrained Hunger,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Briar.png
+51,Caitlyn,the Sheriff of Piltover,Marksman,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Caitlyn.png
+164,Camille,the Steel Shadow,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Camille.png
+69,Cassiopeia,the Serpent's Embrace,Mage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Cassiopeia.png
+31,Cho'Gath,the Terror of the Void,"Tank,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Chogath.png
+42,Corki,the Daring Bombardier,"Marksman,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Corki.png
+122,Darius,the Hand of Noxus,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Darius.png
+131,Diana,Scorn of the Moon,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Diana.png
+36,Dr. Mundo,the Madman of Zaun,"Tank,Fighter",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/DrMundo.png
+119,Draven,the Glorious Executioner,Marksman,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Draven.png
+245,Ekko,the Boy Who Shattered Time,"Assassin,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Ekko.png
+60,Elise,the Spider Queen,"Assassin,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Elise.png
+28,Evelynn,Agony's Embrace,"Assassin,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Evelynn.png
+81,Ezreal,the Prodigal Explorer,"Marksman,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Ezreal.png
+9,Fiddlesticks,the Ancient Fear,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Fiddlesticks.png
+114,Fiora,the Grand Duelist,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Fiora.png
+105,Fizz,the Tidal Trickster,"Assassin,Fighter",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Fizz.png
+3,Galio,the Colossus,"Tank,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Galio.png
+41,Gangplank,the Saltwater Scourge,Fighter,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Gangplank.png
+86,Garen,The Might of Demacia,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Garen.png
+150,Gnar,the Missing Link,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Gnar.png
+79,Gragas,the Rabble Rouser,"Fighter,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Gragas.png
+104,Graves,the Outlaw,Marksman,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Graves.png
+887,Gwen,The Hallowed Seamstress,Fighter,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Gwen.png
+120,Hecarim,the Shadow of War,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Hecarim.png
+74,Heimerdinger,the Revered Inventor,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Heimerdinger.png
+910,Hwei,the Visionary,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Hwei.png
+420,Illaoi,the Kraken Priestess,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Illaoi.png
+39,Irelia,the Blade Dancer,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Irelia.png
+427,Ivern,the Green Father,"Support,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Ivern.png
+40,Janna,the Storm's Fury,"Support,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Janna.png
+59,Jarvan IV,the Exemplar of Demacia,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/JarvanIV.png
+24,Jax,Grandmaster at Arms,Fighter,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Jax.png
+126,Jayce,the Defender of Tomorrow,"Fighter,Marksman",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Jayce.png
+202,Jhin,the Virtuoso,"Marksman,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Jhin.png
+222,Jinx,the Loose Cannon,Marksman,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Jinx.png
+897,K'Sante,the Pride of Nazumah,"Tank,Fighter",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/KSante.png
+145,Kai'Sa,Daughter of the Void,"Marksman,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Kaisa.png
+429,Kalista,the Spear of Vengeance,Marksman,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Kalista.png
+43,Karma,the Enlightened One,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Karma.png
+30,Karthus,the Deathsinger,Mage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Karthus.png
+38,Kassadin,the Void Walker,"Assassin,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Kassadin.png
+55,Katarina,the Sinister Blade,"Assassin,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Katarina.png
+10,Kayle,the Righteous,"Mage,Marksman",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Kayle.png
+141,Kayn,the Shadow Reaper,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Kayn.png
+85,Kennen,the Heart of the Tempest,Mage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Kennen.png
+121,Kha'Zix,the Voidreaver,Assassin,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Khazix.png
+203,Kindred,The Eternal Hunters,Marksman,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Kindred.png
+240,Kled,the Cantankerous Cavalier,Fighter,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Kled.png
+96,Kog'Maw,the Mouth of the Abyss,"Marksman,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/KogMaw.png
+7,LeBlanc,the Deceiver,"Assassin,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Leblanc.png
+64,Lee Sin,the Blind Monk,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/LeeSin.png
+89,Leona,the Radiant Dawn,"Tank,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Leona.png
+876,Lillia,the Bashful Bloom,"Fighter,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Lillia.png
+127,Lissandra,the Ice Witch,Mage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Lissandra.png
+805,Locke,the Ashen Exorcist,"Assassin,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Locke.png
+236,Lucian,the Purifier,"Marksman,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Lucian.png
+117,Lulu,the Fae Sorceress,"Support,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Lulu.png
+99,Lux,the Lady of Luminosity,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Lux.png
+54,Malphite,Shard of the Monolith,"Tank,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Malphite.png
+90,Malzahar,the Prophet of the Void,Mage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Malzahar.png
+57,Maokai,the Twisted Treant,"Tank,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Maokai.png
+11,Master Yi,the Wuju Bladesman,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/MasterYi.png
+800,Mel,the Soul's Reflection,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Mel.png
+902,Milio,The Gentle Flame,"Support,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Milio.png
+21,Miss Fortune,the Bounty Hunter,"Marksman,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/MissFortune.png
+82,Mordekaiser,the Iron Revenant,"Fighter,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Mordekaiser.png
+25,Morgana,the Fallen,"Support,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Morgana.png
+950,Naafiri,the Hound of a Hundred Bites,"Assassin,Fighter",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Naafiri.png
+267,Nami,the Tidecaller,"Support,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Nami.png
+75,Nasus,the Curator of the Sands,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Nasus.png
+111,Nautilus,the Titan of the Depths,"Tank,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Nautilus.png
+518,Neeko,the Curious Chameleon,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Neeko.png
+76,Nidalee,the Bestial Huntress,"Assassin,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Nidalee.png
+895,Nilah,the Joy Unbound,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Nilah.png
+56,Nocturne,the Eternal Nightmare,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Nocturne.png
+20,Nunu & Willump,the Boy and His Yeti,"Tank,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Nunu.png
+2,Olaf,the Berserker,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Olaf.png
+61,Orianna,the Lady of Clockwork,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Orianna.png
+516,Ornn,The Fire below the Mountain,Tank,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Ornn.png
+80,Pantheon,the Unbreakable Spear,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Pantheon.png
+78,Poppy,Keeper of the Hammer,"Tank,Fighter",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Poppy.png
+555,Pyke,the Bloodharbor Ripper,"Support,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Pyke.png
+246,Qiyana,Empress of the Elements,Assassin,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Qiyana.png
+133,Quinn,Demacia's Wings,"Marksman,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Quinn.png
+497,Rakan,The Charmer,Support,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Rakan.png
+33,Rammus,the Armordillo,Tank,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Rammus.png
+421,Rek'Sai,the Void Burrower,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/RekSai.png
+526,Rell,the Iron Maiden,"Tank,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Rell.png
+888,Renata Glasc,the Chem-Baroness,"Support,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Renata.png
+58,Renekton,the Butcher of the Sands,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Renekton.png
+107,Rengar,the Pridestalker,"Assassin,Fighter",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Rengar.png
+92,Riven,the Exile,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Riven.png
+68,Rumble,the Mechanized Menace,"Fighter,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Rumble.png
+13,Ryze,the Rune Mage,Mage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Ryze.png
+360,Samira,the Desert Rose,"Marksman,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Samira.png
+113,Sejuani,Fury of the North,Tank,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Sejuani.png
+235,Senna,the Redeemer,"Support,Marksman",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Senna.png
+147,Seraphine,the Starry-Eyed Songstress,"Support,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Seraphine.png
+875,Sett,the Boss,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Sett.png
+35,Shaco,the Demon Jester,Assassin,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Shaco.png
+98,Shen,the Eye of Twilight,Tank,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Shen.png
+102,Shyvana,the Half-Dragon,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Shyvana.png
+27,Singed,the Mad Chemist,"Tank,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Singed.png
+14,Sion,The Undead Juggernaut,"Tank,Fighter",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Sion.png
+15,Sivir,the Battle Mistress,Marksman,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Sivir.png
+72,Skarner,the Primordial Sovereign,"Tank,Fighter",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Skarner.png
+901,Smolder,the Fiery Fledgling,"Marksman,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Smolder.png
+37,Sona,Maven of the Strings,"Support,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Sona.png
+16,Soraka,the Starchild,"Support,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Soraka.png
+50,Swain,the Noxian Grand General,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Swain.png
+517,Sylas,the Unshackled,"Mage,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Sylas.png
+134,Syndra,the Dark Sovereign,Mage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Syndra.png
+223,Tahm Kench,The River King,"Tank,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/TahmKench.png
+163,Taliyah,the Stoneweaver,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Taliyah.png
+91,Talon,the Blade's Shadow,Assassin,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Talon.png
+44,Taric,the Shield of Valoran,"Support,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Taric.png
+17,Teemo,the Swift Scout,"Marksman,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Teemo.png
+412,Thresh,the Chain Warden,"Support,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Thresh.png
+18,Tristana,the Yordle Gunner,"Marksman,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Tristana.png
+48,Trundle,the Troll King,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Trundle.png
+23,Tryndamere,the Barbarian King,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Tryndamere.png
+4,Twisted Fate,the Card Master,"Mage,Marksman",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/TwistedFate.png
+29,Twitch,the Plague Rat,"Marksman,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Twitch.png
+77,Udyr,the Spirit Walker,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Udyr.png
+6,Urgot,the Dreadnought,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Urgot.png
+110,Varus,the Arrow of Retribution,"Marksman,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Varus.png
+67,Vayne,the Night Hunter,"Marksman,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Vayne.png
+45,Veigar,the Tiny Master of Evil,Mage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Veigar.png
+161,Vel'Koz,the Eye of the Void,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Velkoz.png
+711,Vex,the Gloomist,Mage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Vex.png
+254,Vi,the Piltover Enforcer,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Vi.png
+234,Viego,The Ruined King,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Viego.png
+112,Viktor,the Herald of the Arcane,Mage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Viktor.png
+8,Vladimir,the Crimson Reaper,"Mage,Fighter",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Vladimir.png
+106,Volibear,the Relentless Storm,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Volibear.png
+19,Warwick,the Uncaged Wrath of Zaun,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Warwick.png
+62,Wukong,the Monkey King,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/MonkeyKing.png
+498,Xayah,the Rebel,Marksman,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Xayah.png
+101,Xerath,the Magus Ascendant,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Xerath.png
+5,Xin Zhao,the Seneschal of Demacia,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/XinZhao.png
+157,Yasuo,the Unforgiven,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Yasuo.png
+777,Yone,the Unforgotten,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Yone.png
+83,Yorick,Shepherd of Souls,"Fighter,Tank",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Yorick.png
+804,Yunara,the Unbroken Faith,Marksman,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Yunara.png
+350,Yuumi,the Magical Cat,"Support,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Yuumi.png
+904,Zaahen,The Unsundered,"Fighter,Assassin",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Zaahen.png
+154,Zac,the Secret Weapon,"Tank,Fighter",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Zac.png
+238,Zed,the Master of Shadows,Assassin,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Zed.png
+221,Zeri,The Spark of Zaun,Marksman,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Zeri.png
+115,Ziggs,the Hexplosives Expert,Mage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Ziggs.png
+26,Zilean,the Chronokeeper,"Support,Mage",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Zilean.png
+142,Zoe,the Aspect of Twilight,Mage,https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Zoe.png
+143,Zyra,Rise of the Thorns,"Mage,Support",https://ddragon.leagueoflegends.com/cdn/16.14.1/img/champion/Zyra.png
