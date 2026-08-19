@@ -125,13 +125,14 @@ def render(source: str) -> None:
     scale = alt.Scale(domain=[-1.25, 1.25])
     polygons = (
         alt.Chart(radar_df)
-        .mark_line(opacity=0.7, strokeWidth=2)
+        .mark_line(interpolate="linear-closed", strokeWidth=2, fillOpacity=0.22)
         .encode(
             x=alt.X("x:Q", axis=None, scale=scale),
             y=alt.Y("y:Q", axis=None, scale=scale),
             order="order:Q",
             detail="archetype:N",
             color=alt.Color("archetype:N", title="Архетип"),
+            fill=alt.Fill("archetype:N", legend=None),
             tooltip=["archetype:N", "metric:N"],
         )
     )

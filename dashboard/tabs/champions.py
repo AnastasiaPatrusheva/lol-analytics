@@ -39,6 +39,8 @@ def render(source: str) -> None:
             FROM base
         )
         SELECT champion_name, primary_class, champion_id, games, winrate, wilson_low, wilson_high, avg_kda,
+               RANK() OVER (ORDER BY {order_col} DESC) AS rank,
+               (winrate - AVG(winrate) OVER (PARTITION BY primary_class)) * 100 AS vs_class,
                CASE WHEN wilson_low > 0.5 THEN 'значимо сильный'
                     WHEN wilson_high < 0.5 THEN 'значимо слабый'
                     ELSE 'в норме' END AS verdict
@@ -134,13 +136,19 @@ def render(source: str) -> None:
     st.altair_chart(chart, use_container_width=True)
 
     st.markdown("#### Рейтинг чемпионов")
+    st.caption(
+        "«Ранг» — место чемпиона в общем рейтинге. «vs класс» — на сколько процентных "
+        "пунктов его winrate выше или ниже среднего по своему классу (танки сравниваются "
+        "с танками, маги с магами)."
+    )
     top = champions.head(25).copy()
     top.insert(0, "img", top["champion_id"].map(imgs))
-    show = top[["img", "champion_name", "primary_class", "games",
-                "winrate", "wilson_low", "avg_kda", "verdict"]]
+    show = top[["rank", "img", "champion_name", "primary_class", "games",
+                "winrate", "wilson_low", "vs_class", "avg_kda", "verdict"]]
     st.dataframe(
         show, hide_index=True, width="stretch",
         column_config={
+            "rank": st.column_config.NumberColumn("Ранг", format="%d"),
             "img": st.column_config.ImageColumn(" ", width="small"),
             "champion_name": "Чемпион",
             "primary_class": "Класс",
@@ -149,6 +157,7 @@ def render(source: str) -> None:
                 "Winrate", format="percent", min_value=0.40, max_value=0.60),
             "wilson_low": st.column_config.ProgressColumn(
                 "Ниж. оценка", format="percent", min_value=0.40, max_value=0.60),
+            "vs_class": st.column_config.NumberColumn("vs класс", format="%+.1f%%"),
             "avg_kda": st.column_config.NumberColumn("KDA", format="%.2f"),
             "verdict": "Вердикт",
         },
