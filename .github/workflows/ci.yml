@@ -1,0 +1,33 @@
+name: CI
+
+# Прогоняем юнит-тесты на каждый push и pull request в main.
+# Плюс ручной запуск (workflow_dispatch) — кнопка "Run workflow" во вкладке Actions.
+# Живого обновления данных по расписанию тут НЕТ: dev-ключ Riot живёт 24 часа,
+# для cron-пайплайна нужен постоянный product-ключ.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-build.txt
+
+      - name: Run tests
+        run: pytest tests/ -v

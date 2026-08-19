@@ -15,7 +15,8 @@ import streamlit as st
 from dashboard import theme
 from dashboard.data import SOURCES, SOURCE_DESC, check_source
 from dashboard.tabs import (
-    about, champions, duration, items, meta, overview, players, quality, segments,
+    about, champions, composition, duration, items, meta, overview, players,
+    quality, segments,
 )
 
 st.set_page_config(page_title="LoL Analytics", page_icon="🎮", layout="wide")
@@ -37,12 +38,13 @@ tabs = st.tabs(
     [":material/dashboard: Обзор", ":material/emoji_events: Чемпионы",
      ":material/shield: Предметы", ":material/group: Игроки",
      ":material/schedule: Длительность", ":material/trending_up: Мета",
-     ":material/hub: Архетипы", ":material/verified: Качество",
-     ":material/info: О метриках"]
+     ":material/groups: Состав", ":material/hub: Архетипы",
+     ":material/verified: Качество", ":material/info: О метриках"]
 )
 renderers = [
     overview.render, champions.render, items.render, players.render,
-    duration.render, meta.render, segments.render, quality.render, about.render,
+    duration.render, meta.render, composition.render, segments.render,
+    quality.render, about.render,
 ]
 for tab, render in zip(tabs, renderers):
     with tab:

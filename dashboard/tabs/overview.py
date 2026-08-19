@@ -36,11 +36,6 @@ def render(source: str) -> None:
     c3.metric("Чемпионов", int(kpi["champions"]))
     c4.metric("Ср. длительность", f"{duration:.1f} мин")
 
-    st.caption(
-        "Winrate в сумме ≈ 50%: в каждом матче 5 победителей и 5 проигравших — "
-        "это контрольная проверка корректности данных."
-    )
-
     st.markdown("#### Главное в мете")
     top_champ = run(f"""
         SELECT cs.champion_name, cs.wilson_low, cs.games, dc.champion_id
