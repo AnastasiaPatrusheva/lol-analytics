@@ -14,11 +14,13 @@ ETL-оркестратор проекта.
   star       — построение звёздной схемы (Parquet + CSV)
   segments   — витрина сегментации игроков (KMeans; нужен scikit-learn)
   load       — загрузка звезды в БД: --target local (SQLite) или supabase (PostgreSQL)
+  refresh    — обновить свою выборку одной командой: extract -> transform -> quality -> star
   all        — последовательность: ingest -> transform -> quality -> star -> segments -> load(local)
 
 Примеры запуска:
   python main.py transform
   python main.py extract --tier master --max-players 10 --matches-per-player 5
+  python main.py refresh --tier master --max-players 10 --matches-per-player 5
   python main.py load --target supabase
   python main.py all
 """
@@ -98,6 +100,8 @@ def main() -> int:
     sub.add_parser("reference", help="справочники Data Dragon (champions, items)")
     sub.add_parser("ingest", help="разбор большого датасета raw.zip в источник riot_full")
     sub.add_parser("extract", add_help=False, help="сбор из Riot API (проброс аргументов коллектору)")
+    sub.add_parser("refresh", add_help=False,
+                   help="обновить свою выборку: extract -> transform -> quality -> star")
     sub.add_parser("transform", help="приведение источников к общей схеме")
     sub.add_parser("quality", help="проверки качества данных")
     sub.add_parser("star", help="построение звёздной схемы")
@@ -121,6 +125,15 @@ def main() -> int:
         run_script("ingest_riot_full.py")
     elif args.stage == "extract":
         run_script("riot_data_collector.py", *extra)
+    elif args.stage == "refresh":
+        # Одна команда для обновления собственной выборки через Riot API.
+        if not os.environ.get("RIOT_API_KEY"):
+            log.warning("RIOT_API_KEY не задан в окружении — коллектор запросит ключ вручную. "
+                        "Проще задать заранее:  $env:RIOT_API_KEY = \"RGAPI-...\"")
+        run_script("riot_data_collector.py", *extra)   # extract
+        run_script("build_common_analytics_layer.py")  # transform
+        run_script("run_data_quality.py")              # quality
+        run_script("build_star_schema.py")             # star
     elif args.stage == "transform":
         run_script("build_common_analytics_layer.py")
     elif args.stage == "quality":

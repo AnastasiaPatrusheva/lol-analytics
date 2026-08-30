@@ -129,13 +129,16 @@ streamlit run streamlit_app.py
 берётся на developer.riotgames.com.
 
 ```bash
-setx RIOT_API_KEY "RGAPI-..."            # ключ Riot (или введётся по запросу)
+# 1) ключ Riot в текущую сессию терминала (PowerShell):
+$env:RIOT_API_KEY = "RGAPI-..."
 
-python main.py extract --tier master --max-players 10 --matches-per-player 5
-python main.py transform                 # сам досчитывает метрики API
-python main.py quality
-python main.py star                      # обновит outputs/sql/star/*.parquet
+# 2) одна команда: extract -> transform -> quality -> star
+python main.py refresh --tier master --max-players 10 --matches-per-player 5
 ```
+
+Стадия `refresh` сама прогоняет сбор из API, приведение к общей схеме, проверки
+качества и пересборку звёздной схемы (`outputs/sql/star/*.parquet`). Стадии можно
+запускать и по отдельности (`python main.py extract` / `transform` / `quality` / `star`).
 
 Чтобы свежие данные попали на **живой дашборд**, закоммитьте обновлённые
 `outputs/sql/star/*.parquet` в репозиторий и запушьте — Streamlit Cloud пересоберётся
