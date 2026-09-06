@@ -211,7 +211,7 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
     # 60% при 5 играх даёт широкий интервал (ненадёжно), 53% при 500 играх — узкий.
     # Поэтому tier-list строится по нижней границе wilson_low.
     #
-    # Вердикт «значимо сильный/слабый» считается по ОТДЕЛЬНОМУ, более широкому
+    # Вердикт «выигрывает чаще/слабый» считается по ОТДЕЛЬНОМУ, более широкому
     # интервалу: проверка идёт сразу по всем чемпионам источника, и без поправки
     # на множественные сравнения около 9 из ~170 получили бы ярлык случайно.
     # Поэтому для вердикта берём z с поправкой Бонферрони, а для рейтинга — 1.96.
@@ -244,9 +244,9 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
             FROM base WHERE games >= 5
         )
         SELECT *,
-               CASE WHEN wilson_low_adj > 0.5 THEN 'значимо сильный'
-                    WHEN wilson_high_adj < 0.5 THEN 'значимо слабый'
-                    ELSE 'в норме' END AS verdict
+               CASE WHEN wilson_low_adj > 0.5 THEN 'выигрывает чаще'
+                    WHEN wilson_high_adj < 0.5 THEN 'выигрывает реже'
+                    ELSE 'как все' END AS verdict
         FROM ci
         ORDER BY data_source, wilson_low DESC
     """)

@@ -43,11 +43,12 @@ def render(source: str) -> None:
         "в сборке победителя."
     )
     st.warning(
-        "**Это не рекомендация по сборке.** Riot отдаёт инвентарь на конец матча, а не "
-        "покупки по ходу игры. Победители дольше живут и успевают достроить дорогие "
-        "предметы, поэтому высокий winrate дорогого предмета в основном следствие победы, "
-        "а не её причина. Читать таблицу нужно как «что обычно стоит в сборке у "
-        "выигравших», а не как «что купить, чтобы выиграть».",
+        "**Это не совет, что покупать.** Riot сохраняет, что лежало в сумке в конце матча, "
+        "а не что и когда игрок покупал. А дорогую вещь успевает достроить тот, кто дольше "
+        "живёт, то есть чаще всего тот, кто и так выигрывает. Получается наоборот: не "
+        "предмет привёл к победе, а победа дала время его собрать. Такую ловушку называют "
+        "ошибкой выжившего. Читайте таблицу как «что обычно оказывается в сумке у "
+        "победителя», а не как «что купить, чтобы выиграть».",
         icon="⚠️",
     )
     if items.empty:
@@ -62,7 +63,8 @@ def render(source: str) -> None:
                            f"{best_wr['winrate']:.0%} · {int(best_wr['appearances'])} сборок", icons),
                 unsafe_allow_html=True)
     c2.markdown(_item_card("Самый частый в сборках", most_common,
-                           f"{int(most_common['appearances'])} сборок · WR {most_common['winrate']:.0%}",
+                           f"{int(most_common['appearances'])} сборок · "
+                           f"побед {most_common['winrate']:.0%}",
                            icons, accent="#5aa0c9"), unsafe_allow_html=True)
     st.write("")
 
@@ -71,7 +73,7 @@ def render(source: str) -> None:
         .mark_circle(size=80, opacity=0.7, color="#C8AA6E", stroke="#141719", strokeWidth=0.4)
         .encode(
             x=alt.X("appearances:Q", title="Сборок с этим предметом"),
-            y=alt.Y("winrate:Q", title="Winrate", axis=alt.Axis(format="%"),
+            y=alt.Y("winrate:Q", title="Доля побед", axis=alt.Axis(format="%"),
                     scale=alt.Scale(zero=False)),
             tooltip=[
                 "item_name", alt.Tooltip("appearances:Q", title="Сборок"),
@@ -89,8 +91,9 @@ def render(source: str) -> None:
     with right:
         download_csv(items, "items.csv", key="dl_items", use_container_width=True)
     st.caption(
-        "Шкала winrate обрезана до диапазона 40–65%, иначе различия между предметами "
-        "неразличимы. Полоска показывает место внутри этого диапазона, а не долю от нуля."
+        "Внимание на шкалу: полоска показывает не долю от нуля, а место в узком коридоре "
+        "от 40% до 65%. Если рисовать от нуля, все предметы выглядят одинаково, а так "
+        "различия видны. Но и разница между полосками зрительно больше, чем на самом деле."
     )
     table = items.sort_values("winrate", ascending=False).copy()
     table.insert(0, "icon", table["item_id"].map(icons))
@@ -102,7 +105,7 @@ def render(source: str) -> None:
             "item_name": "Предмет",
             "appearances": st.column_config.NumberColumn("Сборок"),
             "winrate": st.column_config.ProgressColumn(
-                "Winrate", format="percent", min_value=0.40, max_value=0.65),
+                "Побед", format="percent", min_value=0.40, max_value=0.65),
             "wilson_low": st.column_config.NumberColumn("Ниж. оценка", format="percent"),
             "gold_total": st.column_config.NumberColumn("Цена", format="%d"),
         },

@@ -17,7 +17,7 @@ def _player_name(row) -> str:
 
 
 def render(source: str) -> None:
-    st.subheader("Распределение игроков по очкам лиги (LP)")
+    st.subheader("Сколько у игроков рейтинговых очков")
     lp = run(f"""
         SELECT league_points FROM dim_player
         WHERE data_source = '{source}' AND league_points IS NOT NULL
@@ -29,8 +29,9 @@ def render(source: str) -> None:
         )
     else:
         st.caption(
-            "LP (league points) — рейтинговые очки: чем выше, тем выше место в топ-ладдере. "
-            f"Собрано {len(lp)} игроков верхних лиг (Challenger/GM/Master)."
+            "Очки лиги (в игре их называют LP) — рейтинг игрока: чем их больше, тем выше "
+            f"он в общем списке. Здесь {len(lp)} игроков из самых верхних лиг. "
+            "Столбик показывает, сколько человек набрали примерно одинаково."
         )
         lp_hist = (
             alt.Chart(lp)
@@ -71,14 +72,15 @@ def render(source: str) -> None:
     """)
 
     st.subheader("Профиль игрока")
-    st.caption("Карточка одного игрока: метрики, любимые чемпионы и роли. Выберите игрока из списка ниже.")
+    st.caption("Всё про одного человека: показатели, любимые чемпионы и роли. "
+               "Выберите игрока из списка ниже.")
     if players.empty:
         st.info("Нет игроков с таким порогом. Снизьте минимум (богаче всего — источник riot_full).")
         return
 
     players = players.copy()
     players["label"] = players.apply(
-        lambda r: f"{_player_name(r)} · {int(r['games'])} матчей · WR {r['winrate']:.0%}",
+        lambda r: f"{_player_name(r)} · {int(r['games'])} матчей · побед {r['winrate']:.0%}",
         axis=1,
     )
     choice = st.selectbox("Игрок", players["label"])
@@ -89,10 +91,10 @@ def render(source: str) -> None:
     cols = st.columns(7)
     cols[0].metric("Матчей", int(row["games"]))
     cols[1].metric(
-        "Winrate", f"{row['winrate']:.0%}",
-        help=f"На {int(row['games'])} матчах истинный winrate лежит примерно между "
-             f"{row['wr_low']:.0%} и {row['wr_high']:.0%} (интервал Уилсона, 95%). "
-             "Чем меньше матчей, тем шире диапазон и тем меньше значит сама цифра.")
+        "Доля побед", f"{row['winrate']:.0%}",
+        help=f"Цифра точная только на вид. По {int(row['games'])} матчам настоящее умение "
+             f"этого игрока лежит где-то между {row['wr_low']:.0%} и {row['wr_high']:.0%}. "
+             "Чем меньше матчей, тем шире этот разбег и тем меньше значит само число.")
     cols[2].metric("KDA", f"{row['avg_kda']:.2f}")
     cols[3].metric("Урон/мин", f"{row['dmg_pm']:.0f}")
     cols[4].metric("Золото/мин", f"{row['gold_pm']:.0f}")
@@ -126,14 +128,14 @@ def render(source: str) -> None:
     if not best_champ.empty:
         b = best_champ.iloc[0]
         st.success(
-            f"Сильнейший чемпион игрока: **{b['champion_name']}** — "
-            f"{b['winrate']:.0%} winrate на {int(b['games'])} играх "
-            f"(осторожная оценка {b['wilson_low']:.0%})."
+            f"Лучше всего у игрока идёт **{b['champion_name']}**: {b['winrate']:.0%} побед "
+            f"на {int(b['games'])} матчах."
         )
     else:
         st.caption(
-            f"Ни на одном чемпионе нет {MIN_CHAMP_GAMES} матчей: на меньшей выборке "
-            "«лучший чемпион» это чаще везение, чем мастерство, поэтому не показываем."
+            f"Ни на одном чемпионе нет {MIN_CHAMP_GAMES} матчей. На меньшем числе игр "
+            "«любимый чемпион» чаще означает удачную серию, чем настоящее умение, "
+            "поэтому мы такое не показываем."
         )
 
     left, right = st.columns([3, 2])
@@ -154,7 +156,7 @@ def render(source: str) -> None:
             .encode(
                 x=alt.X("games:Q", title="Игр", axis=alt.Axis(grid=True, domain=False)),
                 y=y_named,
-                color=alt.Color("winrate:Q", title="WR",
+                color=alt.Color("winrate:Q", title="Побед",
                                 scale=alt.Scale(scheme="redyellowgreen", domain=[0.3, 0.7])),
                 tooltip=["champion_name", "games",
                          alt.Tooltip("winrate:Q", format=".0%"),
@@ -205,32 +207,35 @@ def render(source: str) -> None:
                 "champion_name": "Чемпион",
                 "games": st.column_config.NumberColumn("Игр"),
                 "winrate": st.column_config.ProgressColumn(
-                    "Winrate", format="percent", min_value=0.0, max_value=1.0),
+                    "Побед", format="percent", min_value=0.0, max_value=1.0),
                 "avg_kda": st.column_config.NumberColumn("KDA", format="%.2f"),
             },
         )
 
     st.markdown("#### Все игроки источника — по числу матчей")
     st.caption(
-        "«WR ниж.» — нижняя граница интервала Уилсона: осторожная оценка winrate с учётом "
-        "числа матчей. По ней видно, у кого высокий процент подкреплён выборкой."
+        "Колонка «Осторожно» — та же доля побед, но заниженная с учётом числа матчей. "
+        "По ней видно, у кого высокий процент подкреплён игрой, а у кого держится "
+        "на десятке удачных матчей."
     )
     hdr, dl = st.columns([4, 1])
     export = players.drop(columns=["label", "puuid", "wr_high"])
     with dl:
         download_csv(export, "players.csv", key="dl_players", use_container_width=True)
     tp = export.head(50).rename(columns={
-        "name": "Игрок", "source_tier": "Лига", "games": "Матчей", "winrate": "WR",
-        "wr_low": "WR ниж.",
+        "name": "Игрок", "source_tier": "Лига", "games": "Матчей", "winrate": "Побед",
+        "wr_low": "Осторожно",
         "avg_kda": "KDA", "dmg_pm": "Урон/мин", "gold_pm": "Золото/мин",
         "cs_pm": "CS/мин", "vis_pm": "Обзор/мин", "k": "Уб.", "d": "См.", "a": "Пом.",
     })
     st.dataframe(
         tp, hide_index=True, width="stretch",
         column_config={
-            "WR": st.column_config.ProgressColumn("WR", format="percent",
-                                                  min_value=0.0, max_value=1.0),
-            "WR ниж.": st.column_config.NumberColumn("WR ниж.", format="percent"),
+            "Побед": st.column_config.ProgressColumn("Побед", format="percent",
+                                                     min_value=0.0, max_value=1.0),
+            "Осторожно": st.column_config.NumberColumn(
+                "Осторожно", format="percent",
+                help="Доля побед, заниженная с учётом того, сколько матчей сыграно"),
             "KDA": st.column_config.NumberColumn("KDA", format="%.2f"),
             "Урон/мин": st.column_config.NumberColumn("Урон/мин", format="%d"),
             "Золото/мин": st.column_config.NumberColumn("Золото/мин", format="%d"),

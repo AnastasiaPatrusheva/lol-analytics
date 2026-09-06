@@ -118,8 +118,10 @@ def _aggregation_effect(source: str, patch_filter: str, min_games: int) -> pd.Da
 def render(source: str) -> None:
     st.subheader("Сила чемпиона")
     st.caption(
-        "Один вопрос: отличается ли winrate чемпиона от 50%. Условия можно менять "
-        "(роль, патч, длина матча), но проверка везде одна и та же."
+        "Есть ли чемпионы, которые выигрывают чаще остальных? В хорошо настроенной игре "
+        "каждый должен побеждать примерно в половине матчей. Здесь видно, кто выбивается "
+        "из этой половины настолько, что это уже нельзя списать на везение. Условия "
+        "сравнения можно менять — роль, патч, длина матча — а способ проверки везде один."
     )
 
     patches = _patches(source)
@@ -129,10 +131,11 @@ def render(source: str) -> None:
     patch = c2.selectbox("Патч", ["Все патчи"] + patches) if patches else "Все патчи"
     min_games = c3.slider("Минимум игр", 5, 100, 30, step=5)
     rank_by = c4.radio(
-        "Ранжировать по", ["С поправкой на число игр", "Сырой winrate"],
-        help="Метод Уилсона строит доверительный интервал winrate с учётом числа игр: "
-             "чем меньше выборка, тем осторожнее оценка. Ранжируем по нижней границе, "
-             "чтобы 70% на 5 играх не оказались выше 53% на 500.",
+        "Как сортировать", ["С поправкой на число игр", "Просто по доле побед"],
+        help="Пять побед из пяти — это 100%, но верить такому нельзя. Поправка "
+             "занижает оценку тем сильнее, чем меньше игр сыграно, чтобы наверх "
+             "не всплывали случайные счастливчики: 70% на 5 играх окажутся ниже "
+             "53% на 500. Метод называется интервалом Уилсона.",
     )
 
     pos_filter = "" if position == "Все" else f"AND f.role_key = '{position}'"
@@ -180,9 +183,9 @@ def render(source: str) -> None:
                wilson_low, wilson_high, avg_kda,
                RANK() OVER (ORDER BY {order_col} DESC) AS rank,
                (winrate - AVG(winrate) OVER (PARTITION BY primary_class)) * 100 AS vs_class,
-               CASE WHEN wilson_low_adj > 0.5 THEN 'значимо сильный'
-                    WHEN wilson_high_adj < 0.5 THEN 'значимо слабый'
-                    ELSE 'в норме' END AS verdict
+               CASE WHEN wilson_low_adj > 0.5 THEN 'выигрывает чаще'
+                    WHEN wilson_high_adj < 0.5 THEN 'выигрывает реже'
+                    ELSE 'как все' END AS verdict
         FROM ci ORDER BY {order_col} DESC
     """)
 
@@ -195,7 +198,7 @@ def render(source: str) -> None:
                       f"{top_row[order_col]:.1%} · {int(top_row['games'])} игр",
                       imgs.get(int(top_row["champion_id"]), "")), unsafe_allow_html=True)
     h2.markdown(_hero("Самый играемый", most_played["champion_name"],
-                      f"{int(most_played['games'])} игр · WR {most_played['winrate']:.0%}",
+                      f"{int(most_played['games'])} игр · побед {most_played['winrate']:.0%}",
                       imgs.get(int(most_played["champion_id"]), ""), accent="#5aa0c9"),
                 unsafe_allow_html=True)
     h3.markdown(_hero("Лучший KDA", best_kda["champion_name"],
@@ -203,19 +206,22 @@ def render(source: str) -> None:
                       imgs.get(int(best_kda["champion_id"]), ""), accent="#cda24a"),
                 unsafe_allow_html=True)
     st.caption(
-        "KDA считается как сумма убийств и помощей, делённая на сумму смертей по всем "
-        "матчам чемпиона. Если усреднять KDA отдельных матчей, редкие игры без смертей "
-        "дают огромные значения и наверх выходят чемпионы с везучей серией."
+        "KDA здесь — все убийства и помощи чемпиона, делённые на все его смерти. "
+        "Считать среднее от KDA отдельных матчей нельзя: одна игра без смертей даёт "
+        "огромное число, и наверх выходит тот, кому просто повезло в паре матчей."
     )
     st.write("")
 
-    n_strong = int((champions["verdict"] == "значимо сильный").sum())
-    n_weak = int((champions["verdict"] == "значимо слабый").sum())
+    n_strong = int((champions["verdict"] == "выигрывает чаще").sum())
+    n_weak = int((champions["verdict"] == "выигрывает реже").sum())
     st.caption(
-        f"Значимо отличаются от 50%: {n_strong + n_weak} из {n_tests} "
-        f"({n_strong} сильных, {n_weak} слабых). Проверка идёт по всем чемпионам среза "
-        f"сразу, поэтому порог поднят поправкой Бонферрони: z={z_adj:.2f} вместо 1.96. "
-        "Без неё примерно каждый двадцатый получил бы ярлык случайно."
+        f"Заметно отличаются от половины побед: {n_strong + n_weak} чемпионов из {n_tests} "
+        f"({n_strong} сильнее обычного, {n_weak} слабее). Почему так мало: мы проверяем "
+        f"всех {n_tests} сразу, а когда проверок много, редкие совпадения перестают быть "
+        "редкими. Подбросьте монетку сто раз, повторите это 172 раза — у нескольких попыток "
+        "орлов выпадет подозрительно много, хотя монетка честная. Поэтому планка тем выше, "
+        "чем больше чемпионов сравниваем. Без такой поправки около девяти чемпионов "
+        "назывались бы сильными просто по случайности. Приём называется поправкой Бонферрони."
     )
 
     top20 = champions.head(20).copy()
@@ -229,8 +235,8 @@ def render(source: str) -> None:
     )
     y_named = alt.Y("champion_name:N", sort=ysort, title=None,
                     axis=alt.Axis(labelPadding=6, domain=False, ticks=False))
-    metric_title = ("Winrate (с поправкой на число игр)" if order_col == "wilson_low"
-                    else "Winrate")
+    metric_title = ("Доля побед, осторожная оценка" if order_col == "wilson_low"
+                    else "Доля побед")
     bars = (
         alt.Chart(top20).mark_bar(cornerRadiusEnd=3)
         .encode(
@@ -238,9 +244,9 @@ def render(source: str) -> None:
                     axis=alt.Axis(format="%", grid=True, domain=False, tickCount=6)),
             y=y_named,
             color=alt.Color(
-                "verdict:N", title="Вердикт",
+                "verdict:N", title="Итог",
                 scale=alt.Scale(
-                    domain=["значимо сильный", "в норме", "значимо слабый"],
+                    domain=["выигрывает чаще", "как все", "выигрывает реже"],
                     range=["#C8AA6E", "#6b7580", "#d9534f"],
                 ),
                 legend=alt.Legend(orient="bottom"),
@@ -263,12 +269,15 @@ def render(source: str) -> None:
 
     # ---------- эффект усреднения: ради этого три вкладки и слиты в одну ----------
     st.divider()
-    st.markdown("#### Что делает с ответом сам разрез")
+    st.markdown("#### От того, как считать, зависит ответ")
     st.caption(
-        "Одна и та же проверка в разных разрезах. Обратите внимание на первую строку "
-        "и на остальные: чемпион, которого играют на двух ролях с 38% и 52%, в сумме даёт "
-        "ровно 50% и выглядит сбалансированным. Поэтому в общем срезе значимых обычно нет, "
-        "а внутри роли они появляются. Ноль сверху — следствие усреднения, а не свойство игры."
+        "Тот же вопрос, заданный по-разному. Сравните первую строку с остальными: если "
+        "считать всех чемпионов вместе, сильных нет вовсе; если считать отдельно внутри "
+        "каждой роли, они появляются. Так выходит, когда одного чемпиона играют на двух "
+        "позициях: на одной он выигрывает 38% матчей, на другой 52%, а вместе получается "
+        "ровно половина, и он выглядит обычным. Ноль в первой строке говорит о способе "
+        "подсчёта, а не о самой игре. Посмотрите ещё на разброс: он растёт вдвое-втрое, "
+        "стоит перестать смешивать роли."
     )
     eff = _aggregation_effect(source, patch_filter, min_games)
     if not eff.empty:
@@ -279,18 +288,27 @@ def render(source: str) -> None:
         eff["significant"] = eff["strong"] + eff["weak"]
         eff["slice"] = eff["slice"].map(lambda s: ROLE_RU.get(s, s))
         show = eff.rename(columns={
-            "slice": "Разрез", "champions": "Чемпионов", "significant": "Значимых",
-            "strong": "Сильных", "weak": "Слабых", "spread": "Размах winrate", "z": "Порог z",
-        })[["Разрез", "Чемпионов", "Значимых", "Сильных", "Слабых", "Размах winrate", "Порог z"]]
+            "slice": "Как считаем", "champions": "Чемпионов",
+            "significant": "Выделяются", "strong": "Сильнее", "weak": "Слабее",
+            "spread": "Разброс побед", "z": "Строгость планки",
+        })[["Как считаем", "Чемпионов", "Выделяются", "Сильнее", "Слабее",
+            "Разброс побед", "Строгость планки"]]
         st.dataframe(
             show, hide_index=True, width="stretch",
             column_config={
-                "Чемпионов": st.column_config.NumberColumn(format="%d"),
-                "Значимых": st.column_config.NumberColumn(format="%d"),
-                "Сильных": st.column_config.NumberColumn(format="%d"),
-                "Слабых": st.column_config.NumberColumn(format="%d"),
-                "Размах winrate": st.column_config.NumberColumn(format="percent"),
-                "Порог z": st.column_config.NumberColumn(format="%.2f"),
+                "Чемпионов": st.column_config.NumberColumn(
+                    format="%d", help="Сколько чемпионов набрали нужный минимум игр"),
+                "Выделяются": st.column_config.NumberColumn(
+                    format="%d", help="Сколько заметно отличаются от половины побед"),
+                "Сильнее": st.column_config.NumberColumn(format="%d"),
+                "Слабее": st.column_config.NumberColumn(format="%d"),
+                "Разброс побед": st.column_config.NumberColumn(
+                    format="percent",
+                    help="Расстояние от самого слабого чемпиона до самого сильного"),
+                "Строгость планки": st.column_config.NumberColumn(
+                    format="%.2f",
+                    help="Чем больше чемпионов сравниваем, тем выше планка, "
+                         "чтобы случайные совпадения не проходили за настоящие"),
             },
         )
 
@@ -298,9 +316,10 @@ def render(source: str) -> None:
     st.divider()
     st.markdown("#### Рейтинг чемпионов")
     st.caption(
-        "«Ранг» — место чемпиона в рейтинге этого среза. «vs класс» — на сколько процентных "
-        "пунктов его winrate выше или ниже среднего по своему классу: танки сравниваются "
-        "с танками, маги с магами."
+        "«Осторожно» — та же доля побед, но заниженная с учётом числа игр. "
+        "«Лучше своих» показывает, насколько чемпион выигрывает чаще среднего по своему "
+        "классу: танки сравниваются с танками, маги с магами. Сравнивать танка с магом "
+        "напрямую смысла мало, у них разные задачи в команде."
     )
     top = champions.head(25).copy()
     top.insert(0, "img", top["champion_id"].map(imgs))
@@ -315,12 +334,15 @@ def render(source: str) -> None:
             "primary_class": "Класс",
             "games": st.column_config.NumberColumn("Игр"),
             "winrate": st.column_config.ProgressColumn(
-                "Winrate", format="percent", min_value=0.40, max_value=0.60),
+                "Побед", format="percent", min_value=0.40, max_value=0.60),
             "wilson_low": st.column_config.ProgressColumn(
-                "Ниж. оценка", format="percent", min_value=0.40, max_value=0.60),
-            "vs_class": st.column_config.NumberColumn("vs класс", format="%+.1f%%"),
+                "Осторожно", format="percent", min_value=0.40, max_value=0.60,
+                help="Доля побед, заниженная с учётом того, сколько игр сыграно"),
+            "vs_class": st.column_config.NumberColumn(
+                "Лучше своих", format="%+.1f%%",
+                help="Насколько чемпион выигрывает чаще среднего по своему классу"),
             "avg_kda": st.column_config.NumberColumn("KDA", format="%.2f"),
-            "verdict": "Вердикт",
+            "verdict": "Итог",
         },
     )
     _, dl = st.columns([4, 1])
@@ -362,7 +384,7 @@ def _kills_deaths(source: str, pos_filter: str, patch_filter: str, min_games: in
             x=alt.X("avg_deaths:Q", title="Смертей за игру (в среднем)"),
             y=alt.Y("avg_kills:Q", title="Убийств за игру (в среднем)"),
             size=alt.Size("games:Q", title="Игр", scale=alt.Scale(range=[60, 900])),
-            color=alt.Color("winrate:Q", title="Winrate",
+            color=alt.Color("winrate:Q", title="Побед",
                             scale=alt.Scale(scheme="redyellowgreen", domain=[0.4, 0.6])),
             tooltip=["champion_name", "primary_class", "games",
                      alt.Tooltip("avg_kills:Q", format=".1f", title="убийств"),
@@ -456,22 +478,24 @@ def _patch_shift(source: str, patches: list[str], pos_filter: str, min_games: in
     sig = cmp[cmp["is_sig"]]
 
     st.caption(
-        f"Сравниваем winrate от раннего патча ({a}) к позднему ({b}); порядок выбора не важен. "
-        f"Проверяется {len(cmp)} чемпионов сразу, поэтому порог значимости не 0.05, "
-        f"а {alpha_adj:.5f}. При обычном пороге «значимыми» выглядели бы {naive}, "
-        f"с поправкой их {len(sig)}. Золотой — усилился, красный — ослаб, блёклый — шум."
+        f"Riot регулярно правит чемпионов. Здесь видно, у кого доля побед изменилась между "
+        f"патчами {a} и {b}, а у кого цифры просто поплавали. Золотой — стал выигрывать чаще, "
+        f"красный — реже, блёклый — разница слишком мала, чтобы ей верить. "
+        f"Оговорка та же, что и выше: чемпионов много ({len(cmp)}), поэтому планка выше "
+        f"обычной. Если бы мы смотрели на одного чемпиона, настоящими выглядели бы "
+        f"{naive} изменений; с учётом того, что смотрим на всех сразу, остаётся {len(sig)}."
     )
     if not sig.empty:
         up, down = sig.iloc[0], sig.iloc[-1]
         st.success(
-            f"Значимые сдвиги {a} → {b}: усилился **{up['champion_name']}** "
-            f"({up['delta']:+.0%}, p={up['p_value']:.4f}); ослаб "
-            f"**{down['champion_name']}** ({down['delta']:+.0%}, p={down['p_value']:.4f})."
+            f"Между патчами {a} и {b} действительно изменились: **{up['champion_name']}** "
+            f"стал выигрывать на {up['delta']:+.0%} чаще, **{down['champion_name']}** — "
+            f"на {abs(down['delta']):.0%} реже."
         )
     else:
         st.info(
-            f"Между {a} и {b} нет сдвигов, переживающих поправку на множественные "
-            "сравнения. Изменения в пределах шума выборки."
+            f"Между патчами {a} и {b} ни у кого нет изменений, которые нельзя объяснить "
+            "случайностью. Цифры у чемпионов поменялись, но в пределах обычного разброса."
         )
     st.altair_chart(
         _diverging_bars(cmp, f"Δ winrate ({b} − {a})",
@@ -491,10 +515,11 @@ def _by_duration(source: str, pos_filter: str, patch_filter: str) -> None:
     st.divider()
     st.markdown("#### Кто сильнее в долгих играх, а кто в коротких")
     st.warning(
-        "**Длина матча — следствие исхода, а не фактор.** Разгромные матчи заканчиваются "
-        "быстро, поэтому поражения «скейлеров» механически попадают в короткий бакет. "
-        "Разрез полезен как описание, но причину «чемпион силён потому, что игра долгая» "
-        "из него вывести нельзя: возможно, игра долгая потому, что чемпион не дал её закончить.",
+        "**Осторожно с выводами.** Матч заканчивается быстро, когда одна команда громит "
+        "другую. Значит короткие игры — это в основном разгромы, и проигрыши «поздних» "
+        "чемпионов попадают туда сами собой. Поэтому нельзя сказать «чемпион силён, "
+        "потому что игра долгая»: возможно, игра долгая именно потому, что он не дал её "
+        "закончить. Смотреть на этот разрез как на описание можно, как на причину — нет.",
         icon="⚠️",
     )
     min_b = st.slider("Минимум игр в каждой длине", 5, 100, 30, step=5, key="dur_min")
@@ -541,17 +566,17 @@ def _by_duration(source: str, pos_filter: str, patch_filter: str) -> None:
     sig = dur[dur["is_sig"]]
 
     st.caption(
-        f"Разница winrate между долгими (>32 мин) и короткими (<25 мин) матчами. "
-        f"Проверка та же, что и в разрезах выше: {len(dur)} чемпионов сразу, порог "
-        f"{alpha_adj:.5f}. Значимых различий: {len(sig)}. Насыщенные столбцы — значимые, "
-        "блёклые — в пределах шума."
+        f"Насколько чаще чемпион побеждает в долгих матчах (дольше 32 минут) по сравнению "
+        f"с короткими (меньше 25 минут). Проверка та же, что и выше: чемпионов много "
+        f"({len(dur)}), планка поднята, и разниц, которые нельзя объяснить случайностью, "
+        f"осталось {len(sig)}. Насыщенные столбцы — они, блёклые — обычный разброс."
     )
     if not sig.empty:
         top = sig.iloc[0]
         st.success(
             f"Сильнее всех выигрывает от долгой игры **{top['champion_name']}**: "
-            f"{top['wr_short']:.0%} в коротких против {top['wr_long']:.0%} в долгих "
-            f"({top['delta']:+.0%}, p={top['p_value']:.4f})."
+            f"{top['wr_short']:.0%} побед в коротких матчах против {top['wr_long']:.0%} "
+            f"в долгих."
         )
     st.altair_chart(
         _diverging_bars(dur, "Δ winrate (длинные − короткие)",
