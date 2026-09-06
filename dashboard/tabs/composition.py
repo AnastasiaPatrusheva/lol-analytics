@@ -4,11 +4,10 @@
 надёжности (числу игр), а сам winrate берём осторожным (нижняя граница Уилсона).
 Плюс заметка про баланс ролей (фронтлайн / урон / поддержка) по классам чемпионов.
 """
-import altair as alt
 import numpy as np
-import pandas as pd
 import streamlit as st
 
+from dashboard.charts import radar_grid
 from dashboard.data import run, champion_images
 
 ROLES = [("TOP", "Топ"), ("JUNGLE", "Лес"), ("MIDDLE", "Мид"),
@@ -155,49 +154,7 @@ def render(source: str) -> None:
     # WR у ролей ~50% у всех (неинформативно). Берём метрики, которые реально
     # различают роли; нормируем value/max. Мини-радар на роль — накладывать 5 ролей-
     # «противоположностей» на один радар нечитаемо.
-    metrics = [("kda", "KDA"), ("cs", "CS"), ("dmg", "Урон"),
-               ("vision", "Обзор"), ("gold", "Золото")]
     rad = roles_df.set_index("role_key")
-    for col, _ in metrics:
-        hi = rad[col].max()
-        rad[col + "_n"] = rad[col] / hi if hi > 0 else 0.0
-    m = len(metrics)
-    sc = alt.Scale(domain=[-1.62, 1.62])
-
-    def _pentagon(values):
-        pts = []
-        for i, v in enumerate(values):
-            ang = i * 2 * np.pi / m - np.pi / 2
-            pts.append({"x": v * np.cos(ang), "y": v * np.sin(ang), "order": i})
-        pts.append({**pts[0], "order": m})
-        return pd.DataFrame(pts)
-
-    ref_df = _pentagon([1.0] * m)
-    axis_lbl = pd.DataFrame([
-        {"x": 1.36 * np.cos(i * 2 * np.pi / m - np.pi / 2),
-         "y": 1.36 * np.sin(i * 2 * np.pi / m - np.pi / 2), "t": lbl}
-        for i, (_, lbl) in enumerate(metrics)
-    ])
-    labels = (alt.Chart(axis_lbl)
-              .mark_text(fontSize=9, color="#a49b86")
-              .encode(x=alt.X("x:Q", axis=None, scale=sc),
-                      y=alt.Y("y:Q", axis=None, scale=sc), text="t:N"))
-    cols = st.columns(m)
-    for (rk, rk_ru), col in zip(ROLES, cols):
-        if rk not in rad.index:
-            continue
-        pdf = _pentagon([float(rad.loc[rk, mc + "_n"]) for mc, _ in metrics])
-        ref = (alt.Chart(ref_df)
-               .mark_line(interpolate="linear-closed", strokeWidth=1, color="#2f3a4d")
-               .encode(x=alt.X("x:Q", axis=None, scale=sc),
-                       y=alt.Y("y:Q", axis=None, scale=sc), order="order:Q"))
-        shape = (alt.Chart(pdf)
-                 .mark_line(interpolate="linear-closed", strokeWidth=2,
-                            color="#C8AA6E", fill="#C8AA6E", fillOpacity=0.30)
-                 .encode(x=alt.X("x:Q", axis=None, scale=sc),
-                         y=alt.Y("y:Q", axis=None, scale=sc), order="order:Q"))
-        col.markdown(
-            f"<div style='text-align:center;font-weight:600;color:#F0E6D2'>{rk_ru}</div>",
-            unsafe_allow_html=True)
-        col.altair_chart((ref + shape + labels).properties(height=170).configure_view(strokeWidth=0),
-                         use_container_width=True)
+    rad = rad.reindex([rk for rk, _ in ROLES if rk in rad.index])   # порядок как в ROLES
+    radar_grid(rad, [("kda", "KDA"), ("cs", "CS"), ("dmg", "Урон"),
+                     ("vision", "Обзор"), ("gold", "Золото")], titles=dict(ROLES))

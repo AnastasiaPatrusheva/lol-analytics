@@ -40,6 +40,18 @@ ROOT = Path(__file__).resolve().parent      # папка, где лежит main
 SCRIPTS = ROOT / "scripts"                  # папка со скриптами-стадиями
 LOG_FILE = ROOT / "etl.log"                 # файл лога
 
+# Простые стадии: имя стадии -> скрипт в scripts/. Составные (refresh, all, load) — ниже в main().
+STAGE_SCRIPTS = {
+    "reference": "fetch_reference.py",
+    "ingest": "ingest_riot_full.py",
+    "extract": "riot_data_collector.py",
+    "transform": "build_common_analytics_layer.py",
+    "quality": "run_data_quality.py",
+    "star": "build_star_schema.py",
+    "segments": "build_player_segments.py",
+    "snapshot": "snapshot_data.py",
+}
+
 # Делаем пакет src/lol_utils импортируемым и подключаем настройку логирования.
 sys.path.insert(0, str(ROOT / "src"))
 from lol_utils.logging_setup import setup_logging  # noqa: E402
@@ -118,32 +130,23 @@ def main() -> int:
     log.info("===== Стадия: %s =====", args.stage)
     started = time.time()
 
+    def run_stage(stage: str) -> None:
+        # Аргументы командной строки (extra) пробрасываются только коллектору Riot API.
+        run_script(STAGE_SCRIPTS[stage], *(extra if stage == "extract" else ()))
+
+    # Вывод дочернего скрипта идёт в лог, поэтому запрос ключа через getpass не виден —
+    # предупреждаем заранее.
+    if args.stage in ("extract", "refresh") and not os.environ.get("RIOT_API_KEY"):
+        log.warning("RIOT_API_KEY не задан в окружении — коллектор запросит ключ вручную. "
+                    "Проще задать заранее:  $env:RIOT_API_KEY = \"RGAPI-...\"")
+
     # Ветвление: выбор скрипта по запрошенной стадии.
-    if args.stage == "reference":
-        run_script("fetch_reference.py")
-    elif args.stage == "ingest":
-        run_script("ingest_riot_full.py")
-    elif args.stage == "extract":
-        run_script("riot_data_collector.py", *extra)
+    if args.stage in STAGE_SCRIPTS:
+        run_stage(args.stage)
     elif args.stage == "refresh":
         # Одна команда для обновления собственной выборки через Riot API.
-        if not os.environ.get("RIOT_API_KEY"):
-            log.warning("RIOT_API_KEY не задан в окружении — коллектор запросит ключ вручную. "
-                        "Проще задать заранее:  $env:RIOT_API_KEY = \"RGAPI-...\"")
-        run_script("riot_data_collector.py", *extra)   # extract
-        run_script("build_common_analytics_layer.py")  # transform
-        run_script("run_data_quality.py")              # quality
-        run_script("build_star_schema.py")             # star
-    elif args.stage == "transform":
-        run_script("build_common_analytics_layer.py")
-    elif args.stage == "quality":
-        run_script("run_data_quality.py")
-    elif args.stage == "star":
-        run_script("build_star_schema.py")
-    elif args.stage == "segments":
-        run_script("build_player_segments.py")
-    elif args.stage == "snapshot":
-        run_script("snapshot_data.py")
+        for stage in ("extract", "transform", "quality", "star"):
+            run_stage(stage)
     elif args.stage == "load":
         if args.target == "supabase":
             if not os.environ.get("DATABASE_URL"):
@@ -155,16 +158,16 @@ def main() -> int:
     elif args.stage == "all":
         # ingest запускается только при наличии распакованного большого датасета.
         if (ROOT / "data" / "riot_full" / "raw" / "matches").exists():
-            run_script("ingest_riot_full.py")
-        run_script("build_common_analytics_layer.py")
+            run_stage("ingest")
+        run_stage("transform")
         if args.skip_quality:
             log.warning("quality пропущена (--skip-quality)")
         else:
-            run_script("run_data_quality.py")
-        run_script("build_star_schema.py")
+            run_stage("quality")
+        run_stage("star")
         # segments — опциональная витрина: нужен scikit-learn; без него не рушим пайплайн
         try:
-            run_script("build_player_segments.py")
+            run_stage("segments")
         except SystemExit:
             log.warning("segments пропущен (нужен scikit-learn: pip install -r requirements-build.txt)")
         run_script("load_to_warehouse.py", env=env_without_database_url())

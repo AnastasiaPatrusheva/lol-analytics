@@ -139,7 +139,7 @@ def render(source: str) -> None:
             .encode(x=alt.X("games:Q"), y=y_named, text=alt.Text("games:Q"))
         )
         ch = alt.hconcat(portraits, (bars + vals), spacing=4).configure_view(strokeWidth=0)
-        st.altair_chart(ch, use_container_width=True)
+        st.altair_chart(ch, width="stretch")
 
     roles = run(f"""
         SELECT r.role_name_ru AS role, COUNT(*) AS games,

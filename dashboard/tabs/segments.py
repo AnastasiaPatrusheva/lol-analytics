@@ -1,9 +1,8 @@
 """Вкладка «Архетипы»: сегментация игроков (KMeans)."""
 import altair as alt
-import numpy as np
-import pandas as pd
 import streamlit as st
 
+from dashboard.charts import radar_grid
 from dashboard.data import run, table_exists, table_with_download
 
 
@@ -69,7 +68,7 @@ def render(source: str) -> None:
             .mark_text(align="left", dx=5, fontSize=12, color="#cfd6d6")
             .encode(x=alt.X("players:Q"), y=ybar, text=alt.Text("players:Q"))
         )
-        st.altair_chart((bar + labels).configure_view(strokeWidth=0), use_container_width=True)
+        st.altair_chart((bar + labels).configure_view(strokeWidth=0), width="stretch")
     with c_right:
         st.markdown("#### Урон в минуту vs контроль карты (вардинг)")
         scatter = (
@@ -99,52 +98,10 @@ def render(source: str) -> None:
 
     st.markdown("#### Профиль архетипов — радар")
     st.caption(
-        "Каждая линия — архетип; чем дальше от центра по оси, тем выше показатель "
-        "(метрики нормированы 0–1 между архетипами, чтобы уместить их на одном графике)."
+        "Профиль каждого архетипа по шести метрикам. Значения нормированы между "
+        "архетипами: чем дальше от центра по оси, тем выше показатель, край — максимум "
+        "среди архетипов. Форма фигуры показывает, чем архетип выделяется."
     )
-    radar_metrics = [
-        ("winrate", "WR"), ("kda", "KDA"), ("cs", "CS/мин"),
-        ("dmg", "Урон/мин"), ("vision", "Обзор/мин"), ("gold", "Золото/мин"),
-    ]
-    rad = counts.copy()
-    for col, _ in radar_metrics:
-        lo, hi = rad[col].min(), rad[col].max()
-        rad[col + "_n"] = (rad[col] - lo) / (hi - lo) if hi > lo else 0.5
-    n = len(radar_metrics)
-    rows = []
-    for _, r in rad.iterrows():
-        pts = []
-        for i, (col, lbl) in enumerate(radar_metrics):
-            ang = i * 2 * np.pi / n - np.pi / 2  # старт сверху
-            v = float(r[col + "_n"])
-            pts.append({"archetype": r["archetype"], "metric": lbl, "order": i,
-                        "x": v * np.cos(ang), "y": v * np.sin(ang)})
-        pts.append({**pts[0], "order": n})  # замыкаем контур: возвращаемся в первую точку
-        rows.extend(pts)
-    radar_df = pd.DataFrame(rows)
-    scale = alt.Scale(domain=[-1.25, 1.25])
-    polygons = (
-        alt.Chart(radar_df)
-        .mark_line(interpolate="linear-closed", strokeWidth=2, fillOpacity=0.22)
-        .encode(
-            x=alt.X("x:Q", axis=None, scale=scale),
-            y=alt.Y("y:Q", axis=None, scale=scale),
-            order="order:Q",
-            detail="archetype:N",
-            color=alt.Color("archetype:N", title="Архетип"),
-            fill=alt.Fill("archetype:N", legend=None),
-            tooltip=["archetype:N", "metric:N"],
-        )
-    )
-    axis_labels = pd.DataFrame([
-        {"metric": lbl,
-         "x": 1.15 * np.cos(i * 2 * np.pi / n - np.pi / 2),
-         "y": 1.15 * np.sin(i * 2 * np.pi / n - np.pi / 2)}
-        for i, (_, lbl) in enumerate(radar_metrics)
-    ])
-    labels = (
-        alt.Chart(axis_labels)
-        .mark_text(fontSize=11, color="#888")
-        .encode(x=alt.X("x:Q", scale=scale), y=alt.Y("y:Q", scale=scale), text="metric:N")
-    )
-    st.altair_chart((polygons + labels).properties(height=420), width="stretch")
+    radar_grid(counts.set_index("archetype"),
+               [("winrate", "WR"), ("kda", "KDA"), ("cs", "CS"),
+                ("dmg", "Урон"), ("vision", "Обзор"), ("gold", "Золото")])

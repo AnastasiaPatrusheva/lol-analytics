@@ -133,7 +133,7 @@ def render(source: str) -> None:
                 text=alt.Text(f"{order_col}:Q", format=".1%"))
     )
     chart = alt.hconcat(portraits, (bars + vals), spacing=4).configure_view(strokeWidth=0)
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, width="stretch")
 
     st.markdown("#### Рейтинг чемпионов")
     st.caption(
