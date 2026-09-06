@@ -1,8 +1,14 @@
-"""Вкладка «Игроки»: распределение LP и карточка игрока."""
+"""Вкладка «Игроки»: одна сущность в двух масштабах.
+
+Сначала популяция целиком — распределение очков лиги и архетипы игроков, потом
+карточка одного человека. Архетипы были отдельной вкладкой; связь между «какие
+бывают игроки» и «вот конкретный игрок» при этом терялась.
+"""
 import altair as alt
 import streamlit as st
 
 from dashboard.data import run, download_csv, champion_images
+from dashboard.tabs import segments
 
 
 def _player_name(row) -> str:
@@ -39,6 +45,10 @@ def render(source: str) -> None:
         st.altair_chart(lp_hist, width="stretch")
     st.divider()
 
+    # Популяция: какие вообще бывают игроки. Раньше это была отдельная вкладка.
+    segments.render(source)
+
+    st.divider()
     min_p_games = st.slider("Минимум матчей у игрока", 5, 100, 20, step=5)
     players = run(f"""
         SELECT p.riot_id_game_name AS name, p.puuid, p.source_tier,

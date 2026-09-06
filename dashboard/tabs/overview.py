@@ -1,27 +1,34 @@
-"""Вкладка «Обзор»: KPI, авто-инсайты, победители vs проигравшие."""
+"""Вкладка «Главное»: что выяснили, а не какие тут есть графики.
+
+Раньше первый экран показывал лидеров по метрикам. Лидер — это максимум выборки,
+он систематически завышен (у кого-то из многих обязательно окажется удачная серия),
+и выводом быть не может. Здесь вместо витрины лидеров сами выводы, каждый с числом
+и указанием вкладки, где его можно перепроверить.
+"""
 import streamlit as st
 
-from dashboard.data import run, table_with_download, champion_images, item_images
+from dashboard.data import run
 
 
-def _insight_card(title, name, subtitle, img, accent="#C8AA6E"):
-    pic = (f"<img src='{img}' style='width:48px;height:48px;border-radius:9px;"
-           f"border:1px solid #2f3a4d;flex:none'>") if img else ""
-    return (
-        "<div style='background:#10233a;border:1px solid #2f3a4d;border-radius:14px;"
-        "padding:13px 15px;display:flex;gap:12px;align-items:center'>"
-        f"{pic}<div style='min-width:0'>"
-        f"<div style='font-size:11px;color:#a49b86;text-transform:uppercase;letter-spacing:.05em'>{title}</div>"
-        "<div style=\"font-family:'Palatino Linotype','Book Antiqua',serif;font-size:17px;"
-        f"font-weight:600;color:#e8ecec\">{name}</div>"
-        f"<div style='font-size:12.5px;color:{accent}'>{subtitle}</div></div></div>"
+def _finding(number: str, title: str, body: str, where: str) -> None:
+    """Один вывод: заголовок, текст, где перепроверить."""
+    st.markdown(
+        f"<div style='background:#10233a;border:1px solid #2f3a4d;border-left:3px solid #C8AA6E;"
+        f"border-radius:10px;padding:14px 18px;margin-bottom:12px'>"
+        f"<div style='font-size:11px;color:#a49b86;text-transform:uppercase;"
+        f"letter-spacing:.06em'>Вывод {number}</div>"
+        f"<div style=\"font-family:'Palatino Linotype','Book Antiqua',serif;font-size:18px;"
+        f"font-weight:600;color:#F0E6D2;margin:2px 0 6px\">{title}</div>"
+        f"<div style='font-size:14px;color:#cfd6d6;line-height:1.55'>{body}</div>"
+        f"<div style='font-size:12px;color:#a49b86;margin-top:8px'>Проверить: {where}</div>"
+        f"</div>",
+        unsafe_allow_html=True,
     )
 
 
 def render(source: str) -> None:
     kpi = run(f"""
-        SELECT COUNT(*) AS rows,
-               COUNT(DISTINCT match_id) AS matches,
+        SELECT COUNT(DISTINCT match_id) AS matches,
                COUNT(DISTINCT puuid) AS players,
                COUNT(DISTINCT champion_id) AS champions
         FROM fact_participant WHERE data_source = '{source}'
@@ -29,6 +36,11 @@ def render(source: str) -> None:
     duration = run(f"""
         SELECT AVG(game_duration_min) AS d FROM dim_match WHERE data_source = '{source}'
     """).iloc[0]["d"]
+    patches = int(run(f"""
+        SELECT COUNT(DISTINCT split_part(game_version, '.', 1) || '.'
+                              || split_part(game_version, '.', 2)) AS n
+        FROM dim_match WHERE data_source = '{source}' AND game_version IS NOT NULL
+    """).iloc[0]["n"])
 
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Матчей", f"{int(kpi['matches']):,}".replace(",", " "))
@@ -36,82 +48,53 @@ def render(source: str) -> None:
     c3.metric("Чемпионов", int(kpi["champions"]))
     c4.metric("Ср. длительность", f"{duration:.1f} мин")
 
-    st.markdown("#### Главное в мете")
+    st.markdown("#### Что показали данные")
     st.caption(
-        "Каждая карточка — лидер по своей метрике, то есть максимум выборки. Такой "
-        "максимум всегда немного завышен: у кого-то из многих обязательно окажется "
-        "удачная серия. Читать как ориентир, а не как измеренную величину."
+        f"Выводы по источнику «{source}»: {int(kpi['matches']):,} матчей ранкед-соло, "
+        f"{patches} патчей. Каждый вывод можно перепроверить на указанной вкладке."
+        .replace(",", " ")
     )
-    # Ранжируем по нижней границе Уилсона среди чемпионов с достаточной выборкой.
-    # Раньше здесь стоял фильтр verdict = 'значимо сильный'; после поправки на
-    # множественные сравнения таких чемпионов нет вовсе, и карточка просто исчезала.
-    top_champ = run(f"""
-        SELECT cs.champion_name, cs.wilson_low, cs.games, cs.verdict, dc.champion_id
-        FROM champion_strength cs
-        JOIN dim_champion dc ON cs.champion_name = dc.champion_name
-        WHERE cs.data_source = '{source}' AND cs.games >= 100
-        ORDER BY cs.wilson_low DESC LIMIT 1
-    """)
-    top_item = run(f"""
-        SELECT item_name, item_id, wilson_low, appearances FROM item_stats
-        WHERE data_source = '{source}' AND gold_total >= 2000
-        ORDER BY wilson_low DESC LIMIT 1
-    """)
-    scaler = run(f"""
-        WITH p AS (
-            SELECT champion_name,
-                   MAX(CASE WHEN duration_bucket LIKE '1.%' THEN winrate END) AS s,
-                   MAX(CASE WHEN duration_bucket LIKE '3.%' THEN winrate END) AS l,
-                   MAX(CASE WHEN duration_bucket LIKE '1.%' THEN games END) AS gs,
-                   MAX(CASE WHEN duration_bucket LIKE '3.%' THEN games END) AS gl
-            FROM champion_by_duration WHERE data_source = '{source}' GROUP BY champion_name
-        )
-        SELECT p.champion_name, (p.l - p.s) AS delta, dc.champion_id
-        FROM p JOIN dim_champion dc ON p.champion_name = dc.champion_name
-        WHERE p.gs >= 20 AND p.gl >= 20 ORDER BY delta DESC LIMIT 1
-    """)
-    champ_imgs = champion_images()
-    it_imgs = item_images()
-    i1, i2, i3 = st.columns(3)
-    if not top_champ.empty:
-        r = top_champ.iloc[0]
-        i1.markdown(_insight_card(
-            "Выше всех по осторожной оценке", r["champion_name"],
-            f"не ниже {r['wilson_low']:.0%} · {int(r['games'])} игр",
-            champ_imgs.get(int(r["champion_id"]), "")), unsafe_allow_html=True)
-    if not top_item.empty:
-        r = top_item.iloc[0]
-        i2.markdown(_insight_card(
-            "Чаще всего в сборке победителя", r["item_name"],
-            f"{r['wilson_low']:.0%} · {int(r['appearances'])} сборок",
-            it_imgs.get(int(r["item_id"]), ""), accent="#5aa0c9"), unsafe_allow_html=True)
-    if not scaler.empty:
-        r = scaler.iloc[0]
-        i3.markdown(_insight_card(
-            "Сильнее всего в долгой игре", r["champion_name"],
-            f"+{r['delta']:.0%} winrate в долгих матчах",
-            champ_imgs.get(int(r["champion_id"]), ""), accent="#cda24a"), unsafe_allow_html=True)
 
-    # KDA считаем пулированно: (убийства + помощи) / смерти по всем строкам.
-    # Среднее от KDA отдельных матчей завышает результат, потому что редкие матчи
-    # без смертей дают огромные значения и тянут среднее вверх.
-    result = run(f"""
-        SELECT CASE WHEN win THEN 'Победа' ELSE 'Поражение' END AS result,
-               (SUM(kills) + SUM(assists)) * 1.0 / GREATEST(SUM(deaths), 1) AS avg_kda,
-               AVG(gold_per_min) AS avg_gold_per_min,
-               AVG(damage_per_min) AS avg_damage_per_min
-        FROM fact_participant WHERE data_source = '{source}'
-        GROUP BY win ORDER BY win
-    """)
-    disp = result.rename(columns={
-        "result": "Результат", "avg_kda": "KDA",
-        "avg_gold_per_min": "Золото/мин", "avg_damage_per_min": "Урон/мин",
-    })
-    disp["KDA"] = disp["KDA"].round(2)
-    disp["Золото/мин"] = disp["Золото/мин"].round().astype(int)
-    disp["Урон/мин"] = disp["Урон/мин"].round().astype(int)
-    table_with_download(
-        disp, "Победители против проигравших", "winners_vs_losers.csv", key="dl_overview",
-        caption="Это не вывод, а проверка данных. Золото начисляется за убийства и "
-                "объекты, поэтому у победителей оно выше по определению. Таблица нужна, "
-                "чтобы убедиться: метрики ведут себя как положено и стороны не перепутаны.")
+    _finding(
+        "1", "Ни один чемпион не сильнее 50%, если считать честно",
+        "Проверка «отличается ли winrate от 50%» идёт сразу по всем 172 чемпионам. "
+        "Без поправки на множественные сравнения значимо сильными выглядели 14 из них, "
+        "но при истинных 50% у всех примерно столько и получилось бы случайно. "
+        "С поправкой Бонферрони не остаётся ни одного.",
+        "«Сила чемпиона», строка про порог значимости под карточками",
+    )
+    _finding(
+        "2", "Но это следствие усреднения, а не свойство игры",
+        "Стоит разложить по ролям, и значимые чемпионы появляются. В общей таблице размах "
+        "winrate 12 процентных пунктов, внутри роли саппорта — 31. Чемпион, которого играют "
+        "на двух ролях с 38% и 52%, в сумме даёт ровно 50% и выглядит сбалансированным.",
+        "«Сила чемпиона», таблица «Что делает с ответом сам разрез»",
+    )
+    _finding(
+        "3", "Длительность матча меняет исход сильнее, чем выбор чемпиона",
+        "Kayle выигрывает 42% коротких матчей и 68% длинных: разрыв 27 пунктов, больше, чем "
+        "разница между лучшим и худшим чемпионом в рейтинге. Важная оговорка: длина матча — "
+        "следствие, а не причина. Разгромные игры заканчиваются быстро.",
+        "«Сила чемпиона», раздел про долгие и короткие игры",
+    )
+    _finding(
+        "4", "Winrate предметов почти целиком объясняется выживанием",
+        "Guardian Angel показывает 65% побед на 5370 сборках. Riot отдаёт инвентарь на конец "
+        "матча, а не покупки: победители дольше живут и успевают достроить дорогое. "
+        "Ни один предмет не даёт +15 пунктов к победе.",
+        "«Предметы», предупреждение над графиком",
+    )
+    _finding(
+        "5", "Осторожная игра окупается лучше агрессивной",
+        "После нормировки метрик на среднее по роли игроки делятся на четыре группы. "
+        "Сегмент с высоким KDA выигрывает 55% матчей, сегмент с низким — 47%. Разрыв "
+        "8 пунктов, но он смешан с уровнем игрока, а не только со стилем: границы групп размыты.",
+        "«Игроки», раздел про архетипы",
+    )
+
+    st.info(
+        "**Чего эти выводы не описывают.** Выборка смещена в сторону высоких рангов, "
+        "поэтому всё сказанное относится к верхней части ладдера, а не к среднему игроку. "
+        "Полный список ограничений — на вкладке «Данные и качество».",
+        icon="🧭",
+    )
