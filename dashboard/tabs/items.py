@@ -1,4 +1,8 @@
-"""Вкладка «Предметы»: покупки × winrate, с иконками Data Dragon."""
+"""Вкладка «Предметы»: как часто предмет оказывается в финальной сборке × winrate.
+
+Данные Riot дают инвентарь НА КОНЕЦ матча, а не покупки по ходу игры, поэтому
+вкладка описательная: она не отвечает на вопрос «что покупать, чтобы выиграть».
+"""
 import altair as alt
 import streamlit as st
 
@@ -27,16 +31,24 @@ def render(source: str) -> None:
         help="Отсекает дешёвые предметы и триннкеты-варды, чтобы видеть «билдовые» предметы",
     )
     items = run(f"""
-        SELECT item_name, item_id, purchases, winrate, wilson_low, gold_total
+        SELECT item_name, item_id, appearances, winrate, wilson_low, gold_total
         FROM item_stats
         WHERE data_source = '{source}' AND gold_total >= {min_gold}
-        ORDER BY purchases DESC
+        ORDER BY appearances DESC
     """)
 
-    st.subheader("Какие предметы стоит собирать")
+    st.subheader("Что чаще всего стоит в финальной сборке")
     st.caption(
-        "Точка на графике — предмет: правее — покупают чаще, выше — чаще с ним побеждают. "
-        "Верх-право = и популярны, и приносят победы."
+        "Точка на графике — предмет: правее — встречается чаще, выше — чаще оказывается "
+        "в сборке победителя."
+    )
+    st.warning(
+        "**Это не рекомендация по сборке.** Riot отдаёт инвентарь на конец матча, а не "
+        "покупки по ходу игры. Победители дольше живут и успевают достроить дорогие "
+        "предметы, поэтому высокий winrate дорогого предмета в основном следствие победы, "
+        "а не её причина. Читать таблицу нужно как «что обычно стоит в сборке у "
+        "выигравших», а не как «что купить, чтобы выиграть».",
+        icon="⚠️",
     )
     if items.empty:
         st.info("Нет предметов с таким порогом цены.")
@@ -44,13 +56,13 @@ def render(source: str) -> None:
 
     icons = item_images()
     best_wr = items.sort_values("wilson_low", ascending=False).iloc[0]
-    most_bought = items.iloc[0]  # запрос уже отсортирован по purchases DESC
+    most_common = items.iloc[0]  # запрос уже отсортирован по appearances DESC
     c1, c2 = st.columns(2)
-    c1.markdown(_item_card("Лучший по winrate", best_wr,
-                           f"{best_wr['winrate']:.0%} · {int(best_wr['purchases'])} покупок", icons),
+    c1.markdown(_item_card("Чаще всего у победителей", best_wr,
+                           f"{best_wr['winrate']:.0%} · {int(best_wr['appearances'])} сборок", icons),
                 unsafe_allow_html=True)
-    c2.markdown(_item_card("Самый покупаемый", most_bought,
-                           f"{int(most_bought['purchases'])} покупок · WR {most_bought['winrate']:.0%}",
+    c2.markdown(_item_card("Самый частый в сборках", most_common,
+                           f"{int(most_common['appearances'])} сборок · WR {most_common['winrate']:.0%}",
                            icons, accent="#5aa0c9"), unsafe_allow_html=True)
     st.write("")
 
@@ -58,11 +70,11 @@ def render(source: str) -> None:
         alt.Chart(items)
         .mark_circle(size=80, opacity=0.7, color="#C8AA6E", stroke="#141719", strokeWidth=0.4)
         .encode(
-            x=alt.X("purchases:Q", title="Покупок"),
+            x=alt.X("appearances:Q", title="Сборок с этим предметом"),
             y=alt.Y("winrate:Q", title="Winrate", axis=alt.Axis(format="%"),
                     scale=alt.Scale(zero=False)),
             tooltip=[
-                "item_name", "purchases",
+                "item_name", alt.Tooltip("appearances:Q", title="Сборок"),
                 alt.Tooltip("winrate:Q", format=".1%"),
                 alt.Tooltip("gold_total:Q", title="Цена"),
             ],
@@ -76,15 +88,19 @@ def render(source: str) -> None:
     left.markdown("#### Все предметы (по winrate)")
     with right:
         download_csv(items, "items.csv", key="dl_items", use_container_width=True)
+    st.caption(
+        "Шкала winrate обрезана до диапазона 40–65%, иначе различия между предметами "
+        "неразличимы. Полоска показывает место внутри этого диапазона, а не долю от нуля."
+    )
     table = items.sort_values("winrate", ascending=False).copy()
     table.insert(0, "icon", table["item_id"].map(icons))
     st.dataframe(
-        table[["icon", "item_name", "purchases", "winrate", "wilson_low", "gold_total"]],
+        table[["icon", "item_name", "appearances", "winrate", "wilson_low", "gold_total"]],
         hide_index=True, width="stretch",
         column_config={
             "icon": st.column_config.ImageColumn(" ", width="small"),
             "item_name": "Предмет",
-            "purchases": st.column_config.NumberColumn("Покупок"),
+            "appearances": st.column_config.NumberColumn("Сборок"),
             "winrate": st.column_config.ProgressColumn(
                 "Winrate", format="percent", min_value=0.40, max_value=0.65),
             "wilson_low": st.column_config.NumberColumn("Ниж. оценка", format="percent"),

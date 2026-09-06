@@ -1,0 +1,17 @@
+check,passed,severity,detail
+not_empty,True,ERROR,288370 строк
+schema_columns,True,ERROR,все ключевые колонки на месте
+unique_participant_key,True,ERROR,дублей нет
+keys_not_null,True,ERROR,ключи без пропусков
+ten_participants_per_match,True,ERROR,во всех матчах по 10 игроков
+team_id_values,True,ERROR,team_id только 100/200
+queue_is_ranked_solo,True,ERROR,только queue 420
+win_balance[kaggle],True,ERROR,winrate=0.500 (ожидаем ~0.5)
+win_balance[riot_api],True,ERROR,winrate=0.500 (ожидаем ~0.5)
+win_balance[riot_full],True,ERROR,winrate=0.500 (ожидаем ~0.5)
+non_negative_metrics,True,ERROR,отрицательных значений нет
+kda_finite,True,ERROR,kda везде конечна
+team_position_values,True,WARN,доля UNDEFINED = 0.0% (порог 5%)
+champion_id_in_reference,True,ERROR,все champion_id есть в справочнике
+remake_share,True,WARN,строк короче 5 мин: 1.34% (порог 5%); в звезду они не попадают
+freshness,True,WARN,"последний матч 2026-06-13, возраст 85 дн. (порог 120)"

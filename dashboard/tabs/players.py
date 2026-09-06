@@ -44,7 +44,9 @@ def render(source: str) -> None:
         SELECT p.riot_id_game_name AS name, p.puuid, p.source_tier,
                COUNT(*) AS games,
                AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate,
-               AVG(f.kda) AS avg_kda,
+               wilson_low(AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END), COUNT(*)) AS wr_low,
+               wilson_high(AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END), COUNT(*)) AS wr_high,
+               (SUM(f.kills) + SUM(f.assists)) * 1.0 / GREATEST(SUM(f.deaths), 1) AS avg_kda,
                AVG(f.damage_per_min) AS dmg_pm,
                AVG(f.gold_per_min) AS gold_pm,
                AVG(f.cs_per_min) AS cs_pm,
@@ -76,7 +78,11 @@ def render(source: str) -> None:
     st.markdown(f"### {_player_name(row)}")
     cols = st.columns(7)
     cols[0].metric("Матчей", int(row["games"]))
-    cols[1].metric("Winrate", f"{row['winrate']:.0%}")
+    cols[1].metric(
+        "Winrate", f"{row['winrate']:.0%}",
+        help=f"На {int(row['games'])} матчах истинный winrate лежит примерно между "
+             f"{row['wr_low']:.0%} и {row['wr_high']:.0%} (интервал Уилсона, 95%). "
+             "Чем меньше матчей, тем шире диапазон и тем меньше значит сама цифра.")
     cols[2].metric("KDA", f"{row['avg_kda']:.2f}")
     cols[3].metric("Урон/мин", f"{row['dmg_pm']:.0f}")
     cols[4].metric("Золото/мин", f"{row['gold_pm']:.0f}")
@@ -93,19 +99,31 @@ def render(source: str) -> None:
     champs = run(f"""
         SELECT c.champion_name, c.champion_id, COUNT(*) AS games,
                AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate,
-               AVG(f.kda) AS avg_kda
+               wilson_low(AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END), COUNT(*)) AS wilson_low,
+               (SUM(f.kills) + SUM(f.assists)) * 1.0 / GREATEST(SUM(f.deaths), 1) AS avg_kda
         FROM fact_participant f
         JOIN dim_champion c ON f.champion_id = c.champion_id
         WHERE f.data_source = '{source}' AND f.puuid = '{puuid}'
         GROUP BY c.champion_name, c.champion_id ORDER BY games DESC
     """)
     imgs = champion_images()
-    best_champ = champs[champs["games"] >= 3].sort_values("winrate", ascending=False)
+    # Тот же принцип, что на вкладке «Чемпионы»: ранжируем по нижней границе
+    # Уилсона, а не по сырому winrate. Иначе «лучшим» становится чемпион с тремя
+    # выигранными играми подряд. Порог в 10 матчей — чтобы цифра вообще что-то значила.
+    MIN_CHAMP_GAMES = 10
+    best_champ = (champs[champs["games"] >= MIN_CHAMP_GAMES]
+                  .sort_values("wilson_low", ascending=False))
     if not best_champ.empty:
         b = best_champ.iloc[0]
         st.success(
-            f"Лучший чемпион игрока: **{b['champion_name']}** — "
-            f"{b['winrate']:.0%} winrate на {int(b['games'])} играх."
+            f"Сильнейший чемпион игрока: **{b['champion_name']}** — "
+            f"{b['winrate']:.0%} winrate на {int(b['games'])} играх "
+            f"(осторожная оценка {b['wilson_low']:.0%})."
+        )
+    else:
+        st.caption(
+            f"Ни на одном чемпионе нет {MIN_CHAMP_GAMES} матчей: на меньшей выборке "
+            "«лучший чемпион» это чаще везение, чем мастерство, поэтому не показываем."
         )
 
     left, right = st.columns([3, 2])
@@ -183,12 +201,17 @@ def render(source: str) -> None:
         )
 
     st.markdown("#### Все игроки источника — по числу матчей")
+    st.caption(
+        "«WR ниж.» — нижняя граница интервала Уилсона: осторожная оценка winrate с учётом "
+        "числа матчей. По ней видно, у кого высокий процент подкреплён выборкой."
+    )
     hdr, dl = st.columns([4, 1])
+    export = players.drop(columns=["label", "puuid", "wr_high"])
     with dl:
-        download_csv(players.drop(columns=["label", "puuid"]), "players.csv",
-                     key="dl_players", use_container_width=True)
-    tp = players.drop(columns=["label", "puuid"]).head(50).rename(columns={
+        download_csv(export, "players.csv", key="dl_players", use_container_width=True)
+    tp = export.head(50).rename(columns={
         "name": "Игрок", "source_tier": "Лига", "games": "Матчей", "winrate": "WR",
+        "wr_low": "WR ниж.",
         "avg_kda": "KDA", "dmg_pm": "Урон/мин", "gold_pm": "Золото/мин",
         "cs_pm": "CS/мин", "vis_pm": "Обзор/мин", "k": "Уб.", "d": "См.", "a": "Пом.",
     })
@@ -197,6 +220,7 @@ def render(source: str) -> None:
         column_config={
             "WR": st.column_config.ProgressColumn("WR", format="percent",
                                                   min_value=0.0, max_value=1.0),
+            "WR ниж.": st.column_config.NumberColumn("WR ниж.", format="percent"),
             "KDA": st.column_config.NumberColumn("KDA", format="%.2f"),
             "Урон/мин": st.column_config.NumberColumn("Урон/мин", format="%d"),
             "Золото/мин": st.column_config.NumberColumn("Золото/мин", format="%d"),

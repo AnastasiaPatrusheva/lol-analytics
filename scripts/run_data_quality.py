@@ -31,13 +31,21 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 from lol_utils import config as cfg  # noqa: E402
 
-DATA_PATH = PROJECT_ROOT / "data" / "normalized" / "all_matches_common.csv"
-REPORT_DIR = PROJECT_ROOT / "outputs" / "data_quality"
+# Проверяем ровно тот артефакт, из которого потом собирается звезда:
+# build_star_schema берёт Parquet, если он есть, и только иначе CSV. Раньше здесь
+# был прошит CSV, и валидировался не тот файл, который шёл в витрины.
+DATA_PARQUET = cfg.COMMON_TABLE.with_suffix(".parquet")
+DATA_CSV = cfg.COMMON_TABLE.with_suffix(".csv")
+DATA_PATH = DATA_PARQUET if DATA_PARQUET.exists() else DATA_CSV
+REPORT_DIR = cfg.DQ_DIR
 
 # Пороги ранкед-соло и допустимые роли — из центрального конфига (config.py).
 RANKED_SOLO_QUEUE_ID = cfg.RANKED_SOLO_QUEUE_ID
 STANDARD_POSITIONS = set(cfg.STANDARD_POSITIONS)  # в конфиге список; здесь нужен set для операций над множествами
 UNDEFINED_SHARE_WARN = cfg.UNDEFINED_SHARE_WARN
+# Пороги предупреждений: старше — данные пора обновить; ремейков больше — вопрос к сбору.
+FRESHNESS_WARN_DAYS = 120
+REMAKE_SHARE_WARN = 0.05
 
 # Метрики, которые по смыслу не могут быть отрицательными.
 NON_NEGATIVE_COLUMNS = [
@@ -87,6 +95,9 @@ def load_data() -> pd.DataFrame:
         raise FileNotFoundError(
             f"Нет файла {DATA_PATH}. Сначала выполните scripts/build_common_analytics_layer.py"
         )
+    if DATA_PATH.suffix == ".parquet":
+        df = pd.read_parquet(DATA_PATH)
+        return df.astype({"match_id": "string"}) if "match_id" in df.columns else df
     # match_id читаем строкой, чтобы длинные id не превратились в float и не потеряли точность.
     return pd.read_csv(DATA_PATH, dtype={"match_id": "string"}, low_memory=False)
 
@@ -219,6 +230,63 @@ def check_no_null_keys(df: pd.DataFrame, report: Report) -> None:
     )
 
 
+def check_freshness(df: pd.DataFrame, report: Report) -> None:
+    """Свежесть данных: самый поздний матч в выборке.
+
+    Молчаливое устаревание — самый частый способ показывать неверные цифры:
+    пайплайн зелёный, витрины собираются, а данные полугодовой давности.
+    """
+    if "game_start_utc" not in df.columns:
+        report.add("freshness", passed=True, severity="WARN", detail="нет колонки game_start_utc")
+        return
+    latest = pd.to_datetime(df["game_start_utc"], errors="coerce", utc=True).max()
+    if pd.isna(latest):
+        report.add("freshness", passed=False, severity="WARN",
+                   detail="не удалось разобрать ни одной даты матча")
+        return
+    age_days = (pd.Timestamp.now(tz="UTC") - latest).days
+    report.add(
+        "freshness", passed=age_days <= FRESHNESS_WARN_DAYS, severity="WARN",
+        detail=f"последний матч {latest:%Y-%m-%d}, возраст {age_days} дн. "
+               f"(порог {FRESHNESS_WARN_DAYS})",
+    )
+
+
+def check_remake_share(df: pd.DataFrame, report: Report) -> None:
+    """Доля ремейков: матчи короче MIN_MATCH_MINUTES отменены на 3-й минуте.
+
+    Звезда их отфильтровывает, но знать их долю нужно: резкий рост означает
+    проблему со сбором, а не с игроками.
+    """
+    if "game_duration_min" not in df.columns:
+        return
+    dur = pd.to_numeric(df["game_duration_min"], errors="coerce")
+    share = float((dur < cfg.MIN_MATCH_MINUTES).mean())
+    report.add(
+        "remake_share", passed=share <= REMAKE_SHARE_WARN, severity="WARN",
+        detail=f"строк короче {cfg.MIN_MATCH_MINUTES} мин: {share:.2%} "
+               f"(порог {REMAKE_SHARE_WARN:.0%}); в звезду они не попадают",
+    )
+
+
+def check_reference_integrity(df: pd.DataFrame, report: Report) -> None:
+    """Ссылочная целостность со справочником чемпионов Data Dragon.
+
+    Незнакомый champion_id иначе молча получает primary_class = 'Unknown'
+    и тихо портит разрезы по классам.
+    """
+    if not cfg.CHAMPIONS_REF.exists() or "champion_id" not in df.columns:
+        return
+    known = set(pd.read_csv(cfg.CHAMPIONS_REF, usecols=["champion_id"])["champion_id"])
+    ids = pd.to_numeric(df["champion_id"], errors="coerce").dropna().astype(int)
+    missing = sorted(set(ids) - known)
+    report.add(
+        "champion_id_in_reference", passed=not missing, severity="ERROR",
+        detail="все champion_id есть в справочнике" if not missing
+               else f"{len(missing)} id вне справочника: {missing[:10]}",
+    )
+
+
 def run_checks(df: pd.DataFrame) -> Report:
     report = Report()
     check_not_empty(df, report)
@@ -232,6 +300,9 @@ def run_checks(df: pd.DataFrame) -> Report:
     check_non_negative(df, report)
     check_kda_finite(df, report)
     check_undefined_roles(df, report)
+    check_reference_integrity(df, report)
+    check_remake_share(df, report)
+    check_freshness(df, report)
     return report
 
 

@@ -20,6 +20,7 @@ import duckdb
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 from lol_utils import config as cfg, save_parquet_if_available  # noqa: E402
+from lol_utils.sql import install_macros, z_for_multiple_tests  # noqa: E402
 
 
 def source_relation(base: Path) -> str:
@@ -40,23 +41,24 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
     common_rel = source_relation(cfg.COMMON_TABLE)
     con.execute(f"CREATE OR REPLACE VIEW matches_common AS SELECT * FROM {common_rel}")
 
-    # Доверительный интервал Уилсона — макросами, чтобы не повторять формулу в витринах
-    # (p — доля успехов, n — число наблюдений).
-    con.execute("""CREATE OR REPLACE MACRO wilson_low(p, n) AS
-        (p + 1.96*1.96/(2*n) - 1.96*sqrt((p*(1-p) + 1.96*1.96/(4*n))/n)) / (1 + 1.96*1.96/n)""")
-    con.execute("""CREATE OR REPLACE MACRO wilson_high(p, n) AS
-        (p + 1.96*1.96/(2*n) + 1.96*sqrt((p*(1-p) + 1.96*1.96/(4*n))/n)) / (1 + 1.96*1.96/n)""")
+    # Доверительный интервал Уилсона — общие макросы из lol_utils.sql
+    # (одна формула на витрины, дашборд и тесты).
+    install_macros(con)
 
-    # только полные матчи (10 участников)
-    con.execute("""
+    # Матчи, пригодные для анализа: полные (10 участников) и не ремейки.
+    # PUUID заменяем на устойчивый хеш: витрины лежат в публичном репозитории,
+    # а PUUID — постоянный идентификатор аккаунта Riot. Для джойнов хеша хватает.
+    con.execute(f"""
         CREATE OR REPLACE VIEW complete_matches AS
         WITH mc AS (
             SELECT data_source, match_id, COUNT(*) AS participants
             FROM matches_common GROUP BY data_source, match_id
         )
-        SELECT m.* FROM matches_common m
+        SELECT m.* REPLACE (substr(md5(m.puuid), 1, {cfg.PLAYER_KEY_LEN}) AS puuid)
+        FROM matches_common m
         JOIN mc ON m.data_source = mc.data_source AND m.match_id = mc.match_id
         WHERE mc.participants = 10
+          AND m.game_duration_min >= {cfg.MIN_MATCH_MINUTES}
     """)
 
     # справочник чемпионов + основной класс из tags
@@ -91,13 +93,18 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
     # dim_player + очки лиги (LP) из players_api.csv (LP есть только у собранных через API; иначе NULL)
     players_api_path = cfg.API_DIR / "players_api.csv"
     if players_api_path.exists():
+        # puuid хешируем так же, как в complete_matches, иначе джойн не сойдётся.
         lp_cte = f""",
         lp AS (
-            SELECT puuid, MAX(league_points) AS league_points
+            SELECT substr(md5(puuid), 1, {cfg.PLAYER_KEY_LEN}) AS puuid,
+                   MAX(league_points) AS league_points
             FROM read_csv_auto('{players_api_path.as_posix()}', header=true)
-            GROUP BY puuid
+            GROUP BY 1
         )"""
-        lp_select, lp_join = "l.league_points", "LEFT JOIN lp l ON b.puuid = l.puuid"
+        # LP собраны только через API: ограничиваем джойн источником riot_api,
+        # иначе очки того же игрока протекают на строки kaggle/riot_full.
+        lp_select = "l.league_points"
+        lp_join = "LEFT JOIN lp l ON b.puuid = l.puuid AND b.data_source = 'riot_api'"
     else:
         lp_cte, lp_select, lp_join = "", "CAST(NULL AS BIGINT) AS league_points", ""
     con.execute(f"""
@@ -168,9 +175,14 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
         FROM used u LEFT JOIN items_ref r ON u.item_id = r.item_id
     """)
 
-    # витрина "Покупки x Winrate":
-    # по каждому предмету — покупки, winrate и нижняя граница Уилсона
-    # (консервативный winrate с поправкой на размер выборки).
+    # витрина "Предмет в финальной сборке x Winrate".
+    #
+    # ВАЖНО про интерпретацию: item0..item6 — это инвентарь НА КОНЕЦ матча, а не
+    # покупки по ходу игры. Победители дольше живут и успевают достроить дорогие
+    # предметы, поэтому высокий winrate дорогого предмета — в значительной мере
+    # следствие победы, а не её причина. Витрина отвечает на вопрос «что обычно
+    # стоит в финальной сборке у победителей», а не «что покупать, чтобы выиграть».
+    # Поэтому колонка называется appearances (появления), а не purchases.
     con.execute("""
         CREATE OR REPLACE TABLE item_stats AS
         WITH agg AS (
@@ -178,7 +190,7 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
                    COALESCE(d.item_name, CAST(b.item_id AS VARCHAR)) AS item_name,
                    b.item_id,
                    d.gold_total,
-                   COUNT(*) AS purchases,
+                   COUNT(*) AS appearances,
                    AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate
             FROM fact_participant_item b
             JOIN fact_participant f
@@ -189,17 +201,30 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
             GROUP BY b.data_source, d.item_name, b.item_id, d.gold_total
             HAVING COUNT(*) >= 10
         )
-        SELECT *, wilson_low(winrate, purchases) AS wilson_low
+        SELECT *, wilson_low(winrate, appearances) AS wilson_low
         FROM agg
-        ORDER BY purchases DESC
+        ORDER BY appearances DESC
     """)
 
     # витрина "Сила чемпиона" со статистической строгостью:
     # доверительный интервал Уилсона (95%) на winrate + вердикт по аномалии.
     # 60% при 5 играх даёт широкий интервал (ненадёжно), 53% при 500 играх — узкий.
-    # Поэтому tier-list строится по нижней границе wilson_low, а "значимо
-    # сильный/слабый" означает, что интервал не накрывает 50%.
-    con.execute("""
+    # Поэтому tier-list строится по нижней границе wilson_low.
+    #
+    # Вердикт «значимо сильный/слабый» считается по ОТДЕЛЬНОМУ, более широкому
+    # интервалу: проверка идёт сразу по всем чемпионам источника, и без поправки
+    # на множественные сравнения около 9 из ~170 получили бы ярлык случайно.
+    # Поэтому для вердикта берём z с поправкой Бонферрони, а для рейтинга — 1.96.
+    n_tests = con.execute("""
+        SELECT MAX(cnt) FROM (
+            SELECT COUNT(*) AS cnt FROM (
+                SELECT f.data_source, f.champion_id, COUNT(DISTINCT f.match_id) AS games
+                FROM fact_participant f GROUP BY 1, 2 HAVING COUNT(DISTINCT f.match_id) >= 5
+            ) GROUP BY data_source
+        )
+    """).fetchone()[0] or 1
+    z_adj = z_for_multiple_tests(n_tests)
+    con.execute(f"""
         CREATE OR REPLACE TABLE champion_strength AS
         WITH base AS (
             SELECT f.data_source, c.champion_name, c.primary_class,
@@ -213,16 +238,20 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
             SELECT data_source, champion_name, primary_class, games, wins,
                    wins * 1.0 / games AS winrate,
                    wilson_low(wins * 1.0 / games, games) AS wilson_low,
-                   wilson_high(wins * 1.0 / games, games) AS wilson_high
+                   wilson_high(wins * 1.0 / games, games) AS wilson_high,
+                   wilson_low_z(wins * 1.0 / games, games, {z_adj}) AS wilson_low_adj,
+                   wilson_high_z(wins * 1.0 / games, games, {z_adj}) AS wilson_high_adj
             FROM base WHERE games >= 5
         )
         SELECT *,
-               CASE WHEN wilson_low > 0.5 THEN 'значимо сильный'
-                    WHEN wilson_high < 0.5 THEN 'значимо слабый'
+               CASE WHEN wilson_low_adj > 0.5 THEN 'значимо сильный'
+                    WHEN wilson_high_adj < 0.5 THEN 'значимо слабый'
                     ELSE 'в норме' END AS verdict
         FROM ci
         ORDER BY data_source, wilson_low DESC
     """)
+    print(f"  champion_strength: вердикт с поправкой Бонферрони на {n_tests} чемпионов "
+          f"(z={z_adj:.2f} вместо 1.96)")
 
     # витрина "Чемпион × длительность матча": кто как играет в коротких/средних/длинных
     # играх. Разница winrate (длинные − короткие) показывает "скейлящихся" чемпионов
@@ -273,12 +302,38 @@ def main() -> int:
         json.dumps(build_info, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"_build_info.json: собрано {build_info['built_at']}")
 
-    # проверка целостности факта
-    fact_rows = con.execute("SELECT COUNT(*) FROM fact_participant").fetchone()[0]
-    dim_matches = con.execute("SELECT COUNT(*) FROM dim_match").fetchone()[0]
-    ok = fact_rows // 10 == dim_matches
-    print(f"Целостность: fact/10={fact_rows // 10}, dim_match={dim_matches} ->",
-          "OK" if ok else "РАСХОЖДЕНИЕ")
+    # Проверки целостности звезды. Прежняя проверка (fact/10 == dim_match) не могла
+    # упасть: complete_matches по построению оставляет ровно 10 участников. Здесь —
+    # то, что действительно может сломаться: уникальность зерна факта, дубли в
+    # измерениях (из-за них факт размножится при джойне) и сироты.
+    checks = {
+        "зерно факта уникально": """
+            SELECT COUNT(*) FROM (
+                SELECT data_source, match_id, participant_id FROM fact_participant
+                GROUP BY 1, 2, 3 HAVING COUNT(*) > 1)""",
+        "dim_champion без дублей id": """
+            SELECT COUNT(*) FROM (
+                SELECT champion_id FROM dim_champion GROUP BY 1 HAVING COUNT(*) > 1)""",
+        "dim_player без дублей ключа": """
+            SELECT COUNT(*) FROM (
+                SELECT data_source, puuid FROM dim_player GROUP BY 1, 2 HAVING COUNT(*) > 1)""",
+        "нет сирот факт -> dim_champion": """
+            SELECT COUNT(*) FROM fact_participant f
+            LEFT JOIN dim_champion c ON f.champion_id = c.champion_id
+            WHERE f.champion_id IS NOT NULL AND c.champion_id IS NULL""",
+        "нет сирот факт -> dim_match": """
+            SELECT COUNT(*) FROM fact_participant f
+            LEFT JOIN dim_match m ON f.data_source = m.data_source AND f.match_id = m.match_id
+            WHERE m.match_id IS NULL""",
+        "PUUID заменён хешем": f"""
+            SELECT COUNT(*) FROM dim_player
+            WHERE puuid IS NOT NULL AND length(puuid) <> {cfg.PLAYER_KEY_LEN}""",
+    }
+    ok = True
+    for name, sql in checks.items():
+        bad = con.execute(sql).fetchone()[0]
+        ok &= bad == 0
+        print(f"Целостность: {name} -> {'OK' if bad == 0 else f'НАРУШЕНО ({bad})'}")
     print(f"Звёздная схема сохранена в: {cfg.STAR_DIR}")
     return 0 if ok else 1
 

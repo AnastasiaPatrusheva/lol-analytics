@@ -37,15 +37,23 @@ def render(source: str) -> None:
     c4.metric("Ср. длительность", f"{duration:.1f} мин")
 
     st.markdown("#### Главное в мете")
+    st.caption(
+        "Каждая карточка — лидер по своей метрике, то есть максимум выборки. Такой "
+        "максимум всегда немного завышен: у кого-то из многих обязательно окажется "
+        "удачная серия. Читать как ориентир, а не как измеренную величину."
+    )
+    # Ранжируем по нижней границе Уилсона среди чемпионов с достаточной выборкой.
+    # Раньше здесь стоял фильтр verdict = 'значимо сильный'; после поправки на
+    # множественные сравнения таких чемпионов нет вовсе, и карточка просто исчезала.
     top_champ = run(f"""
-        SELECT cs.champion_name, cs.wilson_low, cs.games, dc.champion_id
+        SELECT cs.champion_name, cs.wilson_low, cs.games, cs.verdict, dc.champion_id
         FROM champion_strength cs
         JOIN dim_champion dc ON cs.champion_name = dc.champion_name
-        WHERE cs.data_source = '{source}' AND cs.verdict = 'значимо сильный'
+        WHERE cs.data_source = '{source}' AND cs.games >= 100
         ORDER BY cs.wilson_low DESC LIMIT 1
     """)
     top_item = run(f"""
-        SELECT item_name, item_id, wilson_low, purchases FROM item_stats
+        SELECT item_name, item_id, wilson_low, appearances FROM item_stats
         WHERE data_source = '{source}' AND gold_total >= 2000
         ORDER BY wilson_low DESC LIMIT 1
     """)
@@ -68,14 +76,14 @@ def render(source: str) -> None:
     if not top_champ.empty:
         r = top_champ.iloc[0]
         i1.markdown(_insight_card(
-            "Сильнейший чемпион", r["champion_name"],
-            f"winrate {r['wilson_low']:.0%} · {int(r['games'])} игр",
+            "Выше всех по осторожной оценке", r["champion_name"],
+            f"не ниже {r['wilson_low']:.0%} · {int(r['games'])} игр",
             champ_imgs.get(int(r["champion_id"]), "")), unsafe_allow_html=True)
     if not top_item.empty:
         r = top_item.iloc[0]
         i2.markdown(_insight_card(
-            "Предмет с лучшим winrate", r["item_name"],
-            f"{r['wilson_low']:.0%} · {int(r['purchases'])} покупок",
+            "Чаще всего в сборке победителя", r["item_name"],
+            f"{r['wilson_low']:.0%} · {int(r['appearances'])} сборок",
             it_imgs.get(int(r["item_id"]), ""), accent="#5aa0c9"), unsafe_allow_html=True)
     if not scaler.empty:
         r = scaler.iloc[0]
@@ -84,9 +92,12 @@ def render(source: str) -> None:
             f"+{r['delta']:.0%} winrate в долгих матчах",
             champ_imgs.get(int(r["champion_id"]), ""), accent="#cda24a"), unsafe_allow_html=True)
 
+    # KDA считаем пулированно: (убийства + помощи) / смерти по всем строкам.
+    # Среднее от KDA отдельных матчей завышает результат, потому что редкие матчи
+    # без смертей дают огромные значения и тянут среднее вверх.
     result = run(f"""
         SELECT CASE WHEN win THEN 'Победа' ELSE 'Поражение' END AS result,
-               AVG(kda) AS avg_kda,
+               (SUM(kills) + SUM(assists)) * 1.0 / GREATEST(SUM(deaths), 1) AS avg_kda,
                AVG(gold_per_min) AS avg_gold_per_min,
                AVG(damage_per_min) AS avg_damage_per_min
         FROM fact_participant WHERE data_source = '{source}'
@@ -99,5 +110,8 @@ def render(source: str) -> None:
     disp["KDA"] = disp["KDA"].round(2)
     disp["Золото/мин"] = disp["Золото/мин"].round().astype(int)
     disp["Урон/мин"] = disp["Урон/мин"].round().astype(int)
-    table_with_download(disp, "Победители против проигравших",
-                        "winners_vs_losers.csv", key="dl_overview")
+    table_with_download(
+        disp, "Победители против проигравших", "winners_vs_losers.csv", key="dl_overview",
+        caption="Это не вывод, а проверка данных. Золото начисляется за убийства и "
+                "объекты, поэтому у победителей оно выше по определению. Таблица нужна, "
+                "чтобы убедиться: метрики ведут себя как положено и стороны не перепутаны.")

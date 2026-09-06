@@ -1,16 +1,20 @@
-"""Тесты статистики: интервал Уилсона (DuckDB-макрос) и ярлыки архетипов."""
+"""Тесты статистики: интервал Уилсона (DuckDB-макрос) и ярлыки архетипов.
+
+Макросы берутся из lol_utils.sql — того же модуля, что использует сборка витрин
+и дашборд. Раньше тест держал собственную копию формулы и оставался зелёным,
+даже если продакшн-формулу меняли.
+"""
 import numpy as np
 import duckdb
+import pytest
 
+from lol_utils.sql import Z_95, install_macros, z_for_multiple_tests
 from build_player_segments import label_clusters, FEATURES
 
 
 def _con() -> duckdb.DuckDBPyConnection:
     con = duckdb.connect()
-    con.execute("""CREATE OR REPLACE MACRO wilson_low(p, n) AS
-        (p + 1.96*1.96/(2*n) - 1.96*sqrt((p*(1-p) + 1.96*1.96/(4*n))/n)) / (1 + 1.96*1.96/n)""")
-    con.execute("""CREATE OR REPLACE MACRO wilson_high(p, n) AS
-        (p + 1.96*1.96/(2*n) + 1.96*sqrt((p*(1-p) + 1.96*1.96/(4*n))/n)) / (1 + 1.96*1.96/n)""")
+    install_macros(con)
     return con
 
 
@@ -35,6 +39,26 @@ def test_wilson_known_value():
     assert abs(lo - 0.4038) < 0.01
 
 
+def test_wilson_two_and_three_arg_forms_agree():
+    # обе формы собираются из одного шаблона: при z = 1.96 они обязаны совпадать
+    lo2, lo3 = _con().execute(
+        f"SELECT wilson_low(0.55, 200), wilson_low_z(0.55, 200, {Z_95})").fetchone()
+    assert lo2 == pytest.approx(lo3)
+
+
+def test_bonferroni_widens_interval():
+    z = z_for_multiple_tests(172)
+    assert z > Z_95
+    lo_single, lo_adj = _con().execute(
+        f"SELECT wilson_low(0.55, 200), wilson_low_z(0.55, 200, {z})").fetchone()
+    # поправка на множественные сравнения делает вердикт строже, а не мягче
+    assert lo_adj < lo_single
+
+
+def test_bonferroni_single_test_equals_95():
+    assert z_for_multiple_tests(1) == pytest.approx(Z_95, abs=1e-3)
+
+
 def test_archetype_by_dominant_feature():
     # FEATURES = [kda, cs_per_min, damage_per_min, vision_per_min, gold_per_min]
     centers = np.array([
@@ -42,8 +66,8 @@ def test_archetype_by_dominant_feature():
         [0, 0, 2.0, 0, 0],   # доминирует урон
     ])
     labels = label_clusters(centers, FEATURES)
-    assert labels[0] == "Саппорт (обзор)"
-    assert labels[1] == "Агрессивный (урон)"
+    assert labels[0] == "Играет на обзор"
+    assert labels[1] == "Агрессивный"
 
 
 def test_archetype_collision_disambiguated():

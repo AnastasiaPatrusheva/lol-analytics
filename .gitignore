@@ -29,7 +29,9 @@ data/normalized/
 outputs/snapshots/
 # производные выгрузки и локальная БД
 outputs/warehouse/
-outputs/data_quality/
+outputs/data_quality/*
+# ...кроме итогового отчёта: вкладка «Качество» показывает его на живом дашборде.
+!outputs/data_quality/data_quality_report.csv
 outputs/api_eda/
 outputs/common_eda/
 # CSV-экспорты витрин (в репозитории храним только .parquet)

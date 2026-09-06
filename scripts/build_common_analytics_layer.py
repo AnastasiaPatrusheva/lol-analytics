@@ -208,24 +208,46 @@ def finalize_dtypes(df: pd.DataFrame) -> pd.DataFrame:
 def main() -> int:
     OUTPUT_DIR.mkdir(exist_ok=True)
 
-    print("Нормализую данные Riot API...")
-    api_common = finalize_dtypes(normalize_api())
-    api_common.to_csv(API_OUTPUT, index=False)
-    save_parquet_if_available(api_common, API_OUTPUT.with_suffix(".parquet"))
+    # Каждый источник опционален: сырые данные лежат вне репозитория (Kaggle-xlsx
+    # и выгрузка API в .gitignore), и посторонний клонирует проект без них. Раньше
+    # transform падал с FileNotFoundError на первом же отсутствующем файле.
+    parts = []
 
-    print("Нормализую данные Kaggle (может занять минуту — источник xlsx)...")
-    kaggle_common = finalize_dtypes(normalize_kaggle())
-    kaggle_common.to_csv(KAGGLE_OUTPUT, index=False)
-    save_parquet_if_available(kaggle_common, KAGGLE_OUTPUT.with_suffix(".parquet"))
+    if API_RAW_PATH.exists() or API_PATH.exists():
+        print("Нормализую данные Riot API...")
+        api_common = finalize_dtypes(normalize_api())
+        api_common.to_csv(API_OUTPUT, index=False)
+        save_parquet_if_available(api_common, API_OUTPUT.with_suffix(".parquet"))
+        parts.append(api_common)
+        print(f"Источник riot_api: {api_common.shape}")
+    else:
+        print(f"Пропускаю riot_api: нет {API_RAW_PATH.name} (соберите: python main.py extract)")
+
+    if KAGGLE_PATH.exists():
+        print("Нормализую данные Kaggle (может занять минуту — источник xlsx)...")
+        kaggle_common = finalize_dtypes(normalize_kaggle())
+        kaggle_common.to_csv(KAGGLE_OUTPUT, index=False)
+        save_parquet_if_available(kaggle_common, KAGGLE_OUTPUT.with_suffix(".parquet"))
+        parts.append(kaggle_common)
+        print(f"Источник kaggle: {kaggle_common.shape}")
+    else:
+        print(f"Пропускаю kaggle: нет {KAGGLE_PATH.name} (датасет не входит в репозиторий)")
 
     # Большой источник riot_full (из архива raw.zip) подключаем, если он уже
     # разобран ingest-скриптом. Это главный объёмный источник с несколькими патчами.
-    parts = [api_common, kaggle_common]
     riot_full_path = OUTPUT_DIR / "riot_full_common.parquet"
     if riot_full_path.exists():
         riot_full = finalize_dtypes(pd.read_parquet(riot_full_path))
         parts.append(riot_full)
         print(f"Источник riot_full: {riot_full.shape} <- {riot_full_path.name}")
+    else:
+        print("Пропускаю riot_full: нет riot_full_common.parquet (соберите: python main.py ingest)")
+
+    if not parts:
+        print("\nНи одного источника не найдено — собирать нечего.\n"
+              "Готовые витрины уже лежат в outputs/sql/star/, для запуска дашборда "
+              "пересборка не нужна: streamlit run streamlit_app.py")
+        return 1
 
     combined = pd.concat(parts, ignore_index=True)
     combined.to_csv(COMBINED_OUTPUT, index=False)
@@ -234,8 +256,6 @@ def main() -> int:
     pd.DataFrame({"column": COMMON_COLUMNS}).to_csv(SCHEMA_OUTPUT, index=False)
 
     print("Готово.")
-    print(f"API: {api_common.shape} -> {API_OUTPUT}")
-    print(f"Kaggle: {kaggle_common.shape} -> {KAGGLE_OUTPUT}")
     print(f"Объединённая таблица: {combined.shape} -> {COMBINED_OUTPUT}")
     print("Строк по источникам:")
     print(combined["data_source"].value_counts().to_string())

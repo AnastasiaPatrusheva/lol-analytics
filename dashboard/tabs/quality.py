@@ -1,7 +1,14 @@
-"""Вкладка «Качество данных»: живые проверки прямо в интерфейсе."""
+"""Вкладка «Качество данных»: отчёт пайплайна + живые проверки витрин."""
+from pathlib import Path
+
+import pandas as pd
 import streamlit as st
 
 from dashboard.data import run, table_with_download
+
+# Отчёт стадии quality (scripts/run_data_quality.py) — проверки идут ДО фильтров
+# звезды, поэтому именно они могут упасть на плохих данных.
+DQ_REPORT = Path(__file__).resolve().parents[2] / "outputs" / "data_quality" / "data_quality_report.csv"
 
 
 def _status(ok: bool, ok_text: str, bad_text: str) -> str:
@@ -13,7 +20,34 @@ def _status(ok: bool, ok_text: str, bad_text: str) -> str:
 
 def render(source: str) -> None:
     st.subheader("Качество данных")
-    st.caption("Автоматические проверки данных — показывают, что данным можно доверять.")
+
+    st.markdown("#### Проверки пайплайна")
+    st.caption(
+        "Эти проверки выполняются на стадии `quality`, до сборки звезды, и при ошибке "
+        "останавливают пайплайн: витрины просто не пересоберутся. Здесь показан отчёт "
+        "последнего прогона."
+    )
+    if DQ_REPORT.exists():
+        dq = pd.read_csv(DQ_REPORT)
+        n_fail = int((~dq["passed"].astype(bool)).sum())
+        if n_fail == 0:
+            st.success(f"Пройдены все {len(dq)} проверок последнего прогона.")
+        else:
+            st.error(f"Не пройдено проверок: {n_fail} из {len(dq)}.")
+        show = dq.assign(passed=dq["passed"].astype(bool).map({True: "✓", False: "⚠"})).rename(
+            columns={"check": "Проверка", "passed": "Итог",
+                     "severity": "Уровень", "detail": "Детали"})
+        st.dataframe(show, hide_index=True, width="stretch")
+    else:
+        st.info("Отчёт проверок не найден: запустите `python main.py quality`.")
+
+    st.divider()
+    st.markdown("#### Живые проверки витрин")
+    st.caption(
+        "А это проверки поверх готовой звезды. Первые три по построению должны быть "
+        "нулевыми: в витрины попадают только полные матчи. Они нужны как контроль "
+        "самой сборки, а не данных, и их «ок» не заменяет отчёт выше."
+    )
 
     dist = run(f"""
         SELECT participants, COUNT(*) AS matches FROM (

@@ -1,9 +1,15 @@
 """Вкладка «Чемпионы»: топ по Уилсону, scatter убийства/смерти, аномалии меты."""
+import sys
+from pathlib import Path
+
 import altair as alt
 import pandas as pd
 import streamlit as st
 
 from dashboard.data import run, download_csv, champion_images, POSITIONS
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+from lol_utils.sql import z_for_multiple_tests  # noqa: E402
 
 
 def render(source: str) -> None:
@@ -20,12 +26,26 @@ def render(source: str) -> None:
     pos_filter = "" if position == "Все" else f"AND f.role_key = '{position}'"
     order_col = "wilson_low" if rank_by.startswith("С поправкой") else "winrate"
 
+    # Сколько чемпионов проходит порог — столько одновременных проверок «отличается
+    # ли winrate от 50%». Без поправки на множественные сравнения при 170 чемпионах
+    # около 9 получили бы ярлык «значимо сильный» чисто случайно. Поэтому вердикт
+    # считается по интервалу с поправкой Бонферрони, а рейтинг — по обычному 95%.
+    n_tests = int(run(f"""
+        SELECT COUNT(*) AS n FROM (
+            SELECT f.champion_id FROM fact_participant f
+            WHERE f.data_source = '{source}' {pos_filter}
+            GROUP BY f.champion_id
+            HAVING COUNT(DISTINCT f.match_id) >= {min_games})
+    """).iloc[0]["n"])
+    z_adj = z_for_multiple_tests(n_tests)
+
     champions = run(f"""
         WITH base AS (
             SELECT c.champion_name, c.primary_class, c.champion_id,
                    COUNT(DISTINCT f.match_id) AS games,
                    SUM(CASE WHEN f.win THEN 1 ELSE 0 END) AS wins,
-                   AVG(f.kda) AS avg_kda
+                   (SUM(f.kills) + SUM(f.assists)) * 1.0
+                       / GREATEST(SUM(f.deaths), 1) AS avg_kda
             FROM fact_participant f
             JOIN dim_champion c ON f.champion_id = c.champion_id
             WHERE f.data_source = '{source}' {pos_filter}
@@ -35,14 +55,16 @@ def render(source: str) -> None:
         ci AS (
             SELECT *, wins * 1.0 / games AS winrate,
                    wilson_low(wins * 1.0 / games, games) AS wilson_low,
-                   wilson_high(wins * 1.0 / games, games) AS wilson_high
+                   wilson_high(wins * 1.0 / games, games) AS wilson_high,
+                   wilson_low_z(wins * 1.0 / games, games, {z_adj}) AS wilson_low_adj,
+                   wilson_high_z(wins * 1.0 / games, games, {z_adj}) AS wilson_high_adj
             FROM base
         )
         SELECT champion_name, primary_class, champion_id, games, winrate, wilson_low, wilson_high, avg_kda,
                RANK() OVER (ORDER BY {order_col} DESC) AS rank,
                (winrate - AVG(winrate) OVER (PARTITION BY primary_class)) * 100 AS vs_class,
-               CASE WHEN wilson_low > 0.5 THEN 'значимо сильный'
-                    WHEN wilson_high < 0.5 THEN 'значимо слабый'
+               CASE WHEN wilson_low_adj > 0.5 THEN 'значимо сильный'
+                    WHEN wilson_high_adj < 0.5 THEN 'значимо слабый'
                     ELSE 'в норме' END AS verdict
         FROM ci ORDER BY {order_col} DESC
     """)
@@ -51,7 +73,8 @@ def render(source: str) -> None:
     st.subheader(f"Топ чемпионов ({position})")
     st.caption(
         "Цвет столбца = значимость: золотой — значимо сильный (весь интервал уверенности выше 50%), "
-        "красный — значимо слабый, серый — в норме (высокий % может быть просто шумом малой выборки)."
+        "красный — значимо слабый, серый — в норме. Если все столбцы серые, это не ошибка, "
+        "а результат: на этой выборке разброс winrate между чемпионами неотличим от шума."
     )
     if champions.empty:
         st.info("Нет чемпионов с таким порогом игр. Снизьте минимум игр.")
@@ -86,11 +109,19 @@ def render(source: str) -> None:
                      accent="#5aa0c9"), unsafe_allow_html=True)
     h3.markdown(hero("Лучший KDA", best_kda, f"KDA {best_kda['avg_kda']:.2f}",
                      accent="#cda24a"), unsafe_allow_html=True)
+    st.caption(
+        "KDA считается как сумма убийств и помощей, делённая на сумму смертей по всем "
+        "матчам чемпиона. Если усреднять KDA отдельных матчей, редкие игры без смертей "
+        "дают огромные значения и наверх выходят чемпионы с везучей серией."
+    )
     st.write("")
 
     strong = champions[champions["verdict"].str.contains("значимо сильный")]
-    if not strong.empty:
-        st.caption(f"Статистически доказанных сильных (весь интервал выше 50%): {len(strong)}.")
+    st.caption(
+        f"Значимо сильных: {len(strong)} из {n_tests}. Проверка идёт по всем чемпионам "
+        f"сразу, поэтому порог поднят поправкой Бонферрони (z={z_adj:.2f} вместо 1.96): "
+        "иначе примерно каждый двадцатый получил бы ярлык случайно."
+    )
     top20 = champions.head(20).copy()
     top20["image"] = top20["champion_id"].map(imgs)
     H = 560

@@ -1,11 +1,15 @@
 """Доступ к данным дашборда: подключение DuckDB к Parquet-витринам, кэш, помощники."""
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import duckdb
 import pandas as pd
 import streamlit as st
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+from lol_utils.sql import install_macros  # noqa: E402
 
 # Витрины звёздной схемы лежат в outputs/sql/star/*.parquet (в корне проекта).
 STAR_DIR = Path(__file__).resolve().parent.parent / "outputs" / "sql" / "star"
@@ -31,11 +35,8 @@ SOURCE_DESC = {
 def get_connection() -> duckdb.DuckDBPyConnection:
     """Одно подключение DuckDB (in-memory) с view поверх каждого Parquet-файла."""
     con = duckdb.connect(database=":memory:")
-    # Доверительный интервал Уилсона — макросами (та же формула, что в build_star_schema).
-    con.execute("""CREATE OR REPLACE MACRO wilson_low(p, n) AS
-        (p + 1.96*1.96/(2*n) - 1.96*sqrt((p*(1-p) + 1.96*1.96/(4*n))/n)) / (1 + 1.96*1.96/n)""")
-    con.execute("""CREATE OR REPLACE MACRO wilson_high(p, n) AS
-        (p + 1.96*1.96/(2*n) + 1.96*sqrt((p*(1-p) + 1.96*1.96/(4*n))/n)) / (1 + 1.96*1.96/n)""")
+    # Макросы Уилсона — из lol_utils.sql, ровно те же, что в build_star_schema.
+    install_macros(con)
     for table in TABLES:
         parquet = STAR_DIR / f"{table}.parquet"
         # Витрина может отсутствовать (напр. player_segments до сборки) — пропускаем.
