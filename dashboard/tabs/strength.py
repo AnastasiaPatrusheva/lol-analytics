@@ -373,7 +373,10 @@ def _kills_deaths(source: str, pos_filter: str, patch_filter: str, min_games: in
     ref = (alt.Chart(pd.DataFrame({"v": [0, lim]}))
            .mark_line(strokeDash=[4, 4], color="#6b7580")
            .encode(x="v:Q", y="v:Q"))
-    st.altair_chart((points + ref).properties(height=420).interactive(), width="stretch")
+    # Без .interactive(): Altair вешает на колесо мыши зум, и широкий график
+    # перехватывает прокрутку страницы — курсор над ним, и страница не листается
+    # дальше. Подписи при наведении работают и без этого.
+    st.altair_chart((points + ref).properties(height=420), width="stretch")
 
 
 def _diverging_bars(df: pd.DataFrame, x_title: str, tooltips: list) -> alt.Chart:

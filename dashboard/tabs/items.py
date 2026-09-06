@@ -79,7 +79,7 @@ def render(source: str) -> None:
                 alt.Tooltip("gold_total:Q", title="Цена"),
             ],
         )
-        .interactive()
+        # Без .interactive(): зум колесом перехватывает прокрутку страницы.
         .properties(height=420)
     )
     st.altair_chart(scatter, width="stretch")

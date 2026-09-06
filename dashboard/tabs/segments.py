@@ -91,7 +91,7 @@ def render(source: str) -> None:
                          alt.Tooltip("winrate:Q", format=".0%"),
                          alt.Tooltip("kda:Q", format=".2f")],
             )
-            .interactive()
+            # Без .interactive(): зум колесом перехватывает прокрутку страницы.
             .properties(height=300)
         )
         st.altair_chart(scatter, width="stretch")
