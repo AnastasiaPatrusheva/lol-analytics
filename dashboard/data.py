@@ -20,6 +20,7 @@ TABLES = [
     "fact_participant", "dim_champion", "dim_match", "dim_player", "dim_role",
     "fact_participant_item", "dim_item", "item_stats",
     "champion_strength", "champion_by_duration", "player_segments",
+    "composition_backtest", "composition_calibration",
 ]
 SOURCES = ["riot_full", "kaggle", "riot_api"]
 POSITIONS = ["Все", "TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"]

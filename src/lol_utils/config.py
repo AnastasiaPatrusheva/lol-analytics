@@ -57,6 +57,8 @@ STAR_TABLES = [
     "fact_participant_item", "dim_item", "item_stats", "champion_strength",
     "champion_by_duration",
 ]
+# Витрины, которые строятся отдельными скриптами после звезды (нужны дашборду).
+EXTRA_MARTS = ["player_segments", "composition_backtest", "composition_calibration"]
 
 # --- роли ---
 STANDARD_POSITIONS = ["TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"]

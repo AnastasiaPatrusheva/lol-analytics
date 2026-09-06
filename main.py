@@ -13,6 +13,7 @@ ETL-оркестратор проекта.
   quality    — проверки качества данных
   star       — построение звёздной схемы (Parquet + CSV)
   segments   — витрина сегментации игроков (KMeans; нужен scikit-learn)
+  backtest   — проверка модели «Состав» на реальных командах (разделение по патчам)
   load       — загрузка звезды в БД: --target local (SQLite) или supabase (PostgreSQL)
   refresh    — обновить свою выборку одной командой: extract -> transform -> quality -> star
   all        — последовательность: ingest -> transform -> quality -> star -> segments -> load(local)
@@ -49,6 +50,7 @@ STAGE_SCRIPTS = {
     "quality": "run_data_quality.py",
     "star": "build_star_schema.py",
     "segments": "build_player_segments.py",
+    "backtest": "build_composition_backtest.py",
     "snapshot": "snapshot_data.py",
 }
 
@@ -118,6 +120,7 @@ def main() -> int:
     sub.add_parser("quality", help="проверки качества данных")
     sub.add_parser("star", help="построение звёздной схемы")
     sub.add_parser("segments", help="витрина сегментации игроков (KMeans)")
+    sub.add_parser("backtest", help="проверка модели «Состав» на реальных командах")
     sub.add_parser("snapshot", help="снимок витрин звёздной схемы в outputs/snapshots/<дата>/")
     p_load = sub.add_parser("load", help="загрузка звезды в БД")
     p_load.add_argument("--target", choices=["local", "supabase"], default="local")

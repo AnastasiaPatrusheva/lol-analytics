@@ -49,10 +49,11 @@ def render(source: str) -> None:
     c4.metric("Ср. длительность", f"{duration:.1f} мин")
 
     st.markdown("#### Что показали данные")
+    # Разделитель тысяч ставим только в числе: replace на всей строке съедал запятые.
+    n_matches = f"{int(kpi['matches']):,}".replace(",", " ")
     st.caption(
-        f"Выводы по источнику «{source}»: {int(kpi['matches']):,} матчей ранкед-соло, "
+        f"Выводы по источнику «{source}»: {n_matches} матчей ранкед-соло, "
         f"{patches} патчей. Каждый вывод можно перепроверить на указанной вкладке."
-        .replace(",", " ")
     )
 
     _finding(

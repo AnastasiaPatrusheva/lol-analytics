@@ -4,11 +4,13 @@
 надёжности (числу игр), а сам winrate берём осторожным (нижняя граница Уилсона).
 Плюс заметка про баланс ролей (фронтлайн / урон / поддержка) по классам чемпионов.
 """
+import altair as alt
 import numpy as np
+import pandas as pd
 import streamlit as st
 
 from dashboard.charts import radar_grid
-from dashboard.data import run, champion_images
+from dashboard.data import run, champion_images, table_exists
 
 ROLES = [("TOP", "Топ"), ("JUNGLE", "Лес"), ("MIDDLE", "Мид"),
          ("BOTTOM", "Бот"), ("UTILITY", "Саппорт")]
@@ -34,6 +36,121 @@ def _card(rk_ru, row, imgs):
         f"надёжность оценки {min(100, int(row['games'] / 2)):d}%</div></div>"
         f"<div style='color:{color};font-weight:600'>{wr:.1%} побед</div></div>"
     )
+
+
+def _backtest(source: str) -> None:
+    """Результат проверки модели на реальных командах (витрина composition_backtest)."""
+    st.divider()
+    st.markdown("#### Проверка модели")
+    if not table_exists("composition_backtest"):
+        st.info("Проверка не построена: запустите `python main.py backtest`.")
+        return
+    bt = run(f"SELECT * FROM composition_backtest WHERE data_source = '{source}'")
+    if bt.empty:
+        st.info(
+            f"Для источника «{source}» проверку провести не на чем: нужен хотя бы один "
+            "прошлый патч, чтобы обучиться, и достаточно матчей в последнем, чтобы "
+            "проверить. Выберите **riot_full** в панели «Фильтры» слева."
+        )
+        return
+
+    r = bt.iloc[0]
+    # Разделитель тысяч — только в самом числе: раньше replace стоял на всей строке
+    # и вычищал запятые из текста.
+    n_matches = f"{int(r['test_matches']):,}".replace(",", " ")
+    st.caption(
+        f"Модель обучена на всех патчах до {r['test_patch']} и проверена на "
+        f"{n_matches} матчах патча {r['test_patch']}, которых она не видела. "
+        "Разделение по времени, а не случайное: так же она работала бы в жизни, когда исход "
+        "ещё не наступил. Оцениваются обе команды матча, побеждает та, чья оценка выше, "
+        "поэтому базовый уровень строго 50% и его нельзя обыграть угадыванием."
+    )
+
+    m1, m2, m3 = st.columns(3)
+    acc = float(r["accuracy_raw"])
+    m1.metric("Угадано матчей", f"{acc:.1%}", delta=f"{acc - 0.5:+.1%} к случайному",
+              help="Доля матчей, где команда с более высокой оценкой действительно победила.")
+    m2.metric("ROC AUC", f"{float(r['auc_raw']):.3f}",
+              help="0.5 — модель не отличает победителей от проигравших, 1.0 — идеально.")
+    m3.metric("Смещение", f"{float(r['bias_raw']):+.1%}",
+              help="Насколько предсказанный процент в среднем расходится с фактическим.")
+
+    st.warning(
+        f"**Модель работает, но слабо.** Она угадывает победителя в {acc:.1%} матчей против "
+        "50% у монетки. Это настоящий, но небольшой сигнал: состав действительно влияет на "
+        "исход, однако куда меньше, чем мастерство игроков, ход самой игры и вражеская "
+        "пятёрка, которую модель вообще не видит. Пользоваться этим прогнозом как "
+        "предсказанием конкретного матча нельзя.",
+        icon="⚠️",
+    )
+
+    with st.expander("Как выбирали способ считать оценку и почему"):
+        st.markdown(
+            "Проверены три варианта на одних и тех же матчах. Ни один не выигрывает "
+            "по обеим метрикам сразу — это обычный компромисс между **ранжированием** "
+            "(правильно ли модель расставляет составы по силе) и **калибровкой** "
+            "(означает ли показанный процент то, что написано)."
+        )
+        variants = pd.DataFrame([
+            {"Способ оценки": "Точечный winrate, равные веса",
+             "Точность": r["accuracy_raw"], "AUC": r["auc_raw"], "Смещение": r["bias_raw"]},
+            {"Способ оценки": "Нижняя граница Уилсона, равные веса",
+             "Точность": r["accuracy_equal"], "AUC": r["auc_equal"], "Смещение": r["bias_equal"]},
+            {"Способ оценки": "Нижняя граница Уилсона, веса по числу игр",
+             "Точность": r["accuracy_weighted"], "AUC": r["auc_weighted"],
+             "Смещение": r["bias_weighted"]},
+        ])
+        st.dataframe(
+            variants, hide_index=True, width="stretch",
+            column_config={
+                "Точность": st.column_config.NumberColumn(format="percent"),
+                "AUC": st.column_config.NumberColumn(format="%.3f"),
+                "Смещение": st.column_config.NumberColumn(format="percent"),
+            },
+        )
+        st.markdown(
+            "- **Веса по числу игр** (так было раньше) оказались худшими по обеим метрикам. "
+            "Число игр — это надёжность оценки чемпиона, а не важность роли в матче.\n"
+            "- **Нижняя граница Уилсона** чуть лучше ранжирует, но занижает результат почти "
+            "на 4 пункта: она намеренно осторожна, и среднее пяти заниженных оценок тоже "
+            "занижено.\n"
+            "- **Точечный winrate** почти не уступает в ранжировании и при этом честен по "
+            "величине. Раз вкладка показывает число, а не только сортирует составы, выбран он."
+        )
+
+    calib = run(f"""
+        SELECT * FROM composition_calibration
+        WHERE data_source = '{source}' AND variant = 'Точечный winrate'
+        ORDER BY bin_low
+    """)
+    if calib.empty:
+        return
+    st.markdown("**Калибровка: сбывается ли предсказанный процент**")
+    st.caption(
+        "Команды разбиты на восемь групп по величине прогноза. По горизонтали — что модель "
+        "предсказала, по вертикали — как получилось. Точки на пунктирной диагонали означают, "
+        "что прогноз сбывается; выше диагонали — модель недооценила, ниже — переоценила."
+    )
+    lo = float(min(calib["predicted"].min(), calib["actual"].min())) - 0.01
+    hi = float(max(calib["predicted"].max(), calib["actual"].max())) + 0.01
+    scale = alt.Scale(domain=[lo, hi])
+    diag = (alt.Chart(pd.DataFrame({"v": [lo, hi]}))
+            .mark_line(strokeDash=[4, 4], color="#6b7580")
+            .encode(x=alt.X("v:Q", scale=scale), y=alt.Y("v:Q", scale=scale)))
+    dots = (
+        alt.Chart(calib)
+        .mark_circle(size=140, color="#C8AA6E", stroke="#141719", strokeWidth=0.5)
+        .encode(
+            x=alt.X("predicted:Q", title="Предсказанный winrate",
+                    axis=alt.Axis(format="%"), scale=scale),
+            y=alt.Y("actual:Q", title="Фактический winrate",
+                    axis=alt.Axis(format="%"), scale=scale),
+            tooltip=[alt.Tooltip("predicted:Q", format=".1%", title="предсказано"),
+                     alt.Tooltip("actual:Q", format=".1%", title="фактически"),
+                     alt.Tooltip("teams:Q", title="команд")],
+        )
+    )
+    st.altair_chart((diag + dots).properties(height=340), width="stretch")
 
 
 def render(source: str) -> None:
@@ -87,10 +204,20 @@ def render(source: str) -> None:
     if not chosen:
         return
 
-    # Прогноз: средневзвешенный по числу игр, оценка героя — нижняя граница Уилсона.
-    weights = np.array([float(r["games"]) for _, r in chosen])
-    vals = np.array([float(r["wilson_low"]) for _, r in chosen])
-    pred = float(np.average(vals, weights=weights))
+    # Прогноз: среднее winrate пяти пиков, все роли с равным весом.
+    #
+    # Раньше здесь было средневзвешенное по числу игр от нижних границ Уилсона.
+    # Бэктест на патче 16.12 (см. раздел «Проверка модели» ниже) показал, что этот
+    # вариант худший по обеим метрикам: точность 51.9% против 53.1% у равных весов.
+    # Число игр — это надёжность оценки чемпиона, а не важность роли в матче, и
+    # взвешивание по нему просто перекашивает состав в сторону популярных пиков.
+    #
+    # Осторожную нижнюю границу Уилсона тоже не берём: она намеренно занижена, и
+    # среднее пяти заниженных оценок занижено на 3.8 пункта. Точечный winrate
+    # почти не уступает в ранжировании (AUC 0.524 против 0.529), зато показанный
+    # процент означает ровно то, что написано: смещение +0.1 пункта.
+    pred = float(np.mean([float(r["winrate"]) for _, r in chosen]))
+    pred_low = float(np.mean([float(r["wilson_low"]) for _, r in chosen]))
 
     classes = {c for _, r in chosen for c in str(r["primary_class"]).split(",")}
     has_front = bool(classes & FRONTLINE)
@@ -120,15 +247,17 @@ def render(source: str) -> None:
             unsafe_allow_html=True,
         )
         st.caption(
-            "Чем больше игр на чемпионе, тем сильнее он влияет на общую оценку: по "
-            "редким пикам судить ненадёжно. Сам winrate берём осторожно, с поправкой на "
-            "размер выборки. Отдельно проверяем, сбалансирован ли состав — есть ли танк "
-            "или боец, урон и поддержка."
+            f"Среднее winrate пяти пиков на их ролях, все роли с равным весом. "
+            f"Осторожная оценка с поправкой на размер выборки: {pred_low:.0%}. "
+            "Отдельно проверяем, сбалансирован ли состав — есть ли танк или боец, "
+            "урон и поддержка."
         )
     with right:
         st.markdown("#### Вклад каждой роли")
         html = "".join(_card(rk_ru, r, imgs) for rk_ru, r in chosen)
         st.markdown(html, unsafe_allow_html=True)
+
+    _backtest(source)
 
     st.divider()
     st.markdown("#### Профиль ролей")
