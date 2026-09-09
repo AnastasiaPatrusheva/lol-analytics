@@ -14,7 +14,9 @@
 import streamlit as st
 
 from dashboard.data import run, table_exists
-from dashboard.tabs.strength import ALL_SLICE, ROLE_RU, aggregation_effect
+from dashboard.tabs.strength import (
+    ALL_SLICE, ROLE_IN, ROLE_RU, _plural, aggregation_effect, role_gap_example,
+)
 
 MIN_GAMES = 30          # тот же порог, что стоит по умолчанию на вкладке «Сила чемпиона»
 
@@ -73,15 +75,29 @@ def _strength_findings(source: str) -> None:
         )
 
     if marked_in_roles > int(pooled["marked"]):
+        # Пример берём из данных: доли по ролям складываются не поровну, а с весом
+        # по числу игр, и выдуманные числа в таком примере почти наверняка не сойдутся.
+        ex = role_gap_example(source, "", MIN_GAMES)
+        if ex:
+            big, small = int(ex["best_games"]), int(ex["worst_games"])
+            why = (f"Вот как это выглядит: {ex['champion_name']} "
+                   f"{ROLE_IN.get(ex['best_role'], ex['best_role'])} выигрывает "
+                   f"{ex['best_wr']:.0%} матчей, а "
+                   f"{ROLE_IN.get(ex['worst_role'], ex['worst_role'])} всего "
+                   f"{ex['worst_wr']:.0%}. На первой позиции сыграно {big} "
+                   f"{_plural(big, 'матч', 'матча', 'матчей')}, а на второй только "
+                   f"{small}, поэтому общая доля тянется к большей группе и выходит "
+                   f"{ex['overall']:.0%} — чемпион выглядит обычным.")
+        else:
+            why = ("Причина в усреднении: одного чемпиона играют на разных позициях, "
+                   "и разные доли побед сливаются в одну, близкую к половине.")
         _card(
             "Сила чемпиона",
             "Но это говорит о способе подсчёта, а не об игре",
             f"Стоит перестать смешивать роли, и выделяющихся становится {marked_in_roles} "
-            f"вместо {int(pooled['marked'])}. Причина в усреднении: одного чемпиона играют "
-            "на двух позициях, на одной он выигрывает чаще, на другой реже, а вместе выходит "
-            f"ровно половина. Видно и по разбросу: среди всех ролей вместе от худшего "
-            f"чемпиона к лучшему {pooled['spread']:.0%}, а внутри роли «{role_ru}» — "
-            f"{widest['spread']:.0%}.",
+            f"вместо {int(pooled['marked'])}. {why} Видно и по разбросу: среди всех ролей "
+            f"вместе от худшего чемпиона к лучшему {pooled['spread']:.0%}, а внутри роли "
+            f"«{role_ru}» — {widest['spread']:.0%}.",
         )
 
 

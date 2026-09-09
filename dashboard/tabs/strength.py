@@ -73,6 +73,62 @@ def _hero(title, name, value, img, accent="#C8AA6E") -> str:
     )
 
 
+# Роли в предложном падеже: у каждой свой предлог, одним шаблоном не обойтись.
+ROLE_IN = {"TOP": "на топе", "JUNGLE": "в лесу", "MIDDLE": "на миде",
+           "BOTTOM": "на боте", "UTILITY": "на саппорте"}
+# Пример должен стоять на заметной выборке: на полусотне матчей доля побед
+# скачет сама по себе, и пример будет объяснять шум, а не устройство подсчёта.
+EXAMPLE_MIN_GAMES = 120
+
+
+def role_gap_example(source: str, patch_filter: str, min_games: int) -> dict | None:
+    """Живой чемпион, у которого доли побед по ролям сильно расходятся,
+    а общая при этом близка к половине.
+
+    Нужен вместо выдуманного примера. Выдуманные числа тут особенно опасны:
+    общая доля побед — не среднее двух долей, а взвешенное по числу игр,
+    и на глаз такой пример не сойдётся.
+    """
+    roles = ", ".join(f"'{r}'" for r in ROLES)
+    min_games = max(min_games, EXAMPLE_MIN_GAMES)
+    df = run(f"""
+        WITH per_role AS (
+            SELECT ch.champion_name, f.role_key,
+                   COUNT(*) AS games,
+                   AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS wr
+            FROM fact_participant f
+            JOIN dim_champion ch ON f.champion_id = ch.champion_id
+            JOIN dim_match m ON f.data_source = m.data_source AND f.match_id = m.match_id
+            WHERE f.data_source = '{source}' AND f.role_key IN ({roles}) {patch_filter}
+            GROUP BY 1, 2 HAVING COUNT(*) >= {min_games}
+        ),
+        ranked AS (
+            SELECT *,
+                   ROW_NUMBER() OVER (PARTITION BY champion_name ORDER BY wr)      AS lo,
+                   ROW_NUMBER() OVER (PARTITION BY champion_name ORDER BY wr DESC) AS hi,
+                   COUNT(*)   OVER (PARTITION BY champion_name)                    AS n_roles,
+                   SUM(games) OVER (PARTITION BY champion_name)                    AS total,
+                   SUM(games * wr) OVER (PARTITION BY champion_name)
+                       / SUM(games) OVER (PARTITION BY champion_name)              AS overall
+            FROM per_role
+        )
+        SELECT champion_name, total, overall,
+               MAX(CASE WHEN lo = 1 THEN role_key END) AS worst_role,
+               MAX(CASE WHEN lo = 1 THEN wr END)       AS worst_wr,
+               MAX(CASE WHEN lo = 1 THEN games END)    AS worst_games,
+               MAX(CASE WHEN hi = 1 THEN role_key END) AS best_role,
+               MAX(CASE WHEN hi = 1 THEN wr END)       AS best_wr,
+               MAX(CASE WHEN hi = 1 THEN games END)    AS best_games
+        FROM ranked WHERE n_roles >= 2
+        GROUP BY 1, 2, 3
+        HAVING MAX(CASE WHEN hi = 1 THEN wr END) - MAX(CASE WHEN lo = 1 THEN wr END) >= 0.05
+           AND abs(overall - 0.5) <= 0.03
+        ORDER BY MAX(CASE WHEN hi = 1 THEN wr END) - MAX(CASE WHEN lo = 1 THEN wr END) DESC
+        LIMIT 1
+    """)
+    return None if df.empty else df.iloc[0].to_dict()
+
+
 def aggregation_effect(source: str, patch_filter: str, min_games: int) -> pd.DataFrame:
     """Сколько чемпионов значимо отличаются от 50% в разных разрезах.
 
@@ -344,12 +400,27 @@ def render(source: str) -> None:
         "В первой строке роли смешаны, в остальных разделены. Сравните два столбца: "
         "сколько чемпионов выделяется и какой между ними разброс."
     )
-    st.caption(
-        "Смешивать роли нельзя вот почему. Одного и того же чемпиона играют на двух "
-        "позициях: на одной он выигрывает 38% матчей, на другой 52%. Если считать обе "
-        "позиции вместе, получится среднее — те же 50%, и чемпион попадёт в «как все». "
-        "Так пропадают и сильные, и слабые."
-    )
+    example = role_gap_example(source, patch_filter, min_games)
+    if example:
+        big, small = int(example["best_games"]), int(example["worst_games"])
+        st.caption(
+            f"Смешивать роли нельзя вот почему. {example['champion_name']} "
+            f"{ROLE_IN.get(example['best_role'], example['best_role'])} выигрывает "
+            f"{example['best_wr']:.0%} матчей, а "
+            f"{ROLE_IN.get(example['worst_role'], example['worst_role'])} всего "
+            f"{example['worst_wr']:.0%}. Но на первой позиции сыграно "
+            f"{big} {_plural(big, 'матч', 'матча', 'матчей')}, а на второй только "
+            f"{small}. Общая доля побед считается по всем матчам сразу, поэтому она "
+            f"тянется к большей группе и выходит {example['overall']:.0%} — "
+            "и чемпион попадает в «как все». Так пропадают и сильные, и слабые."
+        )
+    else:
+        st.caption(
+            "Смешивать роли нельзя вот почему. Одного и того же чемпиона играют на разных "
+            "позициях, и на одной он может выигрывать заметно чаще, чем на другой. Вместе "
+            "эти доли сливаются в одну, близкую к половине, и чемпион попадает в «как все». "
+            "Так пропадают и сильные, и слабые."
+        )
     eff = aggregation_effect(source, patch_filter, min_games)
     if not eff.empty:
         order = [ALL_SLICE] + ROLES
