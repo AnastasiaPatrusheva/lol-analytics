@@ -187,7 +187,7 @@ def aggregation_effect(source: str, patch_filter: str, min_games: int) -> pd.Dat
 def render(source: str) -> None:
     st.subheader("Сила чемпиона")
     st.caption(
-        "Чемпион — это игровой персонаж, за которого играют; всего их в игре больше "
+        "Чемпион — это игровой персонаж, за которого играют. Всего их в игре больше "
         "полутора сотен. Есть ли среди них те, кто выигрывает чаще остальных? В хорошо "
         "настроенной игре каждый побеждает примерно в половине матчей, и вопрос в том, "
         "кто действительно выбивается из этой половины, а кому просто повезло. Условия "
@@ -302,17 +302,16 @@ def render(source: str) -> None:
         )
     else:
         st.caption(
-            f"Все {n_tests} {nom} выигрывают примерно одинаково. Разницу между ними "
-            "можно объяснить обычным везением."
+            f"В этой выборке {n_tests} {nom} выигрывают примерно одинаково. Разницу "
+            "между ними можно объяснить обычным везением."
         )
 
     # Сколько ложных срабатываний ждём при обычном пороге: alpha × число проверок.
     expected_false = round(ALPHA * n_tests)
-    tail = ("не прошёл ни один" if n_marked == 0
-            else f"прошли только {n_marked}")
+    tail = ("но мы не засчитали ни одного" if n_marked == 0
+            else f"но засчитали только {n_marked}")
     with st.expander(
-            f"Но {n_naive} {_plural(n_naive, 'чемпион', 'чемпиона', 'чемпионов')} "
-            f"на сильных похожи — почему {tail}"):
+            f"Из {n_tests} чемпионов {n_naive} выглядят сильнее остальных, {tail}"):
         st.markdown(
             "Любая проверка по выборке иногда ошибается: мы видим часть матчей "
             "чемпиона, а не все, какие он вообще сыграл. Насколько часто ошибаться — "
@@ -404,7 +403,10 @@ def render(source: str) -> None:
     if example:
         big, small = int(example["best_games"]), int(example["worst_games"])
         st.caption(
-            f"Смешивать роли нельзя вот почему. {example['champion_name']} "
+            "Смешивать роли нельзя потому, что на разных позициях у одного и того же "
+            "чемпиона разная работа: где-то он добывает золото и наносит урон, где-то "
+            "прикрывает команду. Это фактически две разные игры, и сила в них тоже разная. "
+            f"{example['champion_name']} "
             f"{ROLE_IN.get(example['best_role'], example['best_role'])} выигрывает "
             f"{example['best_wr']:.0%} матчей, а "
             f"{ROLE_IN.get(example['worst_role'], example['worst_role'])} всего "
@@ -460,7 +462,7 @@ def render(source: str) -> None:
     st.caption(
         "«Побед» — сколько матчей чемпион выиграл на самом деле. «Осторожно» — та же доля, "
         "но заниженная с учётом числа игр: по ней и строится рейтинг, чтобы наверх "
-        "не попадали чемпионы с парой удачных матчей. «Лучше своих» показывает, насколько "
+        "не попадали чемпионы с парой удачных матчей. «Лучше в классе» показывает, насколько "
         "чемпион выигрывает чаще среднего по своему классу: танки сравниваются с танками, "
         "маги с магами."
     )
@@ -482,7 +484,7 @@ def render(source: str) -> None:
                 "Осторожно", format="percent", min_value=0.40, max_value=0.60,
                 help="Доля побед, заниженная с учётом того, сколько игр сыграно"),
             "vs_class": st.column_config.NumberColumn(
-                "Лучше своих", format="%+.1f%%",
+                "Лучше в классе", format="%+.1f%%",
                 help="Насколько чемпион выигрывает чаще среднего по своему классу"),
             "avg_kda": st.column_config.NumberColumn("KDA", format="%.2f"),
             "verdict": "Итог",
@@ -546,15 +548,22 @@ def _kills_deaths(source: str, pos_filter: str, patch_filter: str, min_games: in
 
 
 def _diverging_bars(df: pd.DataFrame, x_title: str, tooltips: list) -> alt.Chart:
-    """Столбики отклонений: золотой вверх, красный вниз, незначимые полупрозрачные."""
+    """Столбики отклонений: золотой вверх, красный вниз.
+
+    Прозрачность различает три состояния, а не два. Средний уровень — те, что
+    прошли бы обычную проверку, но не строгую: без него в тексте оставалось число,
+    на которое нельзя показать пальцем.
+    """
     part = pd.concat([df.head(12), df.tail(12)]).drop_duplicates(subset=["champion_name"])
+    part = part.assign(op=part.apply(
+        lambda r: 0.95 if r["is_sig"] else (0.55 if r["is_sig_naive"] else 0.20), axis=1))
     return (
         alt.Chart(part).mark_bar(cornerRadiusEnd=2)
         .encode(
             x=alt.X("delta:Q", title=x_title, axis=alt.Axis(format="+%")),
             y=alt.Y("champion_name:N", sort="-x", title=None),
             color=alt.condition("datum.delta > 0", alt.value("#C8AA6E"), alt.value("#d9534f")),
-            opacity=alt.condition("datum.is_sig", alt.value(0.95), alt.value(0.28)),
+            opacity=alt.Opacity("op:Q", scale=None, legend=None),
             tooltip=tooltips,
         )
         .properties(height=520)
@@ -617,18 +626,19 @@ def _patch_shift(source: str, patches: list[str], pos_filter: str, min_games: in
     # поэтому порог значимости делится на их число.
     alpha_adj = ALPHA / len(cmp)
     cmp["is_sig"] = cmp["p_value"] < alpha_adj
+    cmp["is_sig_naive"] = cmp["p_value"] < ALPHA
     cmp = cmp.sort_values("delta", ascending=False)
-    naive = int((cmp["p_value"] < ALPHA).sum())
+    naive = int(cmp["is_sig_naive"].sum())
     sig = cmp[cmp["is_sig"]]
 
     st.caption(
         f"Riot регулярно правит чемпионов. Здесь видно, у кого доля побед между патчами "
         f"{a} и {b} изменилась по-настоящему, а у кого сдвинулась в пределах обычного "
-        f"разброса. Золотой столбец — стал выигрывать чаще, красный — реже, "
-        f"полупрозрачный — разница слишком мала, чтобы считать её настоящей. "
-        f"Оговорка та же, что и выше: чемпионов много ({len(cmp)}), поэтому планка выше "
-        f"обычной. По одному чемпиону настоящими выглядели бы {naive} изменений, "
-        f"а с учётом всех сразу остаётся {len(sig)}."
+        f"разброса. Золотой столбец — стал выигрывать чаще, красный — реже.\n\n"
+        f"Насыщенные столбцы прошли строгую проверку, их {len(sig)}. Столбцы средней "
+        f"яркости — те {naive}, что прошли бы обычную проверку по одному чемпиону, "
+        f"но не выдержали строгую: чемпионов здесь {len(cmp)}, и планка поднята именно "
+        f"из-за их количества. Самые бледные — обычный разброс."
     )
     # Один и тот же чемпион не может одновременно усилиться и ослабнуть: берём
     # лидеров отдельно среди выросших и среди упавших. Раньше при единственном
@@ -719,14 +729,18 @@ def _by_duration(source: str, pos_filter: str, patch_filter: str) -> None:
         axis=1)
     alpha_adj = ALPHA / len(dur)
     dur["is_sig"] = dur["p_value"] < alpha_adj
+    dur["is_sig_naive"] = dur["p_value"] < ALPHA
     dur = dur.sort_values("delta", ascending=False)
     sig = dur[dur["is_sig"]]
+    naive = int(dur["is_sig_naive"].sum())
 
     st.caption(
         f"Насколько чаще чемпион побеждает в долгих матчах (дольше 32 минут) по сравнению "
-        f"с короткими (меньше 25 минут). Проверка та же, что и выше: чемпионов много "
-        f"({len(dur)}), планка поднята, и разниц, которые нельзя объяснить случайностью, "
-        f"осталось {len(sig)}. Насыщенные столбцы — они, полупрозрачные — обычный разброс."
+        f"с короткими (меньше 25 минут).\n\n"
+        f"Насыщенные столбцы прошли строгую проверку, их {len(sig)}. Столбцы средней "
+        f"яркости — те {naive}, что прошли бы обычную проверку по одному чемпиону, "
+        f"но не выдержали строгую: чемпионов здесь {len(dur)}, и планка поднята именно "
+        f"из-за их количества. Самые бледные — обычный разброс."
     )
     if not sig.empty:
         top = sig.iloc[0]
