@@ -39,8 +39,9 @@ def render(source: str) -> None:
 
     st.subheader("Что чаще всего стоит в финальной сборке")
     st.caption(
-        "Точка на графике — предмет: правее — встречается чаще, выше — чаще оказывается "
-        "в сборке победителя."
+        "Сборка — это набор предметов, с которым игрок закончил матч. Точка на графике — "
+        "предмет: правее — встречается в сборках чаще, выше — чаще оказывается в сборке "
+        "того, кто выиграл."
     )
     st.warning(
         "**Это не совет, что покупать.** Riot сохраняет, что лежало в сумке в конце матча, "
@@ -62,7 +63,7 @@ def render(source: str) -> None:
     c1.markdown(_item_card("Чаще всего у победителей", best_wr,
                            f"{best_wr['winrate']:.0%} · {int(best_wr['appearances'])} сборок", icons),
                 unsafe_allow_html=True)
-    c2.markdown(_item_card("Самый частый в сборках", most_common,
+    c2.markdown(_item_card("Встречается чаще всего", most_common,
                            f"{int(most_common['appearances'])} сборок · "
                            f"побед {most_common['winrate']:.0%}",
                            icons, accent="#5aa0c9"), unsafe_allow_html=True)
@@ -91,9 +92,8 @@ def render(source: str) -> None:
     with right:
         download_csv(items, "items.csv", key="dl_items", use_container_width=True)
     st.caption(
-        "Внимание на шкалу: полоска показывает не долю от нуля, а место в узком коридоре "
-        "от 40% до 65%. Если рисовать от нуля, все предметы выглядят одинаково, а так "
-        "различия видны. Но и разница между полосками зрительно больше, чем на самом деле."
+        "Полоски нарисованы в коридоре от 40% до 65%, а не от нуля: иначе все предметы "
+        "выглядели бы одинаково. Разница между ними на глаз кажется больше, чем есть."
     )
     table = items.sort_values("winrate", ascending=False).copy()
     table.insert(0, "icon", table["item_id"].map(icons))
