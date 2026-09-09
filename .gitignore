@@ -9,6 +9,8 @@ venv/
 node_modules/
 
 # --- Инструменты / служебное (локально) ---
+.codeium/
+.cursor/
 archive/
 
 # --- Большие / локальные / производные данные (НЕ в репозиторий) ---
@@ -60,6 +62,8 @@ scripts/inspect_transcription.py
 scripts/organize_project_files.py
 # выгрузки для Yandex DataLens (устарели: 2 источника, до riot_full)
 datalens/
+# личные рабочие заметки по проекту, не для публикации
+AGENTS.md
 
 # ВАЖНО: outputs/sql/star/*.parquet НЕ игнорируем — это данные для дашборда.
 # data/reference/*.csv тоже оставляем (маленькие справочники Data Dragon).
