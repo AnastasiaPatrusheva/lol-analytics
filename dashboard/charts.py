@@ -47,7 +47,9 @@ def radar_grid(df: pd.DataFrame, metrics: list[tuple[str, str]],
                  .mark_line(interpolate="linear-closed", strokeWidth=2,
                             color="#C8AA6E", fill="#C8AA6E", fillOpacity=0.30)
                  .encode(**_XY, order="order:Q"))
+        # limit=0 отключает обрезку заголовка многоточием: на узкой колонке
+        # (открыт фильтр слева) «Играет на обзор» превращалось в «Играет на об…».
         title = alt.TitleParams((titles or {}).get(grp, str(grp)),
-                                anchor="middle", fontSize=13, color="#F0E6D2")
+                                anchor="middle", fontSize=12, color="#F0E6D2", limit=0)
         col.altair_chart((ref + shape + labels).properties(height=height, title=title)
                          .configure_view(strokeWidth=0), width="stretch")

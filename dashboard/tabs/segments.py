@@ -59,24 +59,33 @@ def render(source: str) -> None:
         f"в среднем {top['winrate']:.0%} побед."
     )
 
-    # Оба графика одной высоты и с короткими заголовками в одну строку: разная
-    # высота и перенос заголовка справа делали пару визуально несимметричной.
+    # Заголовки — отдельной строкой колонок, а графики — следующей. Streamlit
+    # складывает каждую колонку независимо, и когда при открытом фильтре слева
+    # колонка сужалась, длинный заголовок переносился на две строки и сдвигал
+    # свой график вниз относительно соседнего. Строка заголовков берёт высоту
+    # самого высокого из них, поэтому графики теперь начинаются вровень при любой ширине.
     H = 340
+    t_left, t_right = st.columns([1, 1.4])
+    t_left.markdown("#### Игроков в каждой группе")
+    t_right.markdown("#### Урон и обзор")
     c_left, c_right = st.columns([1, 1.4])
     with c_left:
-        st.markdown("#### Игроков в каждой группе")
         ybar = alt.Y("archetype:N", sort="-x", title=None,
                      axis=alt.Axis(labelPadding=6, domain=False, ticks=False))
         # Запас справа, иначе число у самой длинной полосы уходит за край
-        # графика и обрезается («1505» превращалось в «150»).
-        x_max = float(counts["players"].max()) * 1.18
+        # графика и обрезается («1505» превращалось в «150»). Запас задан в долях
+        # оси, а подписи нужно место в пикселях: при открытом фильтре график узкий,
+        # и 18% не хватало. 35% держит подпись и на узкой колонке.
+        x_max = float(counts["players"].max()) * 1.35
         bar = (
             alt.Chart(counts)
             .mark_bar(cornerRadiusEnd=4)
             .encode(
+                # labelFlush прижимает крайние подписи оси внутрь графика: иначе
+                # последняя метка на узкой колонке тоже вылезала за край.
                 x=alt.X("players:Q", title="Игроков",
                         scale=alt.Scale(domain=[0, x_max]),
-                        axis=alt.Axis(grid=True, domain=False)),
+                        axis=alt.Axis(grid=True, domain=False, labelFlush=True)),
                 y=ybar,
                 color=alt.Color("archetype:N", legend=None),
                 tooltip=["archetype", "players", alt.Tooltip("winrate:Q", format=".1%")],
@@ -90,7 +99,6 @@ def render(source: str) -> None:
         )
         st.altair_chart((bar + labels).configure_view(strokeWidth=0), width="stretch")
     with c_right:
-        st.markdown("#### Урон и обзор")
         scatter = (
             alt.Chart(seg)
             .mark_circle(size=60, opacity=0.5)
@@ -114,8 +122,13 @@ def render(source: str) -> None:
         st.caption("Пунктир — норма роли. Правее вертикальной линии урона больше обычного, "
                    "выше горизонтальной — больше обзора.")
 
-    profile = counts.rename(columns={
-        "archetype": "Архетип", "players": "Игроков", "winrate": "Побед",
+    # Доля побед в процентах, а не долей (было 0.4714 вместо 47.1%); отношения к
+    # норме — с двумя знаками, четыре знака после запятой только мешали читать.
+    profile = counts.assign(
+        winrate=(counts["winrate"] * 100).round(1),
+        **{c: counts[c].round(2) for c in ("kda", "cs", "dmg", "vision", "gold")},
+    ).rename(columns={
+        "archetype": "Группа", "players": "Игроков", "winrate": "Побед, %",
         "kda": "KDA к норме", "cs": "CS к норме", "dmg": "Урон к норме",
         "vision": "Обзор к норме", "gold": "Золото к норме",
     })
