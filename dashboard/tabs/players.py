@@ -9,6 +9,7 @@ import streamlit as st
 
 from dashboard.data import run, download_csv, champion_images
 from dashboard.tabs import segments
+from dashboard.tabs.strength import _plural
 
 
 def _player_name(row) -> str:
@@ -79,8 +80,12 @@ def render(source: str) -> None:
         return
 
     players = players.copy()
+    def _matches(n: int) -> str:
+        return f"{n} {_plural(n, 'матч', 'матча', 'матчей')}"
+
     players["label"] = players.apply(
-        lambda r: f"{_player_name(r)} · {int(r['games'])} матчей · побед {r['winrate']:.0%}",
+        lambda r: f"{_player_name(r)} · {_matches(int(r['games']))} · "
+                  f"побед {r['winrate']:.1%}",
         axis=1,
     )
     choice = st.selectbox("Игрок", players["label"])
@@ -90,8 +95,10 @@ def render(source: str) -> None:
     st.markdown(f"### {_player_name(row)}")
     cols = st.columns(7)
     cols[0].metric("Матчей", int(row["games"]))
+    # Одна десятая, а не целые: у игроков доли плотно жмутся к половине,
+    # и 49.6% против 50.4% при округлении до целых превращались в одинаковые 50%.
     cols[1].metric(
-        "Доля побед", f"{row['winrate']:.0%}",
+        "Доля побед", f"{row['winrate']:.1%}",
         help=f"Цифра точная только на вид. По {int(row['games'])} матчам настоящее умение "
              f"этого игрока лежит где-то между {row['wr_low']:.0%} и {row['wr_high']:.0%}. "
              "Чем меньше матчей, тем шире этот разбег и тем меньше значит само число.")
@@ -127,9 +134,11 @@ def render(source: str) -> None:
                   .sort_values("wilson_low", ascending=False))
     if not best_champ.empty:
         b = best_champ.iloc[0]
+        n = int(b["games"])
+        # После «на» — предложный падеж: «на 1 матче», «на 111 матчах».
         st.success(
-            f"Лучше всего у игрока идёт **{b['champion_name']}**: {b['winrate']:.0%} побед "
-            f"на {int(b['games'])} матчах."
+            f"Лучший чемпион игрока — **{b['champion_name']}**: {b['winrate']:.1%} побед "
+            f"на {n} {_plural(n, 'матче', 'матчах', 'матчах')}."
         )
     else:
         st.caption(
