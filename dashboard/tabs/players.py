@@ -171,38 +171,42 @@ def render(source: str) -> None:
             "поэтому мы такое не показываем."
         )
 
-    left, right = st.columns([3, 2])
-    with left:
-        st.markdown("#### Любимые чемпионы")
-        favs = champs.head(12).copy()
-        favs["image"] = favs["champion_id"].map(imgs)
-        ysort = alt.EncodingSortField(field="games", op="max", order="descending")
-        portraits = (
-            alt.Chart(favs).mark_image(width=22, height=22)
-            .encode(y=alt.Y("champion_name:N", sort=ysort, axis=None), url="image:N")
-            .properties(width=26, height=360)
+    # «Любимые чемпионы» и «Роли» идут друг под другом, а не в две колонки.
+    # График чемпионов склеен из портретов и полос (hconcat), а склейка в Altair
+    # не сжимается под ширину колонки: у неё фиксированный размер около 700 пикселей.
+    # Когда колонка была уже (открыт фильтр, ноутбук), график залезал под соседние
+    # «Роли»: полосы уходили под пончик, прятались число у первой полосы и цветовая
+    # шкала. На всю ширину места хватает при любом обычном размере окна.
+    st.markdown("#### Любимые чемпионы")
+    favs = champs.head(12).copy()
+    favs["image"] = favs["champion_id"].map(imgs)
+    ysort = alt.EncodingSortField(field="games", op="max", order="descending")
+    portraits = (
+        alt.Chart(favs).mark_image(width=22, height=22)
+        .encode(y=alt.Y("champion_name:N", sort=ysort, axis=None), url="image:N")
+        .properties(width=26, height=360)
+    )
+    y_named = alt.Y("champion_name:N", sort=ysort, title=None,
+                    axis=alt.Axis(labelPadding=6, domain=False, ticks=False))
+    bars = (
+        alt.Chart(favs).mark_bar(cornerRadiusEnd=3)
+        .encode(
+            x=alt.X("games:Q", title="Игр", axis=alt.Axis(grid=True, domain=False)),
+            y=y_named,
+            color=alt.Color("winrate:Q", title="Побед",
+                            scale=alt.Scale(scheme="redyellowgreen", domain=[0.3, 0.7])),
+            tooltip=["champion_name", "games",
+                     alt.Tooltip("winrate:Q", format=".1%"),
+                     alt.Tooltip("avg_kda:Q", format=".2f")],
         )
-        y_named = alt.Y("champion_name:N", sort=ysort, title=None,
-                        axis=alt.Axis(labelPadding=6, domain=False, ticks=False))
-        bars = (
-            alt.Chart(favs).mark_bar(cornerRadiusEnd=3)
-            .encode(
-                x=alt.X("games:Q", title="Игр", axis=alt.Axis(grid=True, domain=False)),
-                y=y_named,
-                color=alt.Color("winrate:Q", title="Побед",
-                                scale=alt.Scale(scheme="redyellowgreen", domain=[0.3, 0.7])),
-                tooltip=["champion_name", "games",
-                         alt.Tooltip("winrate:Q", format=".0%"),
-                         alt.Tooltip("avg_kda:Q", format=".2f")],
-            )
-            .properties(height=360)
-        )
-        vals = (
-            alt.Chart(favs).mark_text(align="left", dx=5, fontSize=11, color="#cfd6d6")
-            .encode(x=alt.X("games:Q"), y=y_named, text=alt.Text("games:Q"))
-        )
-        ch = alt.hconcat(portraits, (bars + vals), spacing=4).configure_view(strokeWidth=0)
-        st.altair_chart(ch, width="stretch")
+        .properties(height=360)
+    )
+    vals = (
+        alt.Chart(favs).mark_text(align="left", dx=5, fontSize=11, color="#cfd6d6")
+        .encode(x=alt.X("games:Q"), y=y_named, text=alt.Text("games:Q"))
+    )
+    ch = alt.hconcat(portraits, (bars + vals), spacing=4).configure_view(strokeWidth=0)
+    st.altair_chart(ch, width="stretch")
 
     roles = run(f"""
         SELECT r.role_name_ru AS role, COUNT(*) AS games,
@@ -212,17 +216,19 @@ def render(source: str) -> None:
         WHERE f.data_source = '{source}' AND f.puuid = '{puuid}'
         GROUP BY r.role_name_ru ORDER BY games DESC
     """)
-    with right:
-        st.markdown("#### Роли")
+    st.markdown("#### Роли")
+    # Пончик на всю ширину разросся бы до огромного — держим его в средней колонке.
+    _, mid, _ = st.columns([1, 2, 1])
+    with mid:
         rc = (
             alt.Chart(roles)
             .mark_arc(innerRadius=50)
             .encode(
                 theta=alt.Theta("games:Q"),
                 color=alt.Color("role:N", title="Роль"),
-                tooltip=["role", "games", alt.Tooltip("winrate:Q", format=".0%")],
+                tooltip=["role", "games", alt.Tooltip("winrate:Q", format=".1%")],
             )
-            .properties(height=320)
+            .properties(height=300)
         )
         st.altair_chart(rc, width="stretch")
 
