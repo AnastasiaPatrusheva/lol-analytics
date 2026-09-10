@@ -12,6 +12,47 @@ from dashboard.tabs import segments
 from dashboard.tabs.strength import _plural
 
 
+def _hbars(df, label: str, height: int, *, image: str | None = None,
+           legend: bool = True, tooltip_extra: list | None = None) -> alt.LayerChart:
+    """Горизонтальные полосы «сколько игр», цвет — доля побед.
+
+    Один график, а не склейка, поэтому растягивается под ширину колонки.
+    Если передан столбец с картинкой, портрет рисуется слева от полосы в том же
+    графике: x в пикселях от левого края области, отрицательный — в поле подписей.
+    """
+    ysort = alt.EncodingSortField(field="games", op="max", order="descending")
+    pad = 34 if image else 8                 # место под портрет между именем и полосой
+    y = alt.Y(f"{label}:N", sort=ysort, title=None,
+              axis=alt.Axis(labelPadding=pad, domain=False, ticks=False))
+    # Запас справа под число у самой длинной полосы, иначе оно обрезается краем.
+    x_max = float(df["games"].max()) * 1.25
+    bars = (
+        alt.Chart(df).mark_bar(cornerRadiusEnd=3)
+        .encode(
+            x=alt.X("games:Q", title="Игр", scale=alt.Scale(domain=[0, x_max]),
+                    axis=alt.Axis(grid=True, domain=False, labelFlush=True)),
+            y=y,
+            color=alt.Color("winrate:Q", title="Побед",
+                            scale=alt.Scale(scheme="redyellowgreen", domain=[0.3, 0.7]),
+                            legend=alt.Legend(format="%") if legend else None),
+            tooltip=[alt.Tooltip(f"{label}:N", title=" "), alt.Tooltip("games:Q", title="игр"),
+                     alt.Tooltip("winrate:Q", format=".1%", title="побед")]
+                    + (tooltip_extra or []),
+        )
+    )
+    vals = (
+        alt.Chart(df).mark_text(align="left", dx=5, fontSize=11, color="#cfd6d6")
+        .encode(x=alt.X("games:Q"), y=y, text=alt.Text("games:Q"))
+    )
+    layers = [bars, vals]
+    if image:
+        layers.append(
+            alt.Chart(df).mark_image(width=22, height=22, align="center")
+            .encode(x=alt.value(-17), y=y, url=f"{image}:N")
+        )
+    return alt.layer(*layers).properties(height=height).configure_view(strokeWidth=0)
+
+
 def _player_name(row) -> str:
     n = row["name"]
     return n if isinstance(n, str) and n.strip() else str(row["puuid"])[:10]
@@ -171,43 +212,6 @@ def render(source: str) -> None:
             "поэтому мы такое не показываем."
         )
 
-    # «Любимые чемпионы» и «Роли» идут друг под другом, а не в две колонки.
-    # График чемпионов склеен из портретов и полос (hconcat), а склейка в Altair
-    # не сжимается под ширину колонки: у неё фиксированный размер около 700 пикселей.
-    # Когда колонка была уже (открыт фильтр, ноутбук), график залезал под соседние
-    # «Роли»: полосы уходили под пончик, прятались число у первой полосы и цветовая
-    # шкала. На всю ширину места хватает при любом обычном размере окна.
-    st.markdown("#### Любимые чемпионы")
-    favs = champs.head(12).copy()
-    favs["image"] = favs["champion_id"].map(imgs)
-    ysort = alt.EncodingSortField(field="games", op="max", order="descending")
-    portraits = (
-        alt.Chart(favs).mark_image(width=22, height=22)
-        .encode(y=alt.Y("champion_name:N", sort=ysort, axis=None), url="image:N")
-        .properties(width=26, height=360)
-    )
-    y_named = alt.Y("champion_name:N", sort=ysort, title=None,
-                    axis=alt.Axis(labelPadding=6, domain=False, ticks=False))
-    bars = (
-        alt.Chart(favs).mark_bar(cornerRadiusEnd=3)
-        .encode(
-            x=alt.X("games:Q", title="Игр", axis=alt.Axis(grid=True, domain=False)),
-            y=y_named,
-            color=alt.Color("winrate:Q", title="Побед",
-                            scale=alt.Scale(scheme="redyellowgreen", domain=[0.3, 0.7])),
-            tooltip=["champion_name", "games",
-                     alt.Tooltip("winrate:Q", format=".1%"),
-                     alt.Tooltip("avg_kda:Q", format=".2f")],
-        )
-        .properties(height=360)
-    )
-    vals = (
-        alt.Chart(favs).mark_text(align="left", dx=5, fontSize=11, color="#cfd6d6")
-        .encode(x=alt.X("games:Q"), y=y_named, text=alt.Text("games:Q"))
-    )
-    ch = alt.hconcat(portraits, (bars + vals), spacing=4).configure_view(strokeWidth=0)
-    st.altair_chart(ch, width="stretch")
-
     roles = run(f"""
         SELECT r.role_name_ru AS role, COUNT(*) AS games,
                AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate
@@ -216,21 +220,33 @@ def render(source: str) -> None:
         WHERE f.data_source = '{source}' AND f.puuid = '{puuid}'
         GROUP BY r.role_name_ru ORDER BY games DESC
     """)
-    st.markdown("#### Роли")
-    # Пончик на всю ширину разросся бы до огромного — держим его в средней колонке.
-    _, mid, _ = st.columns([1, 2, 1])
-    with mid:
-        rc = (
-            alt.Chart(roles)
-            .mark_arc(innerRadius=50)
-            .encode(
-                theta=alt.Theta("games:Q"),
-                color=alt.Color("role:N", title="Роль"),
-                tooltip=["role", "games", alt.Tooltip("winrate:Q", format=".1%")],
-            )
-            .properties(height=300)
-        )
-        st.altair_chart(rc, width="stretch")
+    favs = champs.head(12).copy()
+    favs["image"] = favs["champion_id"].map(imgs)
+
+    # Оба графика — одинаковые горизонтальные полосы одной высоты, стоят рядом.
+    #
+    # Раньше «Любимые чемпионы» были склейкой из двух графиков (портреты + полосы,
+    # hconcat). Такая склейка в Altair не растягивается под ширину колонки, у неё
+    # жёсткий размер: на узком экране она залезала под соседний блок, на широком
+    # оставляла пустоту справа. Теперь это один график, портреты нарисованы в нём
+    # же слева от полос, и он тянется под любую ширину.
+    #
+    # «Роли» были пончиком. Рядом с полосами пончик никогда не встаёт ровно
+    # по высоте, а с одним куском на 70% и тонкими полосками по краям читается
+    # хуже, чем полосы.
+    H = 360
+    t_left, t_right = st.columns([3, 2])
+    t_left.markdown("#### Любимые чемпионы")
+    t_right.markdown("#### Роли")
+    c_left, c_right = st.columns([3, 2])
+    with c_left:
+        st.altair_chart(_hbars(favs, "champion_name", H, image="image",
+                               tooltip_extra=[alt.Tooltip("avg_kda:Q", format=".2f",
+                                                          title="KDA")]),
+                        width="stretch")
+    with c_right:
+        st.altair_chart(_hbars(roles, "role", H, legend=False), width="stretch")
+        st.caption("Цвет — доля побед, шкала как слева.")
 
     with st.expander("Все чемпионы игрока"):
         _, dl_col = st.columns([4, 1])
