@@ -6,9 +6,11 @@ data-URI. Фон — приглушённый арт-антураж под тё�
 from __future__ import annotations
 
 import base64
+import json
 from pathlib import Path
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 ASSETS = Path(__file__).resolve().parent / "assets"
 
@@ -17,6 +19,47 @@ ASSETS = Path(__file__).resolve().parent / "assets"
 def _b64(name: str) -> str:
     p = ASSETS / name
     return base64.b64encode(p.read_bytes()).decode() if p.exists() else ""
+
+
+_TO_TOP_JS = """
+(() => {
+  if (document.getElementById('to-top')) return;
+  const b = document.createElement('button');
+  b.id = 'to-top'; b.textContent = '↑'; b.title = 'Наверх';
+  b.setAttribute('aria-label', 'Наверх');
+  Object.assign(b.style, {
+    position: 'fixed', right: '28px', bottom: '28px', width: '46px', height: '46px',
+    borderRadius: '50%', border: '1px solid rgba(200,170,110,.55)', cursor: 'pointer',
+    background: 'linear-gradient(180deg,#C8AA6E,#785A28)', color: '#0A1428',
+    fontSize: '22px', fontWeight: '700', zIndex: '999990',
+    boxShadow: '0 4px 16px rgba(0,0,0,.55)', opacity: '0', pointerEvents: 'none',
+    transition: 'opacity .2s'
+  });
+  document.body.appendChild(b);
+  const main = () => document.querySelector('[data-testid="stMain"]');
+  b.onclick = () => { const m = main(); if (m) m.scrollTo({top: 0, behavior: 'smooth'}); };
+  // scroll не всплывает, но ловится на document в фазе захвата — от любого контейнера
+  document.addEventListener('scroll', () => {
+    const m = main(), show = !!m && m.scrollTop > 600;
+    b.style.opacity = show ? '1' : '0';
+    b.style.pointerEvents = show ? 'auto' : 'none';
+  }, true);
+})();
+"""
+
+
+def back_to_top() -> None:
+    """Круглая кнопка «наверх», появляется, когда страницу прокрутили вниз.
+
+    st.markdown скрипты не выполняет, поэтому код идёт через components.html. Его
+    iframe пересоздаётся при перезапусках, поэтому скрипт вставляем в сам документ
+    страницы: так кнопка и обработчик живут там, а не в iframe.
+    """
+    components.html(
+        "<script>const d = window.parent.document, s = d.createElement('script');"
+        f"s.textContent = {json.dumps(_TO_TOP_JS)}; d.head.appendChild(s);</script>",
+        height=0,
+    )
 
 
 def inject() -> None:

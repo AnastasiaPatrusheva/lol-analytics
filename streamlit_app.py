@@ -56,3 +56,4 @@ st.caption(
     "Не аффилировано с Riot Games. League of Legends — товарный знак Riot Games, Inc. "
     "Иллюстрации и справочники — Data Dragon."
 )
+theme.back_to_top()
