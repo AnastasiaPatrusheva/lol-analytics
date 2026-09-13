@@ -38,14 +38,18 @@ _TO_TOP_JS = """
   document.body.appendChild(b);
   const main = () => document.querySelector('[data-testid="stMain"]');
   b.onclick = () => { const m = main(); if (m) m.scrollTo({top: 0, behavior: 'smooth'}); };
-  // scroll не всплывает, но ловится на document в фазе захвата — от любого контейнера
-  document.addEventListener('scroll', () => {
+  const update = () => {
     // порог небольшой: «Главное» прокручивается всего на ~900 px, и при 600 кнопка
     // появлялась только у самого низа, а на высоком экране не появилась бы вовсе
     const m = main(), show = !!m && m.scrollTop > 200;
     b.style.opacity = show ? '1' : '0';
     b.style.pointerEvents = show ? 'auto' : 'none';
-  }, true);
+  };
+  // scroll не всплывает, но ловится на document в фазе захвата — от любого контейнера
+  document.addEventListener('scroll', update, true);
+  // Кнопка вставляется в конце выполнения страницы: если её успели прокрутить раньше,
+  // событий больше не будет, пока не двинешь колесо, — поэтому проверяем сразу.
+  update();
 })();
 """
 
