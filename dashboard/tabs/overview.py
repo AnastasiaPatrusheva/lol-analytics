@@ -221,11 +221,15 @@ def render(source: str) -> None:
                COUNT(DISTINCT champion_id) AS champions
         FROM fact_participant WHERE data_source = '{source}'
     """).iloc[0]
+    # Патчи с 20+ матчами, как на вкладке «Данные и качество»: три залётных матча
+    # из 16.1 превращали «16.7–16.12» в «7 патчей».
     span = run(f"""
         SELECT AVG(game_duration_min) AS avg_min,
                MAX(game_start_utc) AS latest,
-               COUNT(DISTINCT split_part(game_version, '.', 1) || '.'
-                              || split_part(game_version, '.', 2)) AS patches
+               (SELECT COUNT(*) FROM (
+                   SELECT split_part(game_version, '.', 1) || '.' || split_part(game_version, '.', 2)
+                   FROM dim_match WHERE data_source = '{source}'
+                   GROUP BY 1 HAVING COUNT(*) >= 20)) AS patches
         FROM dim_match WHERE data_source = '{source}'
     """).iloc[0]
 
@@ -237,11 +241,11 @@ def render(source: str) -> None:
               help="Средняя длительность одного матча в этой выборке")
 
     st.markdown("#### Что показали данные")
-    latest = str(span["latest"])[:10] if span["latest"] else None
-    when = f", последний матч {latest}" if latest else ""
+    when = f", последний матч {span['latest']:%d.%m.%Y}" if span["latest"] else ""
+    n_p = int(span["patches"])
     st.caption(
         f"Все выводы посчитаны по выборке «{source}»: {_num(kpi['matches'])} матчей "
-        f"ранкед-соло, {int(span['patches'])} патчей{when}. Числа в тексте берутся "
+        f"ранкед-соло, {n_p} {_plural(n_p, 'патч', 'патча', 'патчей')}{when}. Числа в тексте берутся "
         "из тех же витрин, что и графики, поэтому после обновления данных они меняются "
         "вместе с ними. Подпись сверху каждого вывода говорит, на какой вкладке его "
         "можно посмотреть подробно."
@@ -253,9 +257,15 @@ def render(source: str) -> None:
     _backtest_finding(source)
     _segments_finding(source)
 
+    tiers = set(run(f"SELECT DISTINCT source_tier FROM dim_match "
+                    f"WHERE data_source = '{source}'")["source_tier"])
+    who = ("Данные собраны по игрокам верхней части рейтинга (Challenger, Grandmaster, "
+           "Master), поэтому всё сказанное относится к ним, а не к обычному игроку."
+           if tiers <= {"challenger", "grandmaster", "master"} else
+           "Рангов игроков в этом наборе нет, поэтому неизвестно, насколько выводы "
+           "подходят для обычного игрока.")
     st.info(
-        "**О чём эти выводы не говорят.** Данные собраны в основном по сильным игрокам "
-        "верхней части рейтинга, поэтому всё сказанное относится к ним, а не к обычному "
-        "игроку. Остальные оговорки собраны на вкладке «Данные и качество».",
+        f"**О чём эти выводы не говорят.** {who} Остальные оговорки собраны на вкладке "
+        "«Данные и качество».",
         icon="🧭",
     )

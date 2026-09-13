@@ -26,7 +26,7 @@ SOURCES = ["riot_full", "kaggle", "riot_api"]
 POSITIONS = ["Все", "TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"]
 
 SOURCE_DESC = {
-    "riot_full": "Большой набор: ~26 000 матчей, 7 патчей (16.7–16.12), регион EUW.",
+    "riot_full": "Большой набор: ~26 000 матчей, 6 патчей (16.7–16.12), регион EUW.",
     "kaggle": "Исторический срез матчей с Kaggle.",
     "riot_api": "Собственная свежая выборка, собранная через Riot API.",
 }

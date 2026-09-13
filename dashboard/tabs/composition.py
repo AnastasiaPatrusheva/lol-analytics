@@ -349,7 +349,10 @@ def render(source: str) -> None:
     roles_df = run(f"""
         SELECT f.role_key,
                AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate,
-               AVG(f.kda) AS kda, AVG(f.cs_per_min) AS cs,
+               -- KDA суммарно за все матчи, как в словаре: среднее KDA отдельных игр
+               -- раздувают матчи без смертей
+               (SUM(f.kills) + SUM(f.assists)) * 1.0 / GREATEST(SUM(f.deaths), 1) AS kda,
+               AVG(f.cs_per_min) AS cs,
                AVG(f.damage_per_min) AS dmg, AVG(f.gold_per_min) AS gold,
                AVG(f.vision_per_min) AS vision
         FROM fact_participant f

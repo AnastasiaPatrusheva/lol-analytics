@@ -108,7 +108,7 @@ def check_schema(df: pd.DataFrame, report: Report) -> None:
         "schema_columns",
         passed=not missing,
         severity="ERROR",
-        detail="все ключевые колонки на месте" if not missing else f"нет колонок: {missing}",
+        detail="все нужные поля на месте" if not missing else f"не хватает полей: {missing}",
     )
 
 
@@ -117,7 +117,7 @@ def check_not_empty(df: pd.DataFrame, report: Report) -> None:
         "not_empty",
         passed=len(df) > 0,
         severity="ERROR",
-        detail=f"{len(df)} строк",
+        detail=f"{len(df):,} записей игроков".replace(",", " "),
     )
 
 
@@ -128,7 +128,7 @@ def check_unique_key(df: pd.DataFrame, report: Report) -> None:
         "unique_participant_key",
         passed=dups == 0,
         severity="ERROR",
-        detail="дублей нет" if dups == 0 else f"{dups} дублей по {key}",
+        detail="повторов нет" if dups == 0 else f"{dups} повторных записей",
     )
 
 
@@ -140,7 +140,7 @@ def check_ten_participants(df: pd.DataFrame, report: Report) -> None:
         "ten_participants_per_match",
         passed=bad == 0,
         severity="ERROR",
-        detail="во всех матчах по 10 игроков" if bad == 0 else f"{bad} матчей не по 10 участников",
+        detail="в каждом матче 10 игроков" if bad == 0 else f"{bad} матчей, где игроков не 10",
     )
 
 
@@ -150,7 +150,7 @@ def check_team_id(df: pd.DataFrame, report: Report) -> None:
         "team_id_values",
         passed=bad == 0,
         severity="ERROR",
-        detail="team_id только 100/200" if bad == 0 else f"{bad} строк с чужим team_id",
+        detail="у всех записей сторона синие или красные" if bad == 0 else f"{bad} записей с неизвестной стороной",
     )
 
 
@@ -160,7 +160,7 @@ def check_queue(df: pd.DataFrame, report: Report) -> None:
         "queue_is_ranked_solo",
         passed=bad == 0,
         severity="ERROR",
-        detail="только queue 420" if bad == 0 else f"{bad} строк из других режимов",
+        detail="только рейтинговые одиночные матчи" if bad == 0 else f"{bad} записей из других режимов",
     )
 
 
@@ -174,7 +174,7 @@ def check_win_balance(df: pd.DataFrame, report: Report) -> None:
             f"win_balance[{source}]",
             passed=ok,
             severity="ERROR",
-            detail=f"winrate={wr:.3f} (ожидаем ~0.5)",
+            detail=f"побед {wr:.1%}, должно быть 50%",
         )
 
 
@@ -187,7 +187,7 @@ def check_non_negative(df: pd.DataFrame, report: Report) -> None:
         "non_negative_metrics",
         passed=not offenders,
         severity="ERROR",
-        detail="отрицательных значений нет" if not offenders else f"отрицательные значения в: {offenders}",
+        detail="отрицательных чисел нет" if not offenders else f"отрицательные числа в: {offenders}",
     )
 
 
@@ -198,7 +198,7 @@ def check_kda_finite(df: pd.DataFrame, report: Report) -> None:
         "kda_finite",
         passed=bad == 0,
         severity="ERROR",
-        detail="kda везде конечна" if bad == 0 else f"{bad} строк с NaN/inf в kda",
+        detail="KDA посчитан у всех записей" if bad == 0 else f"{bad} записей без KDA",
     )
 
 
@@ -212,7 +212,8 @@ def check_undefined_roles(df: pd.DataFrame, report: Report) -> None:
     if unexpected:
         detail = f"неожиданные роли: {unexpected}"
     else:
-        detail = f"доля UNDEFINED = {share:.1%} (порог {UNDEFINED_SHARE_WARN:.0%})"
+        detail = (f"роль не определена у {share:.1%} записей "
+                  f"(допустимо до {UNDEFINED_SHARE_WARN:.0%})")
     report.add("team_position_values", passed=passed, severity="WARN", detail=detail)
 
 
@@ -226,7 +227,7 @@ def check_no_null_keys(df: pd.DataFrame, report: Report) -> None:
         "keys_not_null",
         passed=not null_keys,
         severity="ERROR",
-        detail="ключи без пропусков" if not null_keys else f"пропуски в ключах: {null_keys}",
+        detail="у всех записей есть матч, игрок и чемпион" if not null_keys else f"пропуски: {null_keys}",
     )
 
 
@@ -247,8 +248,8 @@ def check_freshness(df: pd.DataFrame, report: Report) -> None:
     age_days = (pd.Timestamp.now(tz="UTC") - latest).days
     report.add(
         "freshness", passed=age_days <= FRESHNESS_WARN_DAYS, severity="WARN",
-        detail=f"последний матч {latest:%Y-%m-%d}, возраст {age_days} дн. "
-               f"(порог {FRESHNESS_WARN_DAYS})",
+        detail=f"последний матч {latest:%d.%m.%Y}, на момент сборки прошло {age_days} дн. "
+               f"(допустимо до {FRESHNESS_WARN_DAYS})",
     )
 
 
@@ -264,8 +265,8 @@ def check_remake_share(df: pd.DataFrame, report: Report) -> None:
     share = float((dur < cfg.MIN_MATCH_MINUTES).mean())
     report.add(
         "remake_share", passed=share <= REMAKE_SHARE_WARN, severity="WARN",
-        detail=f"строк короче {cfg.MIN_MATCH_MINUTES} мин: {share:.2%} "
-               f"(порог {REMAKE_SHARE_WARN:.0%}); в звезду они не попадают",
+        detail=f"ремейков (матчей короче {cfg.MIN_MATCH_MINUTES} мин) {share:.1%} "
+               f"(допустимо до {REMAKE_SHARE_WARN:.0%}); на дашборд они не попадают",
     )
 
 
@@ -282,8 +283,8 @@ def check_reference_integrity(df: pd.DataFrame, report: Report) -> None:
     missing = sorted(set(ids) - known)
     report.add(
         "champion_id_in_reference", passed=not missing, severity="ERROR",
-        detail="все champion_id есть в справочнике" if not missing
-               else f"{len(missing)} id вне справочника: {missing[:10]}",
+        detail="все чемпионы есть в справочнике Riot" if not missing
+               else f"{len(missing)} чемпионов нет в справочнике: {missing[:10]}",
     )
 
 

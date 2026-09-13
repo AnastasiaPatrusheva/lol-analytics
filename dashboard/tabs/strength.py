@@ -577,7 +577,7 @@ def _patch_shift(source: str, patches: list[str], pos_filter: str, min_games: in
     if len(patches) < 2:
         st.info(
             f"У источника «{source}» меньше двух патчей с данными. Переключите источник "
-            "на **riot_full** — там 7 патчей (16.7–16.12)."
+            "на **riot_full** — там 6 патчей (16.7–16.12)."
         )
         return
 
