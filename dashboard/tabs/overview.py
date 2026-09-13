@@ -14,6 +14,7 @@
 import streamlit as st
 
 from dashboard.data import run, table_exists
+from dashboard.tabs.composition import SIDE_NOM
 from dashboard.tabs.strength import (
     ALL_SLICE, ROLE_IN, ROLE_RU, _plural, aggregation_effect, role_gap_example,
 )
@@ -164,22 +165,29 @@ def _item_finding(source: str) -> None:
 
 
 def _backtest_finding(source: str) -> None:
-    """Вывод 5: прогноз состава проверен на матчах, которых модель не видела."""
+    """Вывод 5: прогноз по чемпионам против простого правила «побеждает сторона»."""
     if not table_exists("composition_backtest"):
         return
     df = run(f"SELECT * FROM composition_backtest WHERE data_source = '{source}'")
-    if df.empty:
+    if df.empty or "accuracy_sideonly" not in df.columns:
         return
     r = df.iloc[0]
-    acc = float(r["accuracy_raw"])
+    acc, side_acc = float(r["accuracy_raw"]), float(r["accuracy_sideonly"])
+    weak = int(r["weak_side"])
+    strong_nom = SIDE_NOM[300 - weak]
+    weak_gen = {100: "синих", 200: "красных"}[weak]
+    verdict = ("Одних чемпионов мало, чтобы угадать победителя" if acc <= side_acc else
+               "Чемпионы угадывают победителя лучше, чем сторона карты")
     _card(
         "Состав",
-        f"Прогноз по составу угадывает {acc:.1%} матчей вместо 50%",
-        f"Мы спрятали от расчёта патч {r['test_patch']} целиком и проверили прогноз на "
-        f"{_num(r['test_matches'])} матчах, которых он не видел. В каждом матче оценивались "
-        "обе команды, побеждала та, чья оценка выше, поэтому наугад вышло бы ровно половина. "
-        f"Разница настоящая, но маленькая: состав влияет на исход куда меньше, чем умение "
-        "игроков и вражеская пятёрка, которую расчёт вообще не видит.",
+        verdict,
+        f"Прогноз по чемпионам проверили на {_num(r['test_matches'])} матчах патча "
+        f"{r['test_patch']}, которых расчёт не видел. Он угадал {acc:.1%} матчей, а правило "
+        f"«всегда побеждают {strong_nom}», в котором чемпионов нет вовсе, — {side_acc:.1%}. "
+        f"Чемпионы всё же влияют: у {weak_gen} {float(r['weak_side_fav_wr']):.1%} побед, "
+        f"когда чемпионы сильнее у них, и {float(r['weak_side_unfav_wr']):.1%}, когда "
+        "у соперника. Но сторона карты в этой выборке значит больше, и почему, "
+        "мы не выяснили.",
     )
 
 

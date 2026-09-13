@@ -103,7 +103,7 @@ def render(source: str) -> None:
 
     _sample(source)
     _glossary()
-    _limits()
+    _limits(source)
 
 
 def _sample(source: str) -> None:
@@ -179,9 +179,23 @@ def _glossary() -> None:
     )
 
 
-def _limits() -> None:
+def _limits(source: str) -> None:
     st.divider()
     st.markdown("#### Где эти данные врут")
+    red = run(f"""
+        SELECT AVG(CASE WHEN win THEN 1.0 ELSE 0.0 END) AS wr, COUNT(DISTINCT match_id) AS n
+        FROM fact_participant WHERE data_source = '{source}' AND team_id = 200
+    """).iloc[0]
+    if float(red["wr"]) > 0.51:
+        # Необъяснённая странность выборки: пишем как есть, не выдавая догадку за причину.
+        st.markdown(
+            f"- **Красные выигрывают заметно чаще синих.** В этой выборке команда с базой "
+            f"в верхнем правом углу карты выиграла {float(red['wr']):.1%} матчей. Обычно "
+            "бывает наоборот: в рейтинговых играх чуть чаще, примерно в 51% матчей, "
+            "выигрывают синие. Стороны при обработке не перепутаны: в исходных файлах Riot "
+            "перекос тот же. Причину установить не удалось, поэтому прогноз на вкладке "
+            "«Состав» сравниваем не с 50%, а с правилом «всегда побеждают красные»."
+        )
     st.markdown(
         "- **Выборка смещена в сторону высоких рангов.** Выводы описывают верхнюю часть "
         "ладдера, а не среднего игрока.\n"
