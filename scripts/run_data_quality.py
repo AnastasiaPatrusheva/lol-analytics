@@ -212,8 +212,7 @@ def check_undefined_roles(df: pd.DataFrame, report: Report) -> None:
     if unexpected:
         detail = f"неожиданные роли: {unexpected}"
     else:
-        detail = (f"роль не определена у {share:.1%} записей "
-                  f"(допустимо до {UNDEFINED_SHARE_WARN:.0%})")
+        detail = f"без роли {share:.1%} записей, допустимо {UNDEFINED_SHARE_WARN:.0%}"
     report.add("team_position_values", passed=passed, severity="WARN", detail=detail)
 
 
@@ -248,8 +247,7 @@ def check_freshness(df: pd.DataFrame, report: Report) -> None:
     age_days = (pd.Timestamp.now(tz="UTC") - latest).days
     report.add(
         "freshness", passed=age_days <= FRESHNESS_WARN_DAYS, severity="WARN",
-        detail=f"последний матч {latest:%d.%m.%Y}, на момент сборки прошло {age_days} дн. "
-               f"(допустимо до {FRESHNESS_WARN_DAYS})",
+        detail=f"последний матч {latest:%d.%m.%Y}, при сборке прошло {age_days} дн.",
     )
 
 
@@ -265,8 +263,7 @@ def check_remake_share(df: pd.DataFrame, report: Report) -> None:
     share = float((dur < cfg.MIN_MATCH_MINUTES).mean())
     report.add(
         "remake_share", passed=share <= REMAKE_SHARE_WARN, severity="WARN",
-        detail=f"ремейков (матчей короче {cfg.MIN_MATCH_MINUTES} мин) {share:.1%} "
-               f"(допустимо до {REMAKE_SHARE_WARN:.0%}); на дашборд они не попадают",
+        detail=f"ремейков {share:.1%}, допустимо {REMAKE_SHARE_WARN:.0%}",
     )
 
 

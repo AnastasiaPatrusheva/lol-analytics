@@ -11,7 +11,7 @@ win_balance[riot_api],True,ERROR,"побед 50.0%, должно быть 50%"
 win_balance[riot_full],True,ERROR,"побед 50.0%, должно быть 50%"
 non_negative_metrics,True,ERROR,отрицательных чисел нет
 kda_finite,True,ERROR,KDA посчитан у всех записей
-team_position_values,True,WARN,роль не определена у 0.0% записей (допустимо до 5%)
+team_position_values,True,WARN,"без роли 0.0% записей, допустимо 5%"
 champion_id_in_reference,True,ERROR,все чемпионы есть в справочнике Riot
-remake_share,True,WARN,ремейков (матчей короче 5 мин) 1.3% (допустимо до 5%); на дашборд они не попадают
-freshness,True,WARN,"последний матч 13.09.2026, на момент сборки прошло 0 дн. (допустимо до 120)"
+remake_share,True,WARN,"ремейков 1.3%, допустимо 5%"
+freshness,True,WARN,"последний матч 13.09.2026, при сборке прошло 0 дн."
