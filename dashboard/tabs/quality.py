@@ -52,9 +52,8 @@ def render(source: str) -> None:
     _checks(source)
 
 
-def _sample(source: str) -> None:
-    """Что за выборка: факты списком."""
-    st.markdown("#### Что за выборка")
+def sample_facts(source: str) -> dict:
+    """Факты о наборе: число матчей, патчи, даты, регион. Общие для этой вкладки и «Главного»."""
     facts = run(f"""
         SELECT COUNT(*) AS matches,
                MIN(split_part(match_id, '_', 1)) FILTER (WHERE match_id LIKE '%\\_%' ESCAPE '\\')
@@ -76,18 +75,29 @@ def _sample(source: str) -> None:
     # отдельно. Порог в штуках, а не в долях: 1% от 26 тысяч отрезал настоящий патч 16.7.
     main = by_patch[by_patch["n"] >= 20]
     stray = by_patch[by_patch["n"] < 20]
-    n_p = len(main)
-    patch_text = ", ".join(main["p"]) + f" ({n_p} {_plural(n_p, 'патч', 'патча', 'патчей')})"
+    return {
+        "matches": n, "patches": main["p"].tolist(), "stray": stray,
+        "first": main["first"].min(), "last": main["last"].max(),
+        "region": facts["region"],
+        "tiers": sorted({t for t in str(facts["tiers"]).split(",")}
+                        & {"challenger", "grandmaster", "master"}),
+    }
+
+
+def _sample(source: str) -> None:
+    """Что за выборка: факты списком."""
+    st.markdown("#### Что за выборка")
+    f = sample_facts(source)
+    n, stray, first, last = f["matches"], f["stray"], f["first"], f["last"]
+    n_p = len(f["patches"])
+    patch_text = ", ".join(f["patches"]) + f" ({n_p} {_plural(n_p, 'патч', 'патча', 'патчей')})"
     if not stray.empty:
         k = int(stray["n"].sum())
         patch_text += (f"; ещё {k} {_plural(k, 'матч', 'матча', 'матчей')} из "
                        f"{', '.join(stray['p'])}, в расчётах они есть")
-    first, last = main["first"].min(), main["last"].max()
-    region = {"EUW1": "Западная Европа (EUW)"}.get(facts["region"], facts["region"]) \
-        if facts["region"] else "не указан"
-    known_tiers = sorted({t for t in str(facts["tiers"]).split(",")}
-                         & {"challenger", "grandmaster", "master"})
-    ranks = (", ".join(t.capitalize() for t in known_tiers) if known_tiers
+    region = {"EUW1": "Западная Европа (EUW)"}.get(f["region"], f["region"]) \
+        if f["region"] else "не указан"
+    ranks = (", ".join(t.capitalize() for t in f["tiers"]) if f["tiers"]
              else "неизвестны, в данных их нет")
     st.markdown(
         f"- **Матчей:** {n:,}".replace(",", " ") + " рейтинговых одиночных игр\n"

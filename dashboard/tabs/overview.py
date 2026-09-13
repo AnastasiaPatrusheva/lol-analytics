@@ -15,6 +15,7 @@ import streamlit as st
 
 from dashboard.data import run, table_exists
 from dashboard.tabs.composition import SIDE_NOM
+from dashboard.tabs.quality import sample_facts
 from dashboard.tabs.strength import (
     ALL_SLICE, ROLE_IN, ROLE_RU, _plural, aggregation_effect, role_gap_example,
 )
@@ -214,22 +215,36 @@ def _segments_finding(source: str) -> None:
     )
 
 
+def _about_count(n: int) -> str:
+    """«26 тысяч» для больших наборов, точное число для маленьких."""
+    if n < 1000:
+        return f"{n} {_plural(n, 'рейтинговый матч', 'рейтинговых матча', 'рейтинговых матчей')}"
+    k = round(n / 1000)
+    return f"{k} {_plural(k, 'тысяча', 'тысячи', 'тысяч')} рейтинговых матчей"
+
+
 def render(source: str) -> None:
+    facts = sample_facts(source)
+    st.markdown(
+        "**League of Legends** — командная онлайн-игра: две команды по пять человек, у "
+        "каждого свой персонаж (чемпион) и своя роль на карте, побеждает тот, кто первым "
+        "разрушит базу соперника.\n\n"
+        f"Здесь разобраны {_about_count(facts['matches'])}, чтобы ответить на вопросы, "
+        "которые обычно решают на глаз:\n"
+        "- есть ли чемпионы, которые действительно сильнее остальных;\n"
+        "- помогают ли дорогие предметы победить;\n"
+        "- какие стили игры встречаются у игроков;\n"
+        "- можно ли угадать победителя по выбранным чемпионам.\n\n"
+        "Ниже короткие ответы, подробный разбор — на остальных вкладках."
+    )
     kpi = run(f"""
         SELECT COUNT(DISTINCT match_id) AS matches,
                COUNT(DISTINCT puuid) AS players,
                COUNT(DISTINCT champion_id) AS champions
         FROM fact_participant WHERE data_source = '{source}'
     """).iloc[0]
-    # Патчи с 20+ матчами, как на вкладке «Данные и качество»: три залётных матча
-    # из 16.1 превращали «16.7–16.12» в «7 патчей».
     span = run(f"""
-        SELECT AVG(game_duration_min) AS avg_min,
-               MAX(game_start_utc) AS latest,
-               (SELECT COUNT(*) FROM (
-                   SELECT split_part(game_version, '.', 1) || '.' || split_part(game_version, '.', 2)
-                   FROM dim_match WHERE data_source = '{source}'
-                   GROUP BY 1 HAVING COUNT(*) >= 20)) AS patches
+        SELECT AVG(game_duration_min) AS avg_min
         FROM dim_match WHERE data_source = '{source}'
     """).iloc[0]
 
@@ -241,14 +256,18 @@ def render(source: str) -> None:
               help="Средняя длительность одного матча в этой выборке")
 
     st.markdown("#### Что показали данные")
-    when = f", последний матч {span['latest']:%d.%m.%Y}" if span["latest"] else ""
-    n_p = int(span["patches"])
+    # Патчи с 20+ матчами (см. sample_facts): три залётных матча из 16.1 превращали
+    # «16.7–16.12» в «7 патчей».
+    n_p = len(facts["patches"])
+    where = " из Западной Европы" if facts["region"] == "EUW1" else ""
     st.caption(
-        f"Все выводы посчитаны по выборке «{source}»: {_num(kpi['matches'])} матчей "
-        f"ранкед-соло, {n_p} {_plural(n_p, 'патч', 'патча', 'патчей')}{when}. Числа в тексте берутся "
-        "из тех же витрин, что и графики, поэтому после обновления данных они меняются "
-        "вместе с ними. Подпись сверху каждого вывода говорит, на какой вкладке его "
-        "можно посмотреть подробно."
+        f"Выводы посчитаны по набору «{source}»: {_num(facts['matches'])} "
+        f"{_plural(facts['matches'], 'рейтинговый одиночный матч', 'рейтинговых одиночных матча', 'рейтинговых одиночных матчей')}"
+        f"{where} за {n_p} {_plural(n_p, 'патч', 'патча', 'патчей')}, "
+        f"с {facts['first']:%d.%m.%Y} по {facts['last']:%d.%m.%Y}. Другой набор можно "
+        "выбрать в панели «Фильтры» слева. Числа в тексте считаются из данных, а не "
+        "вписаны вручную. Мелкая подпись над каждым выводом говорит, на какой вкладке он "
+        "разобран подробно."
     )
 
     _strength_findings(source)
