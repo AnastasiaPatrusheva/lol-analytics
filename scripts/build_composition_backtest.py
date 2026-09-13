@@ -90,8 +90,16 @@ def _team_scores(con: duckdb.DuckDBPyConnection, source: str, patch: str) -> pd.
                    wilson_low(AVG(CASE WHEN win THEN 1.0 ELSE 0.0 END), COUNT(*)) AS score
             FROM f WHERE patch <> '{patch}'
             GROUP BY 1, 2 HAVING COUNT(*) >= {MIN_TRAIN_GAMES}
+        ),
+        -- Поправка за сторону карты (100 — синие, 200 — красные): насколько чаще
+        -- половины сторона выигрывала в прошлых патчах. Тестовый патч не трогаем.
+        side AS (
+            SELECT team_id, AVG(CASE WHEN win THEN 1.0 ELSE 0.0 END) - 0.5 AS shift
+            FROM f WHERE patch <> '{patch}'
+            GROUP BY 1
         )
         SELECT t.match_id, t.team_id,
+               ANY_VALUE(s.shift) AS side_shift,
                ANY_VALUE(t.win) AS win,
                COUNT(tr.score) AS covered,
                -- равные веса: каждая роль вносит 1/5
@@ -103,6 +111,7 @@ def _team_scores(con: duckdb.DuckDBPyConnection, source: str, patch: str) -> pd.
                AVG(COALESCE(tr.winrate, 0.5)) AS score_raw
         FROM f t
         LEFT JOIN train tr ON t.champion_id = tr.champion_id AND t.role_key = tr.role_key
+        LEFT JOIN side s ON t.team_id = s.team_id
         WHERE t.patch = '{patch}'
         GROUP BY 1, 2
         HAVING COUNT(*) = 5
@@ -176,8 +185,20 @@ def backtest_source(con: duckdb.DuckDBPyConnection, source: str) -> tuple[dict, 
            "test_teams": len(teams), "test_matches": teams["match_id"].nunique(),
            "coverage": coverage}
 
+    teams["side_shift"] = teams["side_shift"].fillna(0.0)
+    # Только сторона: «всегда побеждает та сторона, что чаще выигрывала раньше».
+    # Это настоящая точка отсчёта вместо монетки, если стороны не равны.
+    teams["score_sideonly"] = 0.5 + teams["side_shift"]
+    # Чемпионы плюс сторона: доля побед пятёрки, сдвинутая на преимущество стороны.
+    teams["score_side"] = teams["score_raw"] + teams["side_shift"]
+
+    # Дают ли чемпионы что-то сверх стороны: берём матчи, где по чемпионам сильнее
+    # та сторона, что обычно проигрывает, и смотрим, как часто она побеждает там.
+    row.update(_against_side(teams))
+
     for col, tag in (("score_equal", "equal"), ("score_weighted", "weighted"),
-                     ("score_raw", "raw")):
+                     ("score_raw", "raw"), ("score_sideonly", "sideonly"),
+                     ("score_side", "side")):
         hit, total = _head_to_head(teams, col)
         row[f"accuracy_{tag}"] = hit / total if total else float("nan")
         row[f"decided_{tag}"] = total
@@ -189,15 +210,43 @@ def backtest_source(con: duckdb.DuckDBPyConnection, source: str) -> tuple[dict, 
     calib = pd.concat([
         _calibration(teams, "score_equal").assign(variant="Нижняя граница Уилсона"),
         _calibration(teams, "score_raw").assign(variant="Точечный winrate"),
+        _calibration(teams, "score_side").assign(variant="Точечный winrate + сторона"),
     ], ignore_index=True)
     calib.insert(0, "data_source", source)
     print(f"{source}: патч {patch}, {row['test_matches']} матчей, покрытие {row['coverage']:.1%}")
     for tag, label in (("equal", "Уилсон, равные веса"),
                        ("weighted", "Уилсон, веса по играм (как в дашборде)"),
-                       ("raw", "точечный winrate, равные веса")):
+                       ("raw", "точечный winrate, равные веса"),
+                       ("sideonly", "только сторона"),
+                       ("side", "точечный winrate + сторона")):
         print(f"    {label:42s} точность {row[f'accuracy_{tag}']:.1%}  "
               f"AUC {row[f'auc_{tag}']:.3f}  смещение {row[f'bias_{tag}']:+.1%}")
+    print(f"    слабая сторона: обычно {row['weak_side_wr']:.1%} побед, "
+          f"с чемпионами сильнее — {row['weak_side_fav_wr']:.1%} "
+          f"({row['weak_side_fav_matches']} матчей), слабее — {row['weak_side_unfav_wr']:.1%}")
     return row, calib
+
+
+def _against_side(teams: pd.DataFrame) -> dict:
+    """Как часто побеждает слабая сторона, когда по чемпионам сильнее она и когда соперник.
+
+    Если чемпионы ничего не добавляют к стороне, обе доли совпадут с её обычной.
+    """
+    piv = teams.pivot(index="match_id", columns="team_id",
+                      values=["score_raw", "side_shift", "win"])
+    weak = min(piv["side_shift"].columns, key=lambda s: piv[("side_shift", s)].mean())
+    strong = next(s for s in piv["side_shift"].columns if s != weak)
+    diff = piv[("score_raw", weak)] - piv[("score_raw", strong)]
+    won = piv[("win", weak)].astype(bool)
+    fav, unfav = diff > 0, diff < 0
+    return {
+        "weak_side": int(weak),
+        "weak_side_wr": float(won.mean()),
+        "weak_side_fav_matches": int(fav.sum()),
+        "weak_side_fav_wr": float(won[fav].mean()),
+        "weak_side_unfav_matches": int(unfav.sum()),
+        "weak_side_unfav_wr": float(won[unfav].mean()),
+    }
 
 
 def main() -> int:

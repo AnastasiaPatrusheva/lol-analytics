@@ -2,7 +2,7 @@
 import pandas as pd
 import pytest
 
-from build_composition_backtest import _auc, _head_to_head
+from build_composition_backtest import _against_side, _auc, _head_to_head
 
 
 def test_auc_perfect_separation():
@@ -38,6 +38,22 @@ def test_head_to_head_counts_only_decided():
             + _match("m3", 0.50, 0.50, True))   # ничья по оценке — не засчитываем
     hit, total = _head_to_head(pd.DataFrame(rows), "score")
     assert (hit, total) == (1, 2)
+
+
+def test_against_side_splits_by_champion_favourite():
+    """Слабая сторона — с меньшей поправкой; матчи делятся по тому, кого сильнее чемпионы."""
+    def m(mid, raw100, raw200, win100):
+        return [
+            {"match_id": mid, "team_id": 100, "score_raw": raw100, "side_shift": -0.04, "win": win100},
+            {"match_id": mid, "team_id": 200, "score_raw": raw200, "side_shift": 0.04, "win": not win100},
+        ]
+    teams = pd.DataFrame(m("a", 0.52, 0.48, True) + m("b", 0.52, 0.48, False)
+                         + m("c", 0.48, 0.52, False) + m("d", 0.50, 0.50, True))
+    r = _against_side(teams)
+    assert r["weak_side"] == 100
+    assert r["weak_side_wr"] == pytest.approx(0.5)            # 2 победы из 4
+    assert (r["weak_side_fav_matches"], r["weak_side_fav_wr"]) == (2, 0.5)
+    assert (r["weak_side_unfav_matches"], r["weak_side_unfav_wr"]) == (1, 0.0)
 
 
 def test_head_to_head_symmetric_to_team_order():
