@@ -5,7 +5,6 @@
 """
 from pathlib import Path
 
-import altair as alt
 import pandas as pd
 import streamlit as st
 
@@ -34,10 +33,6 @@ CHECK_RU = {
 }
 LEVEL_RU = {"ERROR": "Остановит сборку", "WARN": "Только предупредит"}
 
-# Границы групп по длительности — те же, что в разделе про долгие и короткие игры
-# на вкладке «Сила чемпиона» (strength.py) и в витрине champion_by_duration.
-SHORT_MAX, LONG_MIN = 25, 32
-
 
 def _check_name(key: str) -> str:
     if key.startswith("win_balance["):
@@ -58,7 +53,7 @@ def render(source: str) -> None:
 
 
 def _sample(source: str) -> None:
-    """Что за выборка: факты одной строкой и длительность матчей."""
+    """Что за выборка: факты списком."""
     st.markdown("#### Что за выборка")
     facts = run(f"""
         SELECT COUNT(*) AS matches,
@@ -104,61 +99,6 @@ def _sample(source: str) -> None:
         "по которому его можно найти. В опубликованных данных этого номера нет: у игрока "
         "вместо него набор символов, из которого номер не восстановить. Этого хватает, "
         "чтобы понять, какие матчи сыграл один и тот же человек."
-    )
-
-    # Длительность показываем не сама по себе, а с теми же границами «коротких /
-    # средних / длинных», по которым делит матчи вкладка «Сила чемпиона»: так видно,
-    # сколько матчей стоит за каждой группой в том разделе.
-    st.markdown("#### Сколько длятся матчи")
-    dur = run(f"""
-        SELECT FLOOR(game_duration_min) AS minute, COUNT(*) AS matches,
-               CASE WHEN game_duration_min < {SHORT_MAX} THEN 'Короткие'
-                    WHEN game_duration_min < {LONG_MIN} THEN 'Средние'
-                    ELSE 'Длинные' END AS grp
-        FROM dim_match
-        WHERE data_source = '{source}' AND game_duration_min IS NOT NULL
-        GROUP BY 1, 3
-    """)
-    if dur.empty:
-        return
-    total = int(dur["matches"].sum())
-    share = dur.groupby("grp")["matches"].sum() / total
-    order = ["Короткие", "Средние", "Длинные"]
-    labels = {
-        "Короткие": f"Короткие, до {SHORT_MAX} мин",
-        "Средние": f"Средние, {SHORT_MAX}–{LONG_MIN} мин",
-        "Длинные": f"Длинные, от {LONG_MIN} мин",
-    }
-    dur["grp_label"] = dur["grp"].map(labels)
-    top = int(dur["minute"].max() // 5 + 1) * 5
-    hist = (
-        alt.Chart(dur)
-        .mark_bar(width={"band": 0.9})
-        .encode(
-            x=alt.X("minute:Q", title="Длительность матча, мин",
-                    scale=alt.Scale(domain=[0, top]),
-                    axis=alt.Axis(values=list(range(0, top + 1, 5)))),
-            y=alt.Y("matches:Q", title="Матчей", axis=alt.Axis(format="d")),
-            color=alt.Color("grp_label:N", title=None,
-                            sort=[labels[g] for g in order],
-                            scale=alt.Scale(domain=[labels[g] for g in order],
-                                            range=["#5aa0c9", "#C8AA6E", "#b5654a"]),
-                            legend=alt.Legend(orient="top")),
-            tooltip=[alt.Tooltip("minute:Q", title="минута"),
-                     alt.Tooltip("matches:Q", title="матчей")],
-        )
-        .properties(height=220)
-    )
-    st.altair_chart(hist, width="stretch")
-    st.caption(
-        "На вкладке «Сила чемпиона», в разделе «Кто сильнее в долгих играх, а кто в "
-        "коротких», матчи делятся на три группы по длительности. Здесь видно, сколько "
-        f"матчей в каждой: коротких {share.get('Короткие', 0):.0%}, средних "
-        f"{share.get('Средние', 0):.0%}, длинных {share.get('Длинные', 0):.0%}. Всплеск "
-        "на 15-й минуте — сдачи: раньше сдаться в игре нельзя, и проигрывающая команда "
-        "часто сдаётся, как только это становится возможным. Матчи "
-        "короче 5 минут — ремейки: их отменяют, когда кто-то не зашёл в игру. В расчёты "
-        "они не попадают, поэтому на графике их нет."
     )
 
 

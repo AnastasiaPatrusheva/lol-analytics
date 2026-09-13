@@ -30,6 +30,8 @@ ROLE_RU = {"Все": "Все роли", "TOP": "Топ", "JUNGLE": "Лес", "MI
 ALPHA = 0.05
 # Патч из game_version: «16.11.673.4372» -> «16.11».
 PATCH_EXPR = "split_part(m.game_version, '.', 1) || '.' || split_part(m.game_version, '.', 2)"
+# Границы групп по длине матча, те же, что в витрине champion_by_duration.
+SHORT_MAX, LONG_MIN = 25, 32
 
 
 def _patches(source: str) -> list[str]:
@@ -674,6 +676,54 @@ def _patch_shift(source: str, patches: list[str], pos_filter: str, min_games: in
         download_csv(cmp, "patch_comparison.csv", key="dl_patch", use_container_width=True)
 
 
+def _duration_groups(source: str, patch_filter: str) -> None:
+    """Сколько матчей в каждой группе по длине: где границы «коротких» и «длинных»."""
+    dur = run(f"""
+        SELECT FLOOR(m.game_duration_min) AS minute, COUNT(*) AS matches,
+               CASE WHEN m.game_duration_min < {SHORT_MAX} THEN 'Короткие'
+                    WHEN m.game_duration_min < {LONG_MIN} THEN 'Средние'
+                    ELSE 'Длинные' END AS grp
+        FROM dim_match m
+        WHERE m.data_source = '{source}' AND m.game_duration_min IS NOT NULL {patch_filter}
+        GROUP BY 1, 3
+    """)
+    if dur.empty:
+        return
+    share = dur.groupby("grp")["matches"].sum() / dur["matches"].sum()
+    order = ["Короткие", "Средние", "Длинные"]
+    labels = {"Короткие": f"Короткие, до {SHORT_MAX} мин",
+              "Средние": f"Средние, {SHORT_MAX}–{LONG_MIN} мин",
+              "Длинные": f"Длинные, от {LONG_MIN} мин"}
+    dur["grp_label"] = dur["grp"].map(labels)
+    top = int(dur["minute"].max() // 5 + 1) * 5
+    domain = [labels[g] for g in order]
+    hist = (
+        alt.Chart(dur)
+        .mark_bar(width={"band": 0.9})
+        .encode(
+            x=alt.X("minute:Q", title="Длительность матча, мин",
+                    scale=alt.Scale(domain=[0, top]),
+                    axis=alt.Axis(values=list(range(0, top + 1, 5)))),
+            y=alt.Y("matches:Q", title="Матчей", axis=alt.Axis(format="d")),
+            color=alt.Color("grp_label:N", title=None, sort=domain,
+                            scale=alt.Scale(domain=domain,
+                                            range=["#5aa0c9", "#C8AA6E", "#b5654a"]),
+                            legend=alt.Legend(orient="top")),
+            tooltip=[alt.Tooltip("minute:Q", title="минута"),
+                     alt.Tooltip("matches:Q", title="матчей")],
+        )
+        .properties(height=200)
+    )
+    st.altair_chart(hist, width="stretch")
+    st.caption(
+        f"Сравниваем короткие и длинные матчи, средние в сравнение не входят. Коротких "
+        f"{share.get('Короткие', 0):.0%}, средних {share.get('Средние', 0):.0%}, длинных "
+        f"{share.get('Длинные', 0):.0%}. Всплеск на 15-й минуте — сдачи: раньше сдаться "
+        "в игре нельзя, и проигрывающая команда часто сдаётся, как только это становится "
+        "возможным."
+    )
+
+
 def _by_duration(source: str, pos_filter: str, patch_filter: str) -> None:
     """Условие «длина матча» — бывшая вкладка «Длительность»."""
     st.divider()
@@ -689,13 +739,14 @@ def _by_duration(source: str, pos_filter: str, patch_filter: str) -> None:
         "чемпион не дал её закончить.",
         icon="⚠️",
     )
+    _duration_groups(source, patch_filter)
     min_b = st.slider("Минимум игр в каждой длине", 5, 100, 30, step=5, key="dur_min")
 
     dur = run(f"""
         WITH j AS (
             SELECT c.champion_name, f.win,
-                   CASE WHEN m.game_duration_min < 25 THEN 'short'
-                        WHEN m.game_duration_min < 32 THEN 'mid'
+                   CASE WHEN m.game_duration_min < {SHORT_MAX} THEN 'short'
+                        WHEN m.game_duration_min < {LONG_MIN} THEN 'mid'
                         ELSE 'long' END AS bucket
             FROM fact_participant f
             JOIN dim_champion c ON f.champion_id = c.champion_id
@@ -735,8 +786,8 @@ def _by_duration(source: str, pos_filter: str, patch_filter: str) -> None:
     naive = int(dur["is_sig_naive"].sum())
 
     st.caption(
-        f"Насколько чаще чемпион побеждает в долгих матчах (дольше 32 минут) по сравнению "
-        f"с короткими (меньше 25 минут).\n\n"
+        f"Насколько чаще чемпион побеждает в долгих матчах (от {LONG_MIN} минут) по "
+        f"сравнению с короткими (до {SHORT_MAX} минут).\n\n"
         f"Насыщенные столбцы прошли строгую проверку, их {len(sig)}. Столбцы средней "
         f"яркости — те {naive}, что прошли бы обычную проверку по одному чемпиону, "
         f"но не выдержали строгую: чемпионов здесь {len(dur)}, и планка поднята именно "
