@@ -23,7 +23,11 @@ def _b64(name: str) -> str:
 
 _TO_TOP_JS = """
 (() => {
-  if (document.getElementById('to-top')) return;
+  // Заменяем кнопку, если она уже есть: страница не перезагружается при перезапуске
+  // сервера, и старая версия кнопки иначе оставалась бы жить до ручного F5.
+  const old = document.getElementById('to-top');
+  if (old) old.remove();
+  clearInterval(window.__toTopTimer);
   const b = document.createElement('button');
   b.id = 'to-top'; b.textContent = '↑'; b.title = 'Наверх';
   b.setAttribute('aria-label', 'Наверх');
@@ -36,19 +40,23 @@ _TO_TOP_JS = """
     transition: 'opacity .2s'
   });
   document.body.appendChild(b);
-  const main = () => document.querySelector('[data-testid="stMain"]');
-  b.onclick = () => { const m = main(); if (m) m.scrollTo({top: 0, behavior: 'smooth'}); };
+  // Прокручивается обычно блок stMain, но на узком экране может прокручиваться сама
+  // страница — смотрим оба.
+  const scrollers = () =>
+    [document.querySelector('[data-testid="stMain"]'), document.scrollingElement].filter(Boolean);
+  // Мгновенно, без behavior: 'smooth': плавная прокрутка stMain в Chrome срабатывала
+  // через раз, и клик иногда ничего не делал.
+  b.onclick = () => scrollers().forEach(s => { s.scrollTop = 0; });
   const update = () => {
     // порог небольшой: «Главное» прокручивается всего на ~900 px, и при 600 кнопка
-    // появлялась только у самого низа, а на высоком экране не появилась бы вовсе
-    const m = main(), show = !!m && m.scrollTop > 200;
+    // появлялась только у самого низа
+    const show = scrollers().some(s => s.scrollTop > 200);
     b.style.opacity = show ? '1' : '0';
     b.style.pointerEvents = show ? 'auto' : 'none';
   };
-  // scroll не всплывает, но ловится на document в фазе захвата — от любого контейнера
-  document.addEventListener('scroll', update, true);
-  // Кнопка вставляется в конце выполнения страницы: если её успели прокрутить раньше,
-  // событий больше не будет, пока не двинешь колесо, — поэтому проверяем сразу.
+  // Опрос вместо событий scroll: события не приходят, если прокрутили до появления
+  // кнопки, а проверка трижды в секунду ничего не стоит.
+  window.__toTopTimer = setInterval(update, 300);
   update();
 })();
 """
