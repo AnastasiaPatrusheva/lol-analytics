@@ -1,15 +1,15 @@
 {
-  "built_at": "2026-09-06T23:39:24",
+  "built_at": "2026-09-13T14:35:41",
   "tables": {
-    "fact_participant": 284500,
-    "dim_champion": 172,
-    "dim_match": 28450,
-    "dim_player": 41708,
+    "fact_participant": 290760,
+    "dim_champion": 173,
+    "dim_match": 29076,
+    "dim_player": 42596,
     "dim_role": 6,
-    "fact_participant_item": 1839259,
-    "dim_item": 232,
-    "item_stats": 614,
-    "champion_strength": 496,
-    "champion_by_duration": 1504
+    "fact_participant_item": 1879825,
+    "dim_item": 233,
+    "item_stats": 629,
+    "champion_strength": 512,
+    "champion_by_duration": 1534
   }
 }
