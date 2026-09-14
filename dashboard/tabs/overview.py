@@ -17,7 +17,8 @@ from dashboard.data import run, table_exists
 from dashboard.tabs.composition import SIDE_NOM
 from dashboard.tabs.quality import sample_facts
 from dashboard.tabs.strength import (
-    ALL_SLICE, ROLE_IN, ROLE_RU, _plural, aggregation_effect, role_gap_example,
+    ALL_SLICE, ROLE_RU, _plural, aggregation_effect, duration_shift, role_gap_example,
+    role_gap_text,
 )
 
 MIN_GAMES = 30          # тот же порог, что стоит по умолчанию на вкладке «Сила чемпиона»
@@ -81,15 +82,7 @@ def _strength_findings(source: str) -> None:
         # по числу игр, и выдуманные числа в таком примере почти наверняка не сойдутся.
         ex = role_gap_example(source, "", MIN_GAMES)
         if ex:
-            big, small = int(ex["best_games"]), int(ex["worst_games"])
-            why = (f"Вот как это выглядит: {ex['champion_name']} "
-                   f"{ROLE_IN.get(ex['best_role'], ex['best_role'])} выигрывает "
-                   f"{ex['best_wr']:.0%} матчей, а "
-                   f"{ROLE_IN.get(ex['worst_role'], ex['worst_role'])} всего "
-                   f"{ex['worst_wr']:.0%}. На первой позиции сыграно {big} "
-                   f"{_plural(big, 'матч', 'матча', 'матчей')}, а на второй только "
-                   f"{small}, поэтому общая доля тянется к большей группе и выходит "
-                   f"{ex['overall']:.0%} — чемпион выглядит обычным.")
+            why = f"Вот как это выглядит: {role_gap_text(ex)} — чемпион выглядит обычным."
         else:
             why = ("Причина в усреднении: одного чемпиона играют на разных позициях, "
                    "и разные доли побед сливаются в одну, близкую к половине.")
@@ -104,44 +97,38 @@ def _strength_findings(source: str) -> None:
 
 
 def _duration_finding(source: str) -> None:
-    """Вывод 3: чемпион, которому длинная игра помогает сильнее всех."""
-    df = run(f"""
-        WITH j AS (
-            SELECT c.champion_name, f.win,
-                   CASE WHEN m.game_duration_min < 25 THEN 'short'
-                        WHEN m.game_duration_min < 32 THEN 'mid' ELSE 'long' END AS bucket
-            FROM fact_participant f
-            JOIN dim_champion c ON f.champion_id = c.champion_id
-            JOIN dim_match m ON f.data_source = m.data_source AND f.match_id = m.match_id
-            WHERE f.data_source = '{source}'
-        ),
-        agg AS (
-            SELECT champion_name, bucket, COUNT(*) AS games,
-                   AVG(CASE WHEN win THEN 1.0 ELSE 0.0 END) AS wr
-            FROM j GROUP BY 1, 2
-        )
-        SELECT champion_name,
-               MAX(CASE WHEN bucket = 'short' THEN wr END) AS wr_short,
-               MAX(CASE WHEN bucket = 'long'  THEN wr END) AS wr_long
-        FROM agg GROUP BY 1
-        HAVING MAX(CASE WHEN bucket = 'short' THEN games END) >= {MIN_GAMES}
-           AND MAX(CASE WHEN bucket = 'long'  THEN games END) >= {MIN_GAMES}
-        ORDER BY (MAX(CASE WHEN bucket = 'long' THEN wr END)
-                  - MAX(CASE WHEN bucket = 'short' THEN wr END)) DESC
-        LIMIT 1
-    """)
-    if df.empty:
+    """Вывод 3: для скольких чемпионов длина матча действительно меняет долю побед.
+
+    Прежняя версия выносила в заголовок «длина решает больше, чем выбор чемпиона»
+    по одному чемпиону с самым большим разрывом — это максимум выборки. У типичного
+    чемпиона разрыв в разы меньше, поэтому вывод строится на счёте прошедших
+    строгую проверку, а крайний чемпион остаётся примером.
+    """
+    dur = duration_shift(source, "", "", MIN_GAMES)
+    if dur.empty:
         return
-    r = df.iloc[0]
-    delta = r["wr_long"] - r["wr_short"]
+    n = len(dur)
+    gen = _plural(n, "чемпиона", "чемпионов", "чемпионов")
+    typical = round(float(dur["delta"].abs().median()) * 100)
+    typical_text = (f"У обычного чемпиона разница около {typical} "
+                    f"{_plural(typical, 'пункта', 'пунктов', 'пунктов')}.")
+    why = ("Только причину отсюда не вывести: короткие матчи — это в основном разгромы, "
+           "поэтому проигрыши чемпионов, сильных в поздней игре, попадают туда сами собой.")
+    sig = dur[dur["is_sig"]]
+    if sig.empty:
+        _card(
+            "Сила чемпиона",
+            "Длина матча почти не меняет силу чемпионов",
+            f"Ни у одного из {n} {gen} доли побед в коротких и длинных матчах не "
+            f"расходятся сильнее, чем можно списать на случайность. {typical_text}",
+        )
+        return
+    r = sig.loc[sig["delta"].abs().idxmax()]
     _card(
         "Сила чемпиона",
-        "Длина матча решает больше, чем выбор чемпиона",
-        f"{r['champion_name']} выигрывает {r['wr_short']:.0%} коротких матчей и "
-        f"{r['wr_long']:.0%} длинных. Разрыв в {delta:.0%} больше, чем расстояние между "
-        "лучшим и худшим чемпионом во всём рейтинге. Только причину отсюда не вывести: "
-        "короткие матчи — это в основном разгромы, поэтому проигрыши чемпионов, сильных "
-        "в поздней игре, попадают туда сами собой.",
+        f"Длина матча заметно важна только для {len(sig)} из {n} {gen}",
+        f"Сильнее всех это видно у {r['champion_name']}: {r['wr_short']:.0%} побед в "
+        f"коротких матчах и {r['wr_long']:.0%} в длинных. {typical_text} {why}",
     )
 
 
@@ -260,9 +247,9 @@ def render(source: str) -> None:
     # «16.7–16.12» в «7 патчей».
     n_p = len(facts["patches"])
     where = " из Западной Европы" if facts["region"] == "EUW1" else ""
+    # Число матчей здесь не повторяем: оно уже во вступлении и в карточке «Матчей».
     st.caption(
-        f"Выводы посчитаны по набору «{source}»: {_num(facts['matches'])} "
-        f"{_plural(facts['matches'], 'рейтинговый одиночный матч', 'рейтинговых одиночных матча', 'рейтинговых одиночных матчей')}"
+        f"Выводы посчитаны по набору «{source}»: рейтинговые одиночные матчи"
         f"{where} за {n_p} {_plural(n_p, 'патч', 'патча', 'патчей')}, "
         f"с {facts['first']:%d.%m.%Y} по {facts['last']:%d.%m.%Y}. Другой набор можно "
         "выбрать в панели «Фильтры» слева. Числа в тексте считаются из данных, а не "

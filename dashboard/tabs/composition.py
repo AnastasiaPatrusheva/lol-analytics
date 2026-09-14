@@ -12,6 +12,7 @@ import streamlit as st
 
 from dashboard.charts import radar_grid
 from dashboard.data import run, champion_images, table_exists
+from dashboard.tabs.quality import RED_SIDE_ODD, red_side_wr
 from dashboard.tabs.strength import _plural
 
 ROLES = [("TOP", "Топ"), ("JUNGLE", "Лес"), ("MIDDLE", "Мид"),
@@ -88,12 +89,12 @@ def _backtest(source: str) -> None:
         f"{SIDE_NOM[strong]}», в котором нет ни одного чемпиона, уже угадывает больше "
         "половины. Прогноз должен обыграть это правило, а не 50%."
     )
-    if strong == 200 and 1 - weak_wr > 0.51:
+    # Полное объяснение живёт на «Данных и качестве»; условие то же, что там,
+    # поэтому ссылка всегда ведёт к существующему пункту.
+    if strong == 200 and red_side_wr(source) > RED_SIDE_ODD:
         st.caption(
-            "Обычно бывает наоборот: в рейтинговых играх чуть чаще, примерно в 51% матчей, "
-            "выигрывают синие. Мы проверили, что стороны не перепутаны при обработке: в "
-            "исходных файлах Riot перекос тот же. Установить причину по этим данным не "
-            "удалось, подробнее на вкладке «Данные и качество»."
+            "Обычно чуть чаще выигрывают синие. Почему в этой выборке наоборот, не "
+            "выяснили, подробнее на вкладке «Данные и качество»."
         )
 
     acc = float(r["accuracy_raw"])
@@ -271,7 +272,7 @@ def render(source: str) -> None:
                    if n not in taken]
         default = popular[0] if popular else opts[0]
         taken.add(default)
-        picks[rk] = col.selectbox(rk_ru, opts, index=opts.index(default), key=f"compo_{rk}")
+        picks[rk] = col.selectbox(rk_ru, opts, index=opts.index(default), key=f"f_compo_{rk}")
 
     names = [n for n in picks.values() if n]
     dupes = sorted({n for n in names if names.count(n) > 1})

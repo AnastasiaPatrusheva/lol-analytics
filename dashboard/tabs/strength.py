@@ -16,7 +16,9 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-from dashboard.data import run, download_csv, champion_images, POSITIONS
+from dashboard.data import (
+    MIN_PATCH_MATCHES, POSITIONS, champion_images, download_csv, run, run_df,
+)
 from dashboard.stats import two_proportion_pvalue
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
@@ -32,6 +34,10 @@ ALPHA = 0.05
 PATCH_EXPR = "split_part(m.game_version, '.', 1) || '.' || split_part(m.game_version, '.', 2)"
 # Границы групп по длине матча, те же, что в витрине champion_by_duration.
 SHORT_MAX, LONG_MIN = 25, 32
+# Нижний край слайдеров «минимум игр». В SQL стоит только он, а сам порог со
+# слайдера применяется в pandas: иначе каждый шаг слайдера давал новый текст
+# запроса, кэш run() промахивался, и вкладка заново читала всю витрину.
+SLIDER_MIN = 5
 
 
 def _patches(source: str) -> list[str]:
@@ -40,7 +46,7 @@ def _patches(source: str) -> list[str]:
         SELECT {PATCH_EXPR} AS patch, COUNT(*) AS matches
         FROM dim_match m
         WHERE m.data_source = '{source}' AND m.game_version IS NOT NULL
-        GROUP BY 1 HAVING COUNT(*) >= 30 ORDER BY 1
+        GROUP BY 1 HAVING COUNT(*) >= {MIN_PATCH_MATCHES} ORDER BY 1
     """)
     vals = [p for p in df["patch"].tolist() if p and p != "."]
     return sorted(vals, key=lambda x: [int(n) for n in x.split(".")])
@@ -57,6 +63,10 @@ def _plural(n: int, one: str, few: str, many: str) -> str:
     if 2 <= tail <= 4:
         return few
     return many
+
+
+def _games(n: int) -> str:
+    return f"{n} {_plural(n, 'игра', 'игры', 'игр')}"
 
 
 def _hero(title, name, value, img, accent="#C8AA6E") -> str:
@@ -131,6 +141,20 @@ def role_gap_example(source: str, patch_filter: str, min_games: int) -> dict | N
     return None if df.empty else df.iloc[0].to_dict()
 
 
+def role_gap_text(ex: dict) -> str:
+    """Пример из role_gap_example словами. Общий для этой вкладки и «Главного»,
+    чтобы две версии одной фразы не расходились."""
+    big, small = int(ex["best_games"]), int(ex["worst_games"])
+    return (
+        f"{ex['champion_name']} {ROLE_IN.get(ex['best_role'], ex['best_role'])} выигрывает "
+        f"{ex['best_wr']:.0%} матчей, а {ROLE_IN.get(ex['worst_role'], ex['worst_role'])} "
+        f"всего {ex['worst_wr']:.0%}. На первой позиции сыграно "
+        f"{big} {_plural(big, 'матч', 'матча', 'матчей')}, а на второй только {small}. "
+        f"Общая доля побед считается по всем матчам сразу, поэтому она тянется к большей "
+        f"группе и выходит {ex['overall']:.0%}"
+    )
+
+
 def aggregation_effect(source: str, patch_filter: str, min_games: int) -> pd.DataFrame:
     """Сколько чемпионов значимо отличаются от 50% в разных разрезах.
 
@@ -152,18 +176,19 @@ def aggregation_effect(source: str, patch_filter: str, min_games: int) -> pd.Dat
                    COUNT(DISTINCT match_id) AS games,
                    SUM(CASE WHEN win THEN 1 ELSE 0 END) * 1.0
                        / COUNT(DISTINCT match_id) AS wr
-            FROM j GROUP BY 1, 2 HAVING COUNT(DISTINCT match_id) >= {min_games}
+            FROM j GROUP BY 1, 2 HAVING COUNT(DISTINCT match_id) >= {SLIDER_MIN}
         ),
         pooled AS (
             SELECT '{ALL_SLICE}' AS slice, champion_id,
                    COUNT(DISTINCT match_id) AS games,
                    SUM(CASE WHEN win THEN 1 ELSE 0 END) * 1.0
                        / COUNT(DISTINCT match_id) AS wr
-            FROM j GROUP BY 1, 2 HAVING COUNT(DISTINCT match_id) >= {min_games}
+            FROM j GROUP BY 1, 2 HAVING COUNT(DISTINCT match_id) >= {SLIDER_MIN}
         )
         SELECT * FROM pooled UNION ALL SELECT * FROM by_role
     """
     raw = run(slices)
+    raw = raw[raw["games"] >= min_games]
     if raw.empty:
         return raw
 
@@ -172,18 +197,16 @@ def aggregation_effect(source: str, patch_filter: str, min_games: int) -> pd.Dat
     sizes = raw.groupby("slice").size()
     z_values = ", ".join(f"('{s}', {z_for_multiple_tests(int(n))})" for s, n in sizes.items())
 
-    return run(f"""
-        WITH z(slice, z) AS (VALUES {z_values}),
-        base AS ({slices})
+    return run_df(f"""
+        WITH z(slice, z) AS (VALUES {z_values})
         SELECT b.slice,
                COUNT(*) AS champions,
                SUM(CASE WHEN wilson_low_z(b.wr, b.games, z.z) > 0.5 THEN 1 ELSE 0 END) AS strong,
                SUM(CASE WHEN wilson_high_z(b.wr, b.games, z.z) < 0.5 THEN 1 ELSE 0 END) AS weak,
-               MIN(b.wr) AS wr_min, MAX(b.wr) AS wr_max,
-               ANY_VALUE(z.z) AS z
-        FROM base b JOIN z ON b.slice = z.slice
+               MIN(b.wr) AS wr_min, MAX(b.wr) AS wr_max
+        FROM raw b JOIN z ON b.slice = z.slice
         GROUP BY 1
-    """)
+    """, raw=raw)
 
 
 def render(source: str) -> None:
@@ -198,53 +221,51 @@ def render(source: str) -> None:
 
     patches = _patches(source)
     c1, c2, c3, c4 = st.columns([1, 1, 1.5, 1.3])
-    position = c1.selectbox("Позиция", POSITIONS,
+    position = c1.selectbox("Позиция", POSITIONS, key="f_position",
                             format_func=lambda p: ROLE_RU.get(p, p))
-    patch = c2.selectbox("Патч", ["Все патчи"] + patches) if patches else "Все патчи"
-    min_games = c3.slider("Минимум игр", 5, 100, 30, step=5)
+    patch = (c2.selectbox("Патч", ["Все патчи"] + patches, key="f_patch")
+             if patches else "Все патчи")
+    min_games = c3.slider("Минимум игр", SLIDER_MIN, 100, 30, step=5, key="f_min_games")
     rank_by = c4.radio(
-        "Как сортировать", ["С поправкой на число игр", "Просто по доле побед"],
-        help="Пять побед из пяти — это 100% побед, но верить такому нельзя. Поправка "
-             "занижает оценку, чтобы отсеять случайных победителей: чем меньше игр "
-             "сыграно, тем сильнее занижение. Например, 70% побед на 5 матчах после "
-             "неё окажутся ниже, чем 53% побед на 500 матчах. "
+        "Как сортировать", ["По осторожной оценке", "Просто по доле побед"],
+        key="f_rank_by",
+        help="Пять побед из пяти — это 100% побед, но верить такому нельзя. Осторожная "
+             "оценка нарочно занижает долю побед, чтобы отсеять случайных победителей: "
+             "чем меньше игр сыграно, тем сильнее занижение. Например, 70% побед на "
+             "5 матчах по ней окажутся ниже, чем 53% побед на 500 матчах. "
              "Метод называется интервалом Уилсона.",
     )
 
     pos_filter = "" if position == "Все" else f"AND f.role_key = '{position}'"
     patch_filter = "" if patch == "Все патчи" else f"AND {PATCH_EXPR} = '{patch}'"
-    order_col = "wilson_low" if rank_by.startswith("С поправкой") else "winrate"
+    order_col = "wilson_low" if rank_by.startswith("По осторожной") else "winrate"
 
+    # Один проход по витрине на срез: из него же берутся число проверок, рейтинг
+    # и график убийств и смертей (раньше это были три одинаковых запроса).
+    base = run(f"""
+        SELECT c.champion_name, c.primary_class, c.champion_id,
+               COUNT(DISTINCT f.match_id) AS games,
+               SUM(CASE WHEN f.win THEN 1 ELSE 0 END) AS wins,
+               (SUM(f.kills) + SUM(f.assists)) * 1.0
+                   / GREATEST(SUM(f.deaths), 1) AS avg_kda,
+               AVG(f.kills) AS avg_kills, AVG(f.deaths) AS avg_deaths
+        FROM fact_participant f
+        JOIN dim_champion c ON f.champion_id = c.champion_id
+        JOIN dim_match m ON f.data_source = m.data_source AND f.match_id = m.match_id
+        WHERE f.data_source = '{source}' {pos_filter} {patch_filter}
+        GROUP BY c.champion_name, c.primary_class, c.champion_id
+        HAVING COUNT(DISTINCT f.match_id) >= {SLIDER_MIN}
+    """)
+    base = base[base["games"] >= min_games]
     # Число одновременных проверок = число чемпионов, прошедших порог в этом срезе.
-    n_tests = int(run(f"""
-        SELECT COUNT(*) AS n FROM (
-            SELECT f.champion_id
-            FROM fact_participant f
-            JOIN dim_match m ON f.data_source = m.data_source AND f.match_id = m.match_id
-            WHERE f.data_source = '{source}' {pos_filter} {patch_filter}
-            GROUP BY f.champion_id
-            HAVING COUNT(DISTINCT f.match_id) >= {min_games})
-    """).iloc[0]["n"])
+    n_tests = len(base)
     if n_tests == 0:
         st.info("Нет чемпионов с таким порогом игр в этом срезе. Снизьте минимум игр.")
         return
     z_adj = z_for_multiple_tests(n_tests)
 
-    champions = run(f"""
-        WITH base AS (
-            SELECT c.champion_name, c.primary_class, c.champion_id,
-                   COUNT(DISTINCT f.match_id) AS games,
-                   SUM(CASE WHEN f.win THEN 1 ELSE 0 END) AS wins,
-                   (SUM(f.kills) + SUM(f.assists)) * 1.0
-                       / GREATEST(SUM(f.deaths), 1) AS avg_kda
-            FROM fact_participant f
-            JOIN dim_champion c ON f.champion_id = c.champion_id
-            JOIN dim_match m ON f.data_source = m.data_source AND f.match_id = m.match_id
-            WHERE f.data_source = '{source}' {pos_filter} {patch_filter}
-            GROUP BY c.champion_name, c.primary_class, c.champion_id
-            HAVING COUNT(DISTINCT f.match_id) >= {min_games}
-        ),
-        ci AS (
+    champions = run_df(f"""
+        WITH ci AS (
             SELECT *, wins * 1.0 / games AS winrate,
                    wilson_low(wins * 1.0 / games, games) AS wilson_low,
                    wilson_high(wins * 1.0 / games, games) AS wilson_high,
@@ -260,18 +281,28 @@ def render(source: str) -> None:
                     WHEN wilson_high_adj < 0.5 THEN 'выигрывает реже'
                     ELSE 'как все' END AS verdict
         FROM ci ORDER BY {order_col} DESC
-    """)
+    """, base=base)
 
     imgs = champion_images()
-    top_row = champions.iloc[0]
+    # «Сильнейшим» называем только прошедшего строгую проверку. Первый в рейтинге —
+    # максимум выборки, и без проверки карточка спорила с подписью ниже, где сказано,
+    # что все чемпионы выигрывают примерно одинаково.
+    strong = champions[champions["verdict"] == "выигрывает чаще"]
+    if strong.empty:
+        top_row = champions.iloc[0]
+        top_title = "Первый в рейтинге"
+        top_value = f"{top_row[order_col]:.1%} · от остальных неотличим"
+    else:
+        top_row = strong.iloc[0]          # champions уже отсортированы по order_col
+        top_title = "Сильнейший"
+        top_value = f"{top_row[order_col]:.1%} · {_games(int(top_row['games']))}"
     most_played = champions.loc[champions["games"].idxmax()]
     best_kda = champions.loc[champions["avg_kda"].idxmax()]
     h1, h2, h3 = st.columns(3)
-    h1.markdown(_hero("Сильнейший по рейтингу", top_row["champion_name"],
-                      f"{top_row[order_col]:.1%} · {int(top_row['games'])} игр",
+    h1.markdown(_hero(top_title, top_row["champion_name"], top_value,
                       imgs.get(int(top_row["champion_id"]), "")), unsafe_allow_html=True)
     h2.markdown(_hero("Фаворит игроков", most_played["champion_name"],
-                      f"{int(most_played['games'])} игр · побед {most_played['winrate']:.0%}",
+                      f"{_games(int(most_played['games']))} · побед {most_played['winrate']:.0%}",
                       imgs.get(int(most_played["champion_id"]), ""), accent="#5aa0c9"),
                 unsafe_allow_html=True)
     h3.markdown(_hero("Лучший KDA", best_kda["champion_name"],
@@ -403,20 +434,12 @@ def render(source: str) -> None:
     )
     example = role_gap_example(source, patch_filter, min_games)
     if example:
-        big, small = int(example["best_games"]), int(example["worst_games"])
         st.caption(
             "Смешивать роли нельзя потому, что на разных позициях у одного и того же "
             "чемпиона разная работа: где-то он добывает золото и наносит урон, где-то "
             "прикрывает команду. Это фактически две разные игры, и сила в них тоже разная. "
-            f"{example['champion_name']} "
-            f"{ROLE_IN.get(example['best_role'], example['best_role'])} выигрывает "
-            f"{example['best_wr']:.0%} матчей, а "
-            f"{ROLE_IN.get(example['worst_role'], example['worst_role'])} всего "
-            f"{example['worst_wr']:.0%}. Но на первой позиции сыграно "
-            f"{big} {_plural(big, 'матч', 'матча', 'матчей')}, а на второй только "
-            f"{small}. Общая доля побед считается по всем матчам сразу, поэтому она "
-            f"тянется к большей группе и выходит {example['overall']:.0%} — "
-            "и чемпион попадает в «как все». Так пропадают и сильные, и слабые."
+            f"{role_gap_text(example)} — и чемпион попадает в «как все». "
+            "Так пропадают и сильные, и слабые."
         )
     else:
         st.caption(
@@ -497,12 +520,12 @@ def render(source: str) -> None:
         download_csv(champions, "champion_strength.csv", key="dl_strength",
                      use_container_width=True)
 
-    _kills_deaths(source, pos_filter, patch_filter, min_games)
-    _patch_shift(source, patches, pos_filter, min_games)
-    _by_duration(source, pos_filter, patch_filter)
+    _kills_deaths(base.assign(winrate=base["wins"] / base["games"]))
+    patch_chart = _patch_shift(source, patches, pos_filter, min_games)
+    _by_duration(source, pos_filter, patch_filter, after_chart=patch_chart)
 
 
-def _kills_deaths(source: str, pos_filter: str, patch_filter: str, min_games: int) -> None:
+def _kills_deaths(kd: pd.DataFrame) -> None:
     st.divider()
     st.markdown("#### Убийства и смерти по чемпионам")
     st.caption(
@@ -511,20 +534,6 @@ def _kills_deaths(source: str, pos_filter: str, patch_filter: str, min_games: in
         "чемпионы выше неё убивают чаще, чем гибнут. Зелёный цвет означает больше "
         "половины побед, красный — меньше. Размер точки — сколько матчей сыграно."
     )
-    kd = run(f"""
-        SELECT c.champion_name, c.primary_class, c.champion_id,
-               COUNT(DISTINCT f.match_id) AS games,
-               AVG(f.kills) AS avg_kills, AVG(f.deaths) AS avg_deaths,
-               AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate
-        FROM fact_participant f
-        JOIN dim_champion c ON f.champion_id = c.champion_id
-        JOIN dim_match m ON f.data_source = m.data_source AND f.match_id = m.match_id
-        WHERE f.data_source = '{source}' {pos_filter} {patch_filter}
-        GROUP BY c.champion_name, c.primary_class, c.champion_id
-        HAVING COUNT(DISTINCT f.match_id) >= {min_games}
-    """)
-    if kd.empty:
-        return
     lim = float(max(kd["avg_deaths"].max(), kd["avg_kills"].max()))
     points = (
         alt.Chart(kd).mark_circle(opacity=0.65, stroke="#141719", strokeWidth=0.4)
@@ -537,7 +546,7 @@ def _kills_deaths(source: str, pos_filter: str, patch_filter: str, min_games: in
             tooltip=["champion_name", "primary_class", "games",
                      alt.Tooltip("avg_kills:Q", format=".1f", title="убийств"),
                      alt.Tooltip("avg_deaths:Q", format=".1f", title="смертей"),
-                     alt.Tooltip("winrate:Q", format=".0%")],
+                     alt.Tooltip("winrate:Q", format=".0%", title="доля побед")],
         )
     )
     ref = (alt.Chart(pd.DataFrame({"v": [0, lim]}))
@@ -572,24 +581,56 @@ def _diverging_bars(df: pd.DataFrame, x_title: str, tooltips: list) -> alt.Chart
     )
 
 
-def _patch_shift(source: str, patches: list[str], pos_filter: str, min_games: int) -> None:
-    """Условие «патч А против патча Б» — бывшая вкладка «Мета»."""
+def _check_shift(df: pd.DataFrame, w_a: str, g_a: str, w_b: str, g_b: str) -> pd.DataFrame:
+    """Разница двух долей побед у каждого чемпиона: обычная проверка и строгая.
+
+    Строгая — та же логика, что у рейтинга: проверок столько, сколько чемпионов,
+    поэтому порог делится на их число. Общая для сравнения патчей и длины матча.
+    """
+    df["p_value"] = df.apply(
+        lambda r: two_proportion_pvalue(r[w_a], r[g_a], r[w_b], r[g_b]), axis=1)
+    df["is_sig"] = df["p_value"] < ALPHA / len(df)
+    df["is_sig_naive"] = df["p_value"] < ALPHA
+    return df.sort_values("delta", ascending=False)
+
+
+def _brightness_legend(df: pd.DataFrame, brief: bool = False) -> str:
+    """Что значит яркость столбцов в _diverging_bars. Средние — прошли только обычную."""
+    n_sig = int(df["is_sig"].sum())
+    n_mid = int(df["is_sig_naive"].sum()) - n_sig
+    if brief:
+        return (f"Яркость столбцов — как на графике выше: строгую проверку прошли {n_sig}, "
+                f"только обычную — {n_mid}.")
+    return (
+        f"Насыщенные столбцы прошли строгую проверку, их {n_sig}. Столбцы средней "
+        f"яркости — те {n_mid}, что прошли бы обычную проверку по одному чемпиону, "
+        f"но не выдержали строгую: чемпионов здесь {len(df)}, и планка поднята именно "
+        f"из-за их количества. Самые бледные — обычный разброс."
+    )
+
+
+def _patch_shift(source: str, patches: list[str], pos_filter: str, min_games: int) -> bool:
+    """Условие «патч А против патча Б» — бывшая вкладка «Мета».
+
+    Возвращает, нарисован ли график: от этого зависит, можно ли в разделе про длину
+    матча сослаться на «график выше».
+    """
     st.divider()
     st.markdown("#### Что изменилось между патчами")
     if len(patches) < 2:
         st.info(
             f"У источника «{source}» меньше двух патчей с данными. Переключите источник "
-            "на **riot_full** — там 6 патчей (16.7–16.12)."
+            "на **riot_full** в панели «Фильтры» слева."
         )
-        return
+        return False
 
     c1, c2 = st.columns(2)
-    a = c1.selectbox("Патч A", patches, index=len(patches) - 2, key="patch_a")
-    b = c2.selectbox("Патч B", patches, index=len(patches) - 1, key="patch_b")
+    a = c1.selectbox("Патч A", patches, index=len(patches) - 2, key="f_patch_a")
+    b = c2.selectbox("Патч B", patches, index=len(patches) - 1, key="f_patch_b")
     a, b = sorted([a, b], key=lambda x: [int(n) for n in x.split(".")])
     if a == b:
         st.info("Выберите два разных патча.")
-        return
+        return False
 
     cmp = run(f"""
         WITH j AS (
@@ -614,33 +655,23 @@ def _patch_shift(source: str, patches: list[str], pos_filter: str, min_games: in
                MAX(CASE WHEN patch = '{a}' THEN wins END) AS w_a,
                MAX(CASE WHEN patch = '{b}' THEN wins END) AS w_b
         FROM agg GROUP BY 1, 2
-        HAVING MAX(CASE WHEN patch = '{a}' THEN games END) >= {min_games}
-           AND MAX(CASE WHEN patch = '{b}' THEN games END) >= {min_games}
+        HAVING MAX(CASE WHEN patch = '{a}' THEN games END) >= {SLIDER_MIN}
+           AND MAX(CASE WHEN patch = '{b}' THEN games END) >= {SLIDER_MIN}
     """)
+    cmp = cmp[(cmp["g_a"] >= min_games) & (cmp["g_b"] >= min_games)].copy()
     if cmp.empty:
         st.info("Нет чемпионов с достаточной выборкой в обоих патчах. Снизьте минимум игр.")
-        return
+        return False
 
     cmp["delta"] = cmp["wr_b"] - cmp["wr_a"]
-    cmp["p_value"] = cmp.apply(
-        lambda r: two_proportion_pvalue(r["w_a"], r["g_a"], r["w_b"], r["g_b"]), axis=1)
-    # Та же логика, что и в рейтинге выше: проверок столько, сколько чемпионов,
-    # поэтому порог значимости делится на их число.
-    alpha_adj = ALPHA / len(cmp)
-    cmp["is_sig"] = cmp["p_value"] < alpha_adj
-    cmp["is_sig_naive"] = cmp["p_value"] < ALPHA
-    cmp = cmp.sort_values("delta", ascending=False)
-    naive = int(cmp["is_sig_naive"].sum())
+    cmp = _check_shift(cmp, "w_a", "g_a", "w_b", "g_b")
     sig = cmp[cmp["is_sig"]]
 
     st.caption(
         f"Riot регулярно правит чемпионов. Здесь видно, у кого доля побед между патчами "
         f"{a} и {b} изменилась по-настоящему, а у кого сдвинулась в пределах обычного "
         f"разброса. Золотой столбец — стал выигрывать чаще, красный — реже.\n\n"
-        f"Насыщенные столбцы прошли строгую проверку, их {len(sig)}. Столбцы средней "
-        f"яркости — те {naive}, что прошли бы обычную проверку по одному чемпиону, "
-        f"но не выдержали строгую: чемпионов здесь {len(cmp)}, и планка поднята именно "
-        f"из-за их количества. Самые бледные — обычный разброс."
+        + _brightness_legend(cmp)
     )
     # Один и тот же чемпион не может одновременно усилиться и ослабнуть: берём
     # лидеров отдельно среди выросших и среди упавших. Раньше при единственном
@@ -664,16 +695,16 @@ def _patch_shift(source: str, patches: list[str], pos_filter: str, min_games: in
             "случайностью. Цифры у чемпионов поменялись, но в пределах обычного разброса."
         )
     st.altair_chart(
-        _diverging_bars(cmp, f"Δ winrate ({b} − {a})",
+        _diverging_bars(cmp, f"Изменение доли побед ({b} − {a})",
                         ["champion_name", "primary_class",
                          alt.Tooltip("wr_a:Q", format=".1%", title=a),
                          alt.Tooltip("wr_b:Q", format=".1%", title=b),
-                         alt.Tooltip("delta:Q", format="+.1%", title="Δ"),
-                         alt.Tooltip("p_value:Q", format=".4f", title="p-значение")]),
+                         alt.Tooltip("delta:Q", format="+.1%", title="изменение")]),
         width="stretch")
     _, dl = st.columns([4, 1])
     with dl:
         download_csv(cmp, "patch_comparison.csv", key="dl_patch", use_container_width=True)
+    return True
 
 
 def _duration_groups(source: str, patch_filter: str) -> None:
@@ -724,24 +755,13 @@ def _duration_groups(source: str, patch_filter: str) -> None:
     )
 
 
-def _by_duration(source: str, pos_filter: str, patch_filter: str) -> None:
-    """Условие «длина матча» — бывшая вкладка «Длительность»."""
-    st.divider()
-    st.markdown("#### Кто сильнее в долгих играх, а кто в коротких")
-    st.warning(
-        "**Этот разрез описывает, но не объясняет.** Часть чемпионов набирает силу "
-        "к концу матча: в начале они слабые, зато под конец становятся опаснее всех. "
-        "Проблема в том, что матч заканчивается быстро, когда одна команда разносит "
-        "другую. Значит короткие матчи — это в основном разгромы, и все проигрыши таких "
-        "чемпионов попадают в них сами собой, ещё до того, как те успели усилиться. "
-        "Поэтому из графика видно, кому долгая игра на руку, но не видно, что здесь "
-        "причина, а что следствие: возможно, игра затянулась именно потому, что такой "
-        "чемпион не дал её закончить.",
-        icon="⚠️",
-    )
-    _duration_groups(source, patch_filter)
-    min_b = st.slider("Минимум игр в каждой длине", 5, 100, 30, step=5, key="dur_min")
+def duration_shift(source: str, pos_filter: str, patch_filter: str,
+                   min_games: int) -> pd.DataFrame:
+    """Доли побед чемпионов в коротких и длинных матчах и строгая проверка разницы.
 
+    Общая для этой вкладки и «Главного». Раньше «Главное» считало то же своим
+    запросом: без проверки и с границами групп, вписанными числами.
+    """
     dur = run(f"""
         WITH j AS (
             SELECT c.champion_name, f.win,
@@ -767,31 +787,46 @@ def _by_duration(source: str, pos_filter: str, patch_filter: str) -> None:
                MAX(CASE WHEN bucket = 'short' THEN wins END) AS w_short,
                MAX(CASE WHEN bucket = 'long'  THEN wins END) AS w_long
         FROM agg GROUP BY 1
-        HAVING MAX(CASE WHEN bucket = 'short' THEN games END) >= {min_b}
-           AND MAX(CASE WHEN bucket = 'long'  THEN games END) >= {min_b}
+        HAVING MAX(CASE WHEN bucket = 'short' THEN games END) >= {SLIDER_MIN}
+           AND MAX(CASE WHEN bucket = 'long'  THEN games END) >= {SLIDER_MIN}
     """)
+    dur = dur[(dur["g_short"] >= min_games) & (dur["g_long"] >= min_games)].copy()
+    if dur.empty:
+        return dur
+    dur["delta"] = dur["wr_long"] - dur["wr_short"]
+    return _check_shift(dur, "w_short", "g_short", "w_long", "g_long")
+
+
+def _by_duration(source: str, pos_filter: str, patch_filter: str, after_chart: bool) -> None:
+    """Условие «длина матча» — бывшая вкладка «Длительность»."""
+    st.divider()
+    st.markdown("#### Кто сильнее в долгих играх, а кто в коротких")
+    st.warning(
+        "**Этот разрез описывает, но не объясняет.** Часть чемпионов набирает силу "
+        "к концу матча: в начале они слабые, зато под конец становятся опаснее всех. "
+        "Проблема в том, что матч заканчивается быстро, когда одна команда разносит "
+        "другую. Значит короткие матчи — это в основном разгромы, и все проигрыши таких "
+        "чемпионов попадают в них сами собой, ещё до того, как те успели усилиться. "
+        "Поэтому из графика видно, кому долгая игра на руку, но не видно, что здесь "
+        "причина, а что следствие: возможно, игра затянулась именно потому, что такой "
+        "чемпион не дал её закончить.",
+        icon="⚠️",
+    )
+    _duration_groups(source, patch_filter)
+    min_b = st.slider("Минимум игр в каждой длине", SLIDER_MIN, 100, 30, step=5, key="f_dur_min")
+
+    dur = duration_shift(source, pos_filter, patch_filter, min_b)
     if dur.empty:
         st.info("Мало данных при таком пороге. Снизьте минимум игр.")
         return
-
-    dur["delta"] = dur["wr_long"] - dur["wr_short"]
-    dur["p_value"] = dur.apply(
-        lambda r: two_proportion_pvalue(r["w_short"], r["g_short"], r["w_long"], r["g_long"]),
-        axis=1)
-    alpha_adj = ALPHA / len(dur)
-    dur["is_sig"] = dur["p_value"] < alpha_adj
-    dur["is_sig_naive"] = dur["p_value"] < ALPHA
-    dur = dur.sort_values("delta", ascending=False)
     sig = dur[dur["is_sig"]]
-    naive = int(dur["is_sig_naive"].sum())
 
+    # Под графиком патчей яркость уже объяснена целиком; разделы идут подряд,
+    # и второй раз те же три предложения только мешали.
     st.caption(
         f"Насколько чаще чемпион побеждает в долгих матчах (от {LONG_MIN} минут) по "
         f"сравнению с короткими (до {SHORT_MAX} минут).\n\n"
-        f"Насыщенные столбцы прошли строгую проверку, их {len(sig)}. Столбцы средней "
-        f"яркости — те {naive}, что прошли бы обычную проверку по одному чемпиону, "
-        f"но не выдержали строгую: чемпионов здесь {len(dur)}, и планка поднята именно "
-        f"из-за их количества. Самые бледные — обычный разброс."
+        + _brightness_legend(dur, brief=after_chart)
     )
     if not sig.empty:
         top = sig.iloc[0]
@@ -801,12 +836,11 @@ def _by_duration(source: str, pos_filter: str, patch_filter: str) -> None:
             f"в долгих."
         )
     st.altair_chart(
-        _diverging_bars(dur, "Δ winrate (длинные − короткие)",
+        _diverging_bars(dur, "Изменение доли побед (длинные − короткие)",
                         ["champion_name",
                          alt.Tooltip("wr_short:Q", format=".1%", title="короткие"),
                          alt.Tooltip("wr_long:Q", format=".1%", title="длинные"),
-                         alt.Tooltip("delta:Q", format="+.1%", title="Δ"),
-                         alt.Tooltip("p_value:Q", format=".4f", title="p-значение")]),
+                         alt.Tooltip("delta:Q", format="+.1%", title="изменение")]),
         width="stretch")
     _, dl = st.columns([4, 1])
     with dl:

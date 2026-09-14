@@ -27,8 +27,8 @@ def _item_card(title, row, value, icons, accent="#C8AA6E"):
 
 def render(source: str) -> None:
     min_gold = st.slider(
-        "Минимальная цена предмета (золото)", 0, 4000, 2000, step=250,
-        help="Отсекает дешёвые предметы и триннкеты-варды, чтобы видеть «билдовые» предметы",
+        "Минимальная цена предмета (золото)", 0, 4000, 2000, step=250, key="f_min_gold",
+        help="Отсекает дешёвые предметы и тринкеты-варды, чтобы видеть «билдовые» предметы",
     )
     items = run(f"""
         SELECT item_name, item_id, appearances, winrate, wilson_low, gold_total
@@ -48,8 +48,8 @@ def render(source: str) -> None:
         "а не что и когда игрок покупал. А дорогую вещь успевает достроить тот, кто дольше "
         "живёт, то есть чаще всего тот, кто и так выигрывает. Получается наоборот: не "
         "предмет привёл к победе, а победа дала время его собрать. Такую ловушку называют "
-        "ошибкой выжившего. Читайте таблицу как «что обычно оказывается в сумке у "
-        "победителя», а не как «что купить, чтобы выиграть».",
+        "обратной причинностью. Читайте таблицу как «с чем игрок дошёл до победы», "
+        "а не как «что купить, чтобы выиграть».",
         icon="⚠️",
     )
     if items.empty:
@@ -78,7 +78,7 @@ def render(source: str) -> None:
                     scale=alt.Scale(zero=False)),
             tooltip=[
                 "item_name", alt.Tooltip("appearances:Q", title="Сборок"),
-                alt.Tooltip("winrate:Q", format=".1%"),
+                alt.Tooltip("winrate:Q", format=".1%", title="Доля побед"),
                 alt.Tooltip("gold_total:Q", title="Цена"),
             ],
         )
@@ -88,7 +88,7 @@ def render(source: str) -> None:
     st.altair_chart(scatter, width="stretch")
 
     left, right = st.columns([4, 1])
-    left.markdown("#### Все предметы (по winrate)")
+    left.markdown("#### Все предметы по доле побед")
     with right:
         download_csv(items, "items.csv", key="dl_items", use_container_width=True)
     st.caption(
@@ -106,7 +106,9 @@ def render(source: str) -> None:
             "appearances": st.column_config.NumberColumn("Сборок"),
             "winrate": st.column_config.ProgressColumn(
                 "Побед", format="percent", min_value=0.40, max_value=0.65),
-            "wilson_low": st.column_config.NumberColumn("Ниж. оценка", format="percent"),
+            "wilson_low": st.column_config.NumberColumn(
+                "Осторожно", format="percent",
+                help="Доля побед, заниженная с учётом того, в скольких сборках встретился предмет"),
             "gold_total": st.column_config.NumberColumn("Цена", format="%d"),
         },
     )

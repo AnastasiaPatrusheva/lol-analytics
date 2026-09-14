@@ -6,6 +6,39 @@ import streamlit as st
 from dashboard.charts import radar_grid
 from dashboard.data import run, table_exists, table_with_download
 
+# Что значит каждый ярлык. Ярлыки ставит scripts/build_player_segments.py
+# (ARCHETYPE_BY_FEATURE), и набор групп меняется от пересборки к пересборке, поэтому
+# легенда показывает только те, что есть в данных. Раньше список был вписан руками:
+# описывал «Агрессивный» и «Сильная экономика», которых в riot_full нет, а самая
+# большая группа, «Часто умирает», оставалась без объяснения.
+# Полноту словаря проверяет tests/test_segments.py.
+ARCHETYPE_DESC = {
+    "Агрессивный": "урона по чемпионам соперника больше, чем обычно на его роли",
+    "Мало урона": "урона по чемпионам соперника меньше, чем обычно на его роли",
+    "Фармящий": "больше миньонов (CS), чем типично для роли",
+    "Мало фарма": "меньше миньонов (CS), чем типично для роли",
+    "Играет на обзор": "чаще ставит на карту наблюдателей, которые показывают, что "
+                       "происходит в этом месте; так команда видит противника заранее",
+    "Не ставит варды": "реже обычного для роли ставит наблюдателей, поэтому команда "
+                       "видит меньше карты",
+    "Сильная экономика": "больше золота в минуту, чем обычно на роли",
+    "Слабая экономика": "меньше золота в минуту, чем обычно на роли",
+    "Осторожный": "высокий KDA, то есть реже умирает",
+    "Часто умирает": "низкий KDA, то есть гибнет чаще, чем обычно на его роли",
+    "Не классифицирован": "не хватило показателей, чтобы отнести игрока к группе",
+    "Мало данных": "в источнике слишком мало игроков, чтобы разбить их на группы",
+}
+
+
+def _legend(archetypes: list[str]) -> str:
+    rows = []
+    for a in archetypes:
+        # «Осторожный + урон» и «Осторожный #2» — уточнённые ярлыки при совпадении
+        # главной метрики у двух групп; смысл у них тот же, что у базового.
+        desc = ARCHETYPE_DESC.get(a.split(" + ")[0].split(" #")[0])
+        rows.append(f"- **{a}** — {desc}" if desc else f"- **{a}**")
+    return "**Что значат названия:**\n" + "\n".join(rows)
+
 
 def render(source: str) -> None:
     st.subheader("Архетипы игроков")
@@ -22,15 +55,6 @@ def render(source: str) -> None:
         "1.3 — «на 30% больше». Так группы показывают, насколько человек отличается "
         "от среднего по своей роли.",
         icon="🧭",
-    )
-    st.markdown(
-        "**Что значат названия:**\n"
-        "- **Агрессивный** — урон выше нормы своей роли\n"
-        "- **Фармящий** — больше миньонов (CS), чем типично для роли\n"
-        "- **Играет на обзор** — чаще ставит на карту наблюдателей, которые показывают, "
-        "что происходит в этом месте; так команда видит противника заранее\n"
-        "- **Сильная экономика** — больше золота в минуту\n"
-        "- **Осторожный** — высокий KDA, то есть реже умирает"
     )
     if not table_exists("player_segments"):
         st.info("Данные по архетипам пока недоступны.")
@@ -53,6 +77,7 @@ def render(source: str) -> None:
         .reset_index()
         .sort_values("players", ascending=False)
     )
+    st.markdown(_legend(counts["archetype"].tolist()))
     top = counts.iloc[0]
     st.success(
         f"Самая большая группа — «{top['archetype']}»: {int(top['players'])} игроков, "
@@ -88,7 +113,7 @@ def render(source: str) -> None:
                         axis=alt.Axis(grid=True, domain=False, labelFlush=True)),
                 y=ybar,
                 color=alt.Color("archetype:N", legend=None),
-                tooltip=["archetype", "players", alt.Tooltip("winrate:Q", format=".1%")],
+                tooltip=["archetype", "players", alt.Tooltip("winrate:Q", format=".1%", title="доля побед")],
             )
             .properties(height=H)
         )
@@ -107,7 +132,7 @@ def render(source: str) -> None:
                 y=alt.Y("vision_per_min:Q", title="Обзор к норме своей роли"),
                 color=alt.Color("archetype:N", title="Группа"),
                 tooltip=["name", "archetype", "games",
-                         alt.Tooltip("winrate:Q", format=".1%"),
+                         alt.Tooltip("winrate:Q", format=".1%", title="доля побед"),
                          alt.Tooltip("kda:Q", format=".2f")],
             )
         )

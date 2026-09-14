@@ -5,3 +5,9 @@ primaryColor = "#C8AA6E"
 backgroundColor = "#0A1428"
 secondaryBackgroundColor = "#0F2033"
 textColor = "#F0E6D2"
+
+[global]
+# Фильтры вкладок восстанавливаются через session_state (см. streamlit_app.py),
+# и Streamlit на такой виджет со значением по умолчанию пишет в лог предупреждение
+# о «двойном» значении. Здесь это намеренно.
+disableWidgetStateDuplicationWarning = true

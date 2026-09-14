@@ -38,18 +38,35 @@ st.sidebar.caption(
 st.title("LoL Analytics")
 # Шесть вкладок, каждая отвечает на один вопрос. Порядок — от вывода к разбору,
 # от общего к частному, в конце основания, на которых всё держится.
+# on_change="rerun" делает вкладки ленивыми: считается только открытая. Без этого
+# любой клик пересчитывал все шесть (около секунды даже при готовом кэше).
+# Цена ленивости: виджеты скрытой вкладки не рисуются, и Streamlit стирает их
+# значения — фильтры сбрасывались при возврате на вкладку. Поэтому у всех фильтров
+# ключ с префиксом f_. Сначала текущие значения копируются под «_f_…» (к виджету
+# не привязан, уборка его не трогает), затем копии записываются обратно.
+# Обратная запись нужна в каждом прогоне, а не только когда виджет стёрт: браузер
+# получает значение от сервера лишь в том прогоне, где его записали, и вернувшийся
+# виджет иначе рисовался бы со значением по умолчанию. Проходы именно два, чтобы
+# свежий выбор пользователя не затёрся старой копией.
+_state = st.session_state
+for _key in [k for k in _state.keys() if k.startswith("f_")]:
+    _state["_" + _key] = _state[_key]
+for _key in [k for k in _state.keys() if k.startswith("_f_")]:
+    _state[_key[1:]] = _state[_key]
 tabs = st.tabs(
     [":material/lightbulb: Главное", ":material/emoji_events: Сила чемпиона",
      ":material/shield: Предметы", ":material/group: Игроки",
-     ":material/groups: Состав", ":material/verified: Данные и качество"]
+     ":material/groups: Состав", ":material/verified: Данные и качество"],
+    key="tab", on_change="rerun",
 )
 renderers = [
     overview.render, strength.render, items.render, players.render,
     composition.render, quality.render,
 ]
 for tab, render in zip(tabs, renderers):
-    with tab:
-        render(source)
+    if tab.open:
+        with tab:
+            render(source)
 
 st.divider()
 st.caption(

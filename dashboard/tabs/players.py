@@ -9,7 +9,7 @@ import streamlit as st
 
 from dashboard.data import run, download_csv, champion_images
 from dashboard.tabs import segments
-from dashboard.tabs.strength import _plural
+from dashboard.tabs.strength import SLIDER_MIN, _plural
 
 
 def _hbars(df, label: str, height: int, *, image: str | None = None,
@@ -104,7 +104,8 @@ def render(source: str) -> None:
     segments.render(source)
 
     st.divider()
-    min_p_games = st.slider("Минимум матчей у игрока", 5, 100, 20, step=5)
+    min_p_games = st.slider("Минимум матчей у игрока", SLIDER_MIN, 100, 20, step=5,
+                            key="f_min_p_games")
     players = run(f"""
         SELECT p.riot_id_game_name AS name, p.puuid, p.source_tier,
                COUNT(*) AS games,
@@ -121,9 +122,10 @@ def render(source: str) -> None:
         JOIN dim_player p ON f.data_source = p.data_source AND f.puuid = p.puuid
         WHERE f.data_source = '{source}'
         GROUP BY p.riot_id_game_name, p.puuid, p.source_tier
-        HAVING COUNT(*) >= {min_p_games}
+        HAVING COUNT(*) >= {SLIDER_MIN}
         ORDER BY games DESC
     """)
+    players = players[players["games"] >= min_p_games]
 
     st.subheader("Профиль игрока")
     st.caption("Всё про одного человека: показатели, любимые чемпионы и роли. "
@@ -141,7 +143,7 @@ def render(source: str) -> None:
                   f"побед {r['winrate']:.1%}",
         axis=1,
     )
-    choice = st.selectbox("Игрок", players["label"])
+    choice = st.selectbox("Игрок", players["label"], key="f_player")
     row = players[players["label"] == choice].iloc[0]
     puuid = row["puuid"]
 
