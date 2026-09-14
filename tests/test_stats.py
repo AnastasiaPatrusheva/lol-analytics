@@ -8,7 +8,7 @@ import numpy as np
 import duckdb
 import pytest
 
-from lol_utils.sql import Z_95, install_macros, z_for_multiple_tests
+from lol_utils.sql import Z_95, install_macros, patch_key, z_for_multiple_tests
 from build_player_segments import label_clusters, FEATURES
 
 
@@ -57,6 +57,19 @@ def test_bonferroni_widens_interval():
 
 def test_bonferroni_single_test_equals_95():
     assert z_for_multiple_tests(1) == pytest.approx(Z_95, abs=1e-3)
+
+
+def test_kda_pooled_is_ratio_of_sums_not_mean_of_ratios():
+    # матч 10/0/5 и матч 0/5/0: суммы дают (10+5)/5 = 3, а среднее KDA матчей — бесконечность
+    kda = _con().execute("""
+        SELECT kda_pooled(k, d, a) FROM (VALUES (10, 0, 5), (0, 5, 0)) t(k, d, a)
+    """).fetchone()[0]
+    assert kda == pytest.approx(3.0)
+
+
+def test_patch_of_and_patch_key():
+    assert _con().execute("SELECT patch_of('16.11.673.4372')").fetchone()[0] == "16.11"
+    assert sorted(["16.10", "16.9", "16.12"], key=patch_key) == ["16.9", "16.10", "16.12"]
 
 
 def test_archetype_by_dominant_feature():

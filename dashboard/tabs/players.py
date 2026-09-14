@@ -7,9 +7,9 @@
 import altair as alt
 import streamlit as st
 
-from dashboard.data import run, download_csv, champion_images
+from dashboard.data import run, download_csv, champion_images, plural
 from dashboard.tabs import segments
-from dashboard.tabs.strength import SLIDER_MIN, _plural
+from dashboard.tabs.strength import SLIDER_MIN
 
 
 def _hbars(df, label: str, height: int, *, image: str | None = None,
@@ -83,7 +83,7 @@ def render(source: str) -> None:
         )
         st.caption(
             "Очки лиги (в игре их называют LP) — рейтинг игрока: чем их больше, тем выше "
-            f"он в общем списке. Здесь {n} {_plural(n, 'игрок', 'игрока', 'игроков')} "
+            f"он в общем списке. Здесь {n} {plural(n, 'игрок', 'игрока', 'игроков')} "
             "из самых верхних лиг. Столбик показывает, сколько человек набрали примерно "
             "одинаково."
         )
@@ -112,7 +112,7 @@ def render(source: str) -> None:
                AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate,
                wilson_low(AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END), COUNT(*)) AS wr_low,
                wilson_high(AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END), COUNT(*)) AS wr_high,
-               (SUM(f.kills) + SUM(f.assists)) * 1.0 / GREATEST(SUM(f.deaths), 1) AS avg_kda,
+               kda_pooled(f.kills, f.deaths, f.assists) AS avg_kda,
                AVG(f.damage_per_min) AS dmg_pm,
                AVG(f.gold_per_min) AS gold_pm,
                AVG(f.cs_per_min) AS cs_pm,
@@ -136,7 +136,7 @@ def render(source: str) -> None:
 
     players = players.copy()
     def _matches(n: int) -> str:
-        return f"{n} {_plural(n, 'матч', 'матча', 'матчей')}"
+        return f"{n} {plural(n, 'матч', 'матча', 'матчей')}"
 
     players["label"] = players.apply(
         lambda r: f"{_player_name(r)} · {_matches(int(r['games']))} · "
@@ -186,7 +186,7 @@ def render(source: str) -> None:
         SELECT c.champion_name, c.champion_id, COUNT(*) AS games,
                AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate,
                wilson_low(AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END), COUNT(*)) AS wilson_low,
-               (SUM(f.kills) + SUM(f.assists)) * 1.0 / GREATEST(SUM(f.deaths), 1) AS avg_kda
+               kda_pooled(f.kills, f.deaths, f.assists) AS avg_kda
         FROM fact_participant f
         JOIN dim_champion c ON f.champion_id = c.champion_id
         WHERE f.data_source = '{source}' AND f.puuid = '{puuid}'
@@ -205,7 +205,7 @@ def render(source: str) -> None:
         # После «на» — предложный падеж: «на 1 матче», «на 111 матчах».
         st.success(
             f"Лучший чемпион игрока — **{b['champion_name']}**: {b['winrate']:.1%} побед "
-            f"на {n} {_plural(n, 'матче', 'матчах', 'матчах')}."
+            f"на {n} {plural(n, 'матче', 'матчах', 'матчах')}."
         )
     else:
         st.caption(

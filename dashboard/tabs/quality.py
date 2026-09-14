@@ -3,21 +3,22 @@
 Порядок — от того, что нужно любому читателю, к техническому: сначала что за
 выборка и где её пределы, потом словарь, в конце отчёт проверок сборки.
 """
-from pathlib import Path
-
 import pandas as pd
 import streamlit as st
 
-from dashboard.data import MIN_PATCH_MATCHES, run, table_exists
-from dashboard.tabs.strength import _plural
+from dashboard.data import MIN_PATCH_MATCHES, fmt_int, load_backtest, plural, run
+from lol_utils import config as cfg
+from lol_utils.sql import patch_key
 
 # Доля побед красных, выше которой перекос сторон заметный: обычно в рейтинговых
 # играх чуть чаще, примерно в 51% матчей, выигрывают синие.
 RED_SIDE_ODD = 0.51
+# Верх рейтинга. Если все матчи набора из этих лиг, выводы описывают сильнейших игроков.
+TOP_TIERS = ("challenger", "grandmaster", "master")
 
 # Отчёт стадии quality (scripts/run_data_quality.py) — проверки идут ДО фильтров
 # звезды, поэтому именно они могут упасть на плохих данных.
-DQ_REPORT = Path(__file__).resolve().parents[2] / "outputs" / "data_quality" / "data_quality_report.csv"
+DQ_REPORT = cfg.DQ_DIR / "data_quality_report.csv"
 
 # Названия проверок в отчёте — технические ключи; на дашборде показываем по-русски.
 CHECK_RU = {
@@ -58,20 +59,24 @@ def render(source: str) -> None:
 
 def sample_facts(source: str) -> dict:
     """Факты о наборе: число матчей, патчи, даты, регион. Общие для этой вкладки и «Главного»."""
+    top = ", ".join(f"'{t}'" for t in TOP_TIERS)
     facts = run(f"""
         SELECT COUNT(*) AS matches,
                MIN(split_part(match_id, '_', 1)) FILTER (WHERE match_id LIKE '%\\_%' ESCAPE '\\')
                    AS region,
-               string_agg(DISTINCT source_tier, ',') AS tiers
+               string_agg(DISTINCT source_tier, ',') AS tiers,
+               -- матчи без ранга тоже считаются «не только верх»: про них ничего не известно
+               COUNT(*) FILTER (WHERE source_tier IS NULL OR source_tier NOT IN ({top})) = 0
+                   AS top_only
         FROM dim_match WHERE data_source = '{source}'
     """).iloc[0]
     by_patch = run(f"""
-        SELECT split_part(game_version, '.', 1) || '.' || split_part(game_version, '.', 2) AS p,
+        SELECT patch_of(game_version) AS p,
                COUNT(*) AS n, MIN(game_start_utc) AS first, MAX(game_start_utc) AS last
         FROM dim_match WHERE data_source = '{source}' AND game_version IS NOT NULL
         GROUP BY 1
     """)
-    by_patch["key"] = by_patch["p"].map(lambda p: [int(x) for x in p.split(".") if x.isdigit()])
+    by_patch["key"] = by_patch["p"].map(patch_key)
     by_patch = by_patch.sort_values("key")
     n = int(facts["matches"])
     # Залётные патчи (меньше MIN_PATCH_MATCHES матчей) в общем списке сдвигают начало
@@ -83,8 +88,8 @@ def sample_facts(source: str) -> dict:
         "matches": n, "patches": main["p"].tolist(), "stray": stray,
         "first": main["first"].min(), "last": main["last"].max(),
         "region": facts["region"],
-        "tiers": sorted({t for t in str(facts["tiers"]).split(",")}
-                        & {"challenger", "grandmaster", "master"}),
+        "tiers": sorted({t for t in str(facts["tiers"]).split(",")} & set(TOP_TIERS)),
+        "top_only": bool(facts["top_only"]),
     }
 
 
@@ -94,17 +99,17 @@ def _sample(source: str) -> None:
     f = sample_facts(source)
     n, stray, first, last = f["matches"], f["stray"], f["first"], f["last"]
     n_p = len(f["patches"])
-    patch_text = ", ".join(f["patches"]) + f" ({n_p} {_plural(n_p, 'патч', 'патча', 'патчей')})"
+    patch_text = ", ".join(f["patches"]) + f" ({n_p} {plural(n_p, 'патч', 'патча', 'патчей')})"
     if not stray.empty:
         k = int(stray["n"].sum())
-        patch_text += (f"; ещё {k} {_plural(k, 'матч', 'матча', 'матчей')} из "
+        patch_text += (f"; ещё {k} {plural(k, 'матч', 'матча', 'матчей')} из "
                        f"{', '.join(stray['p'])}, в расчётах они есть")
     region = {"EUW1": "Западная Европа (EUW)"}.get(f["region"], f["region"]) \
         if f["region"] else "не указан"
     ranks = (", ".join(t.capitalize() for t in f["tiers"]) if f["tiers"]
              else "неизвестны, в данных их нет")
     st.markdown(
-        f"- **Матчей:** {n:,}".replace(",", " ") + " рейтинговых одиночных игр\n"
+        f"- **Матчей:** {fmt_int(n)} рейтинговых одиночных игр\n"
         f"- **Патчи:** {patch_text}\n"
         f"- **Даты:** {first:%d.%m.%Y} — {last:%d.%m.%Y}\n"
         f"- **Регион:** {region}\n"
@@ -140,18 +145,16 @@ def _limits(source: str) -> None:
         # прогноза есть не у всех источников, поэтому эти фразы не для всех.
         raw_checked = (" Стороны при обработке не перепутаны: в исходных файлах Riot "
                        "перекос тот же." if source == "riot_full" else "")
-        has_backtest = table_exists("composition_backtest") and not run(
-            f"SELECT 1 FROM composition_backtest WHERE data_source = '{source}'").empty
         to_composition = (", поэтому прогноз на вкладке «Состав» сравниваем не с 50%, "
-                          "а с правилом «всегда побеждают красные»" if has_backtest else "")
+                          "а с правилом «всегда побеждают красные»"
+                          if load_backtest(source) is not None else "")
         items.append(
             f"**Почему красные выигрывают заметно чаще синих.** В этой выборке команда с "
             f"базой в верхнем правом углу карты выиграла {red:.1%} матчей. "
             "Обычно бывает наоборот: в рейтинговых играх чуть чаще, примерно в 51% матчей, "
             f"выигрывают синие.{raw_checked} Причину установить не удалось{to_composition}."
         )
-    tiers = run(f"SELECT DISTINCT source_tier FROM dim_match WHERE data_source = '{source}'")
-    if set(tiers["source_tier"]) <= {"challenger", "grandmaster", "master"}:
+    if sample_facts(source)["top_only"]:
         items.append(
             "**Как играет обычный игрок.** Здесь только верх рейтинга: Challenger, "
             "Grandmaster и Master. Выводы описывают сильнейших игроков."

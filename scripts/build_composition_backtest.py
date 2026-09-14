@@ -41,14 +41,14 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 from lol_utils import config as cfg, save_parquet_if_available  # noqa: E402
-from lol_utils.sql import install_macros  # noqa: E402
+from lol_utils.sql import install_macros, patch_key  # noqa: E402
 
 MIN_TRAIN_GAMES = 20      # чемпион×роль реже — оценка слишком шумная, берём 0.5
 MIN_TEST_MATCHES = 300    # меньше — проверка ничего не покажет
 MIN_COVERAGE = 0.75       # доля пиков с оценкой из обучения; ниже — проверяем не модель, а заглушку
 N_BINS = 8                # столько корзин в калибровке
 
-PATCH = ("split_part(game_version, '.', 1) || '.' || split_part(game_version, '.', 2)")
+PATCH = "patch_of(game_version)"      # макрос из lol_utils.sql
 ROLES = ", ".join(f"'{r}'" for r in cfg.STANDARD_POSITIONS)
 
 
@@ -72,7 +72,7 @@ def _test_patch(con: duckdb.DuckDBPyConnection, source: str) -> str | None:
     df = df[df["patch"].str.match(r"^\d+\.\d+$", na=False)]
     if df.empty:
         return None
-    df["key"] = df["patch"].map(lambda p: [int(n) for n in p.split(".")])
+    df["key"] = df["patch"].map(patch_key)
     latest = df.sort_values("key").iloc[-1]
     return str(latest["patch"]) if latest["matches"] >= MIN_TEST_MATCHES else None
 

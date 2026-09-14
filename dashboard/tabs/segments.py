@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 
 from dashboard.charts import radar_grid
-from dashboard.data import run, table_exists, table_with_download
+from dashboard.data import plural, run, table_exists, table_with_download
 
 # Что значит каждый ярлык. Ярлыки ставит scripts/build_player_segments.py
 # (ARCHETYPE_BY_FEATURE), и набор групп меняется от пересборки к пересборке, поэтому
@@ -28,6 +28,30 @@ ARCHETYPE_DESC = {
     "Не классифицирован": "не хватило показателей, чтобы отнести игрока к группе",
     "Мало данных": "в источнике слишком мало игроков, чтобы разбить их на группы",
 }
+
+
+def outcome_note(source: str) -> str:
+    """Оговорка: показатели, по которым делили группы, сами зависят от исхода матча.
+
+    Крайние группы («Осторожный», «Часто умирает») названы по KDA, а в победах игроки
+    умирают заметно реже.
+    Поэтому разница в победах между группами — во многом следствие побед, та же
+    ловушка, что с предметами. Общая для этой вкладки и «Главного».
+    """
+    df = run(f"""
+        SELECT win, AVG(deaths) AS deaths FROM fact_participant
+        WHERE data_source = '{source}' GROUP BY 1
+    """)
+    by_win = dict(zip(df["win"].astype(bool), df["deaths"]))
+    if True not in by_win or False not in by_win:
+        return ""
+    w, lo = round(float(by_win[True])), round(float(by_win[False]))
+    return (
+        "Показатели, по которым делили группы, сами зависят от исхода: в победах игроки "
+        f"умирают реже ({w} {plural(w, 'смерть', 'смерти', 'смертей')} за матч против {lo}) "
+        "и больше зарабатывают. Поэтому разница в победах между группами во многом "
+        "следствие побед, а не стиля."
+    )
 
 
 def _legend(archetypes: list[str]) -> str:
@@ -166,6 +190,7 @@ def render(source: str) -> None:
     st.caption(
         "Не читайте разницу в победах как «этот стиль сильнее». Группы отличаются не только "
         "манерой игры, но и уровнем самих игроков, и разделить одно от другого здесь нечем. "
+        f"{outcome_note(source)} "
         "К тому же границы между группами размытые: у игроков на стыке двух групп показатели "
         "почти одинаковые, и деление во многом условное."
     )

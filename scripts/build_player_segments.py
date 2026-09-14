@@ -27,6 +27,7 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 from lol_utils import config as cfg, save_parquet_if_available  # noqa: E402
+from lol_utils.sql import install_macros  # noqa: E402
 
 # --- параметры кластеризации ---
 FEATURES = ["kda", "cs_per_min", "damage_per_min", "vision_per_min", "gold_per_min"]
@@ -90,7 +91,7 @@ def aggregate_players(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
         -- средние по роли внутри источника: это и есть «норма роли»
         role_avg AS (
             SELECT data_source, role_key,
-                   (SUM(kills) + SUM(assists)) * 1.0 / GREATEST(SUM(deaths), 1) AS kda,
+                   kda_pooled(kills, deaths, assists) AS kda,
                    AVG(cs_per_min) AS cs_per_min, AVG(damage_per_min) AS damage_per_min,
                    AVG(vision_per_min) AS vision_per_min, AVG(gold_per_min) AS gold_per_min
             FROM f WHERE role_key IN ({roles})
@@ -102,7 +103,7 @@ def aggregate_players(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
                    ANY_VALUE(p.source_tier)       AS source_tier,
                    COUNT(*)                       AS games,
                    AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate,
-                   (SUM(f.kills) + SUM(f.assists)) * 1.0 / GREATEST(SUM(f.deaths), 1) AS kda,
+                   kda_pooled(f.kills, f.deaths, f.assists) AS kda,
                    AVG(f.cs_per_min) AS cs_per_min, AVG(f.damage_per_min) AS damage_per_min,
                    AVG(f.vision_per_min) AS vision_per_min, AVG(f.gold_per_min) AS gold_per_min
             FROM f JOIN read_parquet('{player}') p
@@ -205,6 +206,7 @@ def main() -> int:
         pass
 
     con = duckdb.connect()
+    install_macros(con)
     players = aggregate_players(con)
     if players.empty:
         print("Нет игроков после фильтра по числу игр — витрина не построена.")

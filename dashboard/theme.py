@@ -15,6 +15,23 @@ import streamlit.components.v1 as components
 ASSETS = Path(__file__).resolve().parent / "assets"
 
 
+def hero_card(title: str, name: str, value: str, img: str = "", accent: str = "#C8AA6E") -> str:
+    """HTML карточки «картинка + подпись + имя + значение» (лидеры на «Силе» и «Предметах»)."""
+    pic = (f"<img src='{img}' style='width:56px;height:56px;border-radius:10px;"
+           f"border:1px solid #2f3a4d;flex:none'>") if img else ""
+    return (
+        "<div style='background:#10233a;border:1px solid #2f3a4d;border-radius:14px;"
+        "padding:13px 15px;display:flex;gap:12px;align-items:center'>"
+        f"{pic}<div style='min-width:0'>"
+        f"<div style='font-size:11px;color:#a49b86;text-transform:uppercase;"
+        f"letter-spacing:.05em'>{title}</div>"
+        "<div style=\"font-family:'Palatino Linotype','Book Antiqua',serif;font-size:19px;"
+        f"font-weight:600;color:#e8ecec\">{name}</div>"
+        f"<div style='font-size:13px;color:{accent}'>{value}</div>"
+        "</div></div>"
+    )
+
+
 @st.cache_data
 def _b64(name: str) -> str:
     p = ASSETS / name

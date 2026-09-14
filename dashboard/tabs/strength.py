@@ -9,20 +9,17 @@
 Побочный эффект слияния — главная находка проекта становится видимой: сила
 чемпиона проступает только внутри роли и патча, а в общей таблице усредняется в ноль.
 """
-import sys
-from pathlib import Path
-
 import altair as alt
 import pandas as pd
 import streamlit as st
 
+# dashboard.data при импорте добавляет src/ в sys.path, поэтому lol_utils импортируется после него.
 from dashboard.data import (
-    MIN_PATCH_MATCHES, POSITIONS, champion_images, download_csv, run, run_df,
+    MIN_PATCH_MATCHES, POSITIONS, champion_images, download_csv, plural, run, run_df,
 )
 from dashboard.stats import two_proportion_pvalue
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
-from lol_utils.sql import z_for_multiple_tests  # noqa: E402
+from dashboard.theme import hero_card
+from lol_utils.sql import patch_key, z_for_multiple_tests
 
 ROLES = POSITIONS[1:]                 # POSITIONS[0] — «Все»
 ALL_SLICE = "Все роли вместе"
@@ -30,8 +27,7 @@ ALL_SLICE = "Все роли вместе"
 ROLE_RU = {"Все": "Все роли", "TOP": "Топ", "JUNGLE": "Лес", "MIDDLE": "Мид",
            "BOTTOM": "Бот / керри", "UTILITY": "Саппорт"}
 ALPHA = 0.05
-# Патч из game_version: «16.11.673.4372» -> «16.11».
-PATCH_EXPR = "split_part(m.game_version, '.', 1) || '.' || split_part(m.game_version, '.', 2)"
+PATCH_EXPR = "patch_of(m.game_version)"      # макрос из lol_utils.sql
 # Границы групп по длине матча, те же, что в витрине champion_by_duration.
 SHORT_MAX, LONG_MIN = 25, 32
 # Нижний край слайдеров «минимум игр». В SQL стоит только он, а сам порог со
@@ -49,40 +45,11 @@ def _patches(source: str) -> list[str]:
         GROUP BY 1 HAVING COUNT(*) >= {MIN_PATCH_MATCHES} ORDER BY 1
     """)
     vals = [p for p in df["patch"].tolist() if p and p != "."]
-    return sorted(vals, key=lambda x: [int(n) for n in x.split(".")])
-
-
-def _plural(n: int, one: str, few: str, many: str) -> str:
-    """Русское склонение при числе: 1 чемпион, 2 чемпиона, 5 чемпионов."""
-    tail = abs(n) % 100
-    if 11 <= tail <= 14:
-        return many
-    tail %= 10
-    if tail == 1:
-        return one
-    if 2 <= tail <= 4:
-        return few
-    return many
+    return sorted(vals, key=patch_key)
 
 
 def _games(n: int) -> str:
-    return f"{n} {_plural(n, 'игра', 'игры', 'игр')}"
-
-
-def _hero(title, name, value, img, accent="#C8AA6E") -> str:
-    pic = (f"<img src='{img}' style='width:56px;height:56px;border-radius:10px;"
-           f"border:1px solid #2f3a4d;flex:none'>") if img else ""
-    return (
-        "<div style='background:#10233a;border:1px solid #2f3a4d;border-radius:14px;"
-        "padding:13px 15px;display:flex;gap:12px;align-items:center'>"
-        f"{pic}<div style='min-width:0'>"
-        f"<div style='font-size:11px;color:#a49b86;text-transform:uppercase;"
-        f"letter-spacing:.05em'>{title}</div>"
-        "<div style=\"font-family:'Palatino Linotype','Book Antiqua',serif;font-size:19px;"
-        f"font-weight:600;color:#e8ecec\">{name}</div>"
-        f"<div style='font-size:13px;color:{accent}'>{value}</div>"
-        "</div></div>"
-    )
+    return f"{n} {plural(n, 'игра', 'игры', 'игр')}"
 
 
 # Роли в предложном падеже: у каждой свой предлог, одним шаблоном не обойтись.
@@ -149,7 +116,7 @@ def role_gap_text(ex: dict) -> str:
         f"{ex['champion_name']} {ROLE_IN.get(ex['best_role'], ex['best_role'])} выигрывает "
         f"{ex['best_wr']:.0%} матчей, а {ROLE_IN.get(ex['worst_role'], ex['worst_role'])} "
         f"всего {ex['worst_wr']:.0%}. На первой позиции сыграно "
-        f"{big} {_plural(big, 'матч', 'матча', 'матчей')}, а на второй только {small}. "
+        f"{big} {plural(big, 'матч', 'матча', 'матчей')}, а на второй только {small}. "
         f"Общая доля побед считается по всем матчам сразу, поэтому она тянется к большей "
         f"группе и выходит {ex['overall']:.0%}"
     )
@@ -246,8 +213,7 @@ def render(source: str) -> None:
         SELECT c.champion_name, c.primary_class, c.champion_id,
                COUNT(DISTINCT f.match_id) AS games,
                SUM(CASE WHEN f.win THEN 1 ELSE 0 END) AS wins,
-               (SUM(f.kills) + SUM(f.assists)) * 1.0
-                   / GREATEST(SUM(f.deaths), 1) AS avg_kda,
+               kda_pooled(f.kills, f.deaths, f.assists) AS avg_kda,
                AVG(f.kills) AS avg_kills, AVG(f.deaths) AS avg_deaths
         FROM fact_participant f
         JOIN dim_champion c ON f.champion_id = c.champion_id
@@ -299,13 +265,13 @@ def render(source: str) -> None:
     most_played = champions.loc[champions["games"].idxmax()]
     best_kda = champions.loc[champions["avg_kda"].idxmax()]
     h1, h2, h3 = st.columns(3)
-    h1.markdown(_hero(top_title, top_row["champion_name"], top_value,
+    h1.markdown(hero_card(top_title, top_row["champion_name"], top_value,
                       imgs.get(int(top_row["champion_id"]), "")), unsafe_allow_html=True)
-    h2.markdown(_hero("Фаворит игроков", most_played["champion_name"],
+    h2.markdown(hero_card("Фаворит игроков", most_played["champion_name"],
                       f"{_games(int(most_played['games']))} · побед {most_played['winrate']:.0%}",
                       imgs.get(int(most_played["champion_id"]), ""), accent="#5aa0c9"),
                 unsafe_allow_html=True)
-    h3.markdown(_hero("Лучший KDA", best_kda["champion_name"],
+    h3.markdown(hero_card("Лучший KDA", best_kda["champion_name"],
                       f"KDA {best_kda['avg_kda']:.2f}",
                       imgs.get(int(best_kda["champion_id"]), ""), accent="#cda24a"),
                 unsafe_allow_html=True)
@@ -325,8 +291,8 @@ def render(source: str) -> None:
     n_naive = int(((champions["wilson_low"] > 0.5)
                    | (champions["wilson_high"] < 0.5)).sum())
     # Падежи разные: «все 172 чемпиона», но «из 172 чемпионов». Одной формой не обойтись.
-    nom = _plural(n_tests, "чемпион", "чемпиона", "чемпионов")
-    gen = _plural(n_tests, "чемпиона", "чемпионов", "чемпионов")
+    nom = plural(n_tests, "чемпион", "чемпиона", "чемпионов")
+    gen = plural(n_tests, "чемпиона", "чемпионов", "чемпионов")
 
     if n_marked:
         st.caption(
@@ -627,7 +593,7 @@ def _patch_shift(source: str, patches: list[str], pos_filter: str, min_games: in
     c1, c2 = st.columns(2)
     a = c1.selectbox("Патч A", patches, index=len(patches) - 2, key="f_patch_a")
     b = c2.selectbox("Патч B", patches, index=len(patches) - 1, key="f_patch_b")
-    a, b = sorted([a, b], key=lambda x: [int(n) for n in x.split(".")])
+    a, b = sorted([a, b], key=patch_key)
     if a == b:
         st.info("Выберите два разных патча.")
         return False

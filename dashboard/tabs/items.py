@@ -7,22 +7,11 @@ import altair as alt
 import streamlit as st
 
 from dashboard.data import run, download_csv, item_images
+from dashboard.theme import hero_card
 
 
 def _item_card(title, row, value, icons, accent="#C8AA6E"):
-    ic = icons.get(int(row["item_id"]), "")
-    pic = (f"<img src='{ic}' style='width:52px;height:52px;border-radius:9px;"
-           f"border:1px solid #2f3a4d;flex:none'>") if ic else ""
-    return (
-        "<div style='background:#10233a;border:1px solid #2f3a4d;border-radius:14px;"
-        "padding:13px 15px;display:flex;gap:12px;align-items:center'>"
-        f"{pic}<div style='min-width:0'>"
-        f"<div style='font-size:11px;color:#a49b86;text-transform:uppercase;letter-spacing:.05em'>{title}</div>"
-        "<div style=\"font-family:'Palatino Linotype','Book Antiqua',serif;font-size:18px;"
-        f"font-weight:600;color:#e8ecec\">{row['item_name']}</div>"
-        f"<div style='font-size:13px;color:{accent}'>{value}</div>"
-        "</div></div>"
-    )
+    return hero_card(title, row["item_name"], value, icons.get(int(row["item_id"]), ""), accent)
 
 
 def render(source: str) -> None:

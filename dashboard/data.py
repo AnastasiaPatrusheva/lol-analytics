@@ -52,6 +52,35 @@ def get_connection() -> duckdb.DuckDBPyConnection:
     return con
 
 
+def load_backtest(source: str) -> pd.Series | None:
+    """Итоги проверки прогноза «Состава» для источника (витрина composition_backtest).
+
+    Нужна «Составу», «Главному» и «Данным и качеству». None — проверки для источника нет.
+    """
+    if not table_exists("composition_backtest"):
+        return None
+    bt = run(f"SELECT * FROM composition_backtest WHERE data_source = '{source}'")
+    return None if bt.empty else bt.iloc[0]
+
+
+def plural(n: int, one: str, few: str, many: str) -> str:
+    """Русское склонение при числе: 1 чемпион, 2 чемпиона, 5 чемпионов."""
+    tail = abs(n) % 100
+    if 11 <= tail <= 14:
+        return many
+    tail %= 10
+    if tail == 1:
+        return one
+    if 2 <= tail <= 4:
+        return few
+    return many
+
+
+def fmt_int(x: float) -> str:
+    """Целое с пробелом в разрядах: 25 947."""
+    return f"{int(x):,}".replace(",", " ")
+
+
 def table_exists(name: str) -> bool:
     return (STAR_DIR / f"{name}.parquet").exists()
 

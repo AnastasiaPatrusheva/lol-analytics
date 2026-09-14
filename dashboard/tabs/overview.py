@@ -13,12 +13,12 @@
 """
 import streamlit as st
 
-from dashboard.data import run, table_exists
-from dashboard.tabs.composition import SIDE_NOM
+from dashboard.data import fmt_int, load_backtest, plural, run, table_exists
+from dashboard.tabs.composition import SIDE_GEN, SIDE_NOM
 from dashboard.tabs.quality import sample_facts
+from dashboard.tabs.segments import outcome_note
 from dashboard.tabs.strength import (
-    ALL_SLICE, ROLE_RU, _plural, aggregation_effect, duration_shift, role_gap_example,
-    role_gap_text,
+    ALL_SLICE, ROLE_RU, aggregation_effect, duration_shift, role_gap_example, role_gap_text,
 )
 
 MIN_GAMES = 30          # тот же порог, что стоит по умолчанию на вкладке «Сила чемпиона»
@@ -37,11 +37,6 @@ def _card(topic: str, title: str, body: str) -> None:
         "</div>",
         unsafe_allow_html=True,
     )
-
-
-def _num(x: float) -> str:
-    """Целое с пробелом в разрядах: 25 947."""
-    return f"{int(x):,}".replace(",", " ")
 
 
 def _strength_findings(source: str) -> None:
@@ -108,10 +103,10 @@ def _duration_finding(source: str) -> None:
     if dur.empty:
         return
     n = len(dur)
-    gen = _plural(n, "чемпиона", "чемпионов", "чемпионов")
+    gen = plural(n, "чемпиона", "чемпионов", "чемпионов")
     typical = round(float(dur["delta"].abs().median()) * 100)
     typical_text = (f"У обычного чемпиона разница около {typical} "
-                    f"{_plural(typical, 'пункта', 'пунктов', 'пунктов')}.")
+                    f"{plural(typical, 'пункта', 'пунктов', 'пунктов')}.")
     why = ("Только причину отсюда не вывести: короткие матчи — это в основном разгромы, "
            "поэтому проигрыши чемпионов, сильных в поздней игре, попадают туда сами собой.")
     sig = dur[dur["is_sig"]]
@@ -145,7 +140,7 @@ def _item_finding(source: str) -> None:
     _card(
         "Предметы",
         "Победа даёт предмет, а не предмет победу",
-        f"У предмета {r['item_name']} {r['winrate']:.0%} побед на {_num(r['appearances'])} "
+        f"У предмета {r['item_name']} {r['winrate']:.0%} побед на {fmt_int(r['appearances'])} "
         "сборках, но покупать его от этого не стоит. Riot сохраняет только то, что лежало "
         "в сумке в конце матча. Дорогую вещь успевает достроить тот, кто дольше живёт, "
         "то есть тот, кто и так выигрывает.",
@@ -154,22 +149,19 @@ def _item_finding(source: str) -> None:
 
 def _backtest_finding(source: str) -> None:
     """Вывод 5: прогноз по чемпионам против простого правила «побеждает сторона»."""
-    if not table_exists("composition_backtest"):
+    r = load_backtest(source)
+    if r is None:
         return
-    df = run(f"SELECT * FROM composition_backtest WHERE data_source = '{source}'")
-    if df.empty or "accuracy_sideonly" not in df.columns:
-        return
-    r = df.iloc[0]
     acc, side_acc = float(r["accuracy_raw"]), float(r["accuracy_sideonly"])
     weak = int(r["weak_side"])
     strong_nom = SIDE_NOM[300 - weak]
-    weak_gen = {100: "синих", 200: "красных"}[weak]
+    weak_gen = SIDE_GEN[weak]
     verdict = ("Одних чемпионов мало, чтобы угадать победителя" if acc <= side_acc else
                "Чемпионы угадывают победителя лучше, чем сторона карты")
     _card(
         "Состав",
         verdict,
-        f"Прогноз по чемпионам проверили на {_num(r['test_matches'])} матчах патча "
+        f"Прогноз по чемпионам проверили на {fmt_int(r['test_matches'])} матчах патча "
         f"{r['test_patch']}, которых расчёт не видел. Он угадал {acc:.1%} матчей, а правило "
         f"«всегда побеждают {strong_nom}», в котором чемпионов нет вовсе, — {side_acc:.1%}. "
         f"Чемпионы всё же влияют: у {weak_gen} {float(r['weak_side_fav_wr']):.1%} побед, "
@@ -198,16 +190,16 @@ def _segments_finding(source: str) -> None:
         f"получаются {len(df)} группы. У «{best['archetype']}» {best['wr']:.0%} побед, "
         f"у «{worst['archetype']}» — {worst['wr']:.0%}. Приписывать разницу одному стилю "
         "нельзя: группы отличаются ещё и уровнем самих игроков, а разделить одно "
-        "от другого здесь нечем.",
+        f"от другого здесь нечем. {outcome_note(source)}",
     )
 
 
 def _about_count(n: int) -> str:
     """«26 тысяч» для больших наборов, точное число для маленьких."""
     if n < 1000:
-        return f"{n} {_plural(n, 'рейтинговый матч', 'рейтинговых матча', 'рейтинговых матчей')}"
+        return f"{n} {plural(n, 'рейтинговый матч', 'рейтинговых матча', 'рейтинговых матчей')}"
     k = round(n / 1000)
-    return f"{k} {_plural(k, 'тысяча', 'тысячи', 'тысяч')} рейтинговых матчей"
+    return f"{k} {plural(k, 'тысяча', 'тысячи', 'тысяч')} рейтинговых матчей"
 
 
 def render(source: str) -> None:
@@ -236,8 +228,8 @@ def render(source: str) -> None:
     """).iloc[0]
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Матчей", _num(kpi["matches"]))
-    c2.metric("Игроков", _num(kpi["players"]))
+    c1.metric("Матчей", fmt_int(kpi["matches"]))
+    c2.metric("Игроков", fmt_int(kpi["players"]))
     c3.metric("Чемпионов", int(kpi["champions"]))
     c4.metric("Матч в среднем", f"{span['avg_min']:.0f} мин",
               help="Средняя длительность одного матча в этой выборке")
@@ -250,7 +242,7 @@ def render(source: str) -> None:
     # Число матчей здесь не повторяем: оно уже во вступлении и в карточке «Матчей».
     st.caption(
         f"Выводы посчитаны по набору «{source}»: рейтинговые одиночные матчи"
-        f"{where} за {n_p} {_plural(n_p, 'патч', 'патча', 'патчей')}, "
+        f"{where} за {n_p} {plural(n_p, 'патч', 'патча', 'патчей')}, "
         f"с {facts['first']:%d.%m.%Y} по {facts['last']:%d.%m.%Y}. Другой набор можно "
         "выбрать в панели «Фильтры» слева. Числа в тексте считаются из данных, а не "
         "вписаны вручную. Мелкая подпись над каждым выводом говорит, на какой вкладке он "
@@ -263,11 +255,9 @@ def render(source: str) -> None:
     _backtest_finding(source)
     _segments_finding(source)
 
-    tiers = set(run(f"SELECT DISTINCT source_tier FROM dim_match "
-                    f"WHERE data_source = '{source}'")["source_tier"])
     who = ("Данные собраны по игрокам верхней части рейтинга (Challenger, Grandmaster, "
            "Master), поэтому всё сказанное относится к ним, а не к обычному игроку."
-           if tiers <= {"challenger", "grandmaster", "master"} else
+           if facts["top_only"] else
            "Рангов игроков в этом наборе нет, поэтому неизвестно, насколько выводы "
            "подходят для обычного игрока.")
     st.info(

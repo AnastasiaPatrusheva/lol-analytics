@@ -1,6 +1,7 @@
 """SQL-макросы, общие для сборки витрин и для дашборда.
 
-Единственное место, где живёт формула интервала Уилсона. Раньше она была
+Единственное место, где живут формулы интервала Уилсона, пулированного KDA и
+разбора номера патча. Раньше она была
 скопирована в build_star_schema.py, dashboard/data.py и в сам тест — правка в
 одном месте молча расходилась с остальными.
 """
@@ -39,6 +40,24 @@ WILSON_MACROS = "\n".join(
 )
 
 
+# KDA пулированный: суммы убийств, помощей и смертей за все матчи, потом деление.
+# Суммы внутри макроса, чтобы его нельзя было применить к KDA отдельных матчей:
+# среднее отношений завышает игроков с редкими матчами без смертей.
+# Патч из game_version: «16.11.673.4372» -> «16.11».
+OTHER_MACROS = """
+CREATE OR REPLACE MACRO kda_pooled(kills, deaths, assists) AS
+    (SUM(kills) + SUM(assists)) * 1.0 / GREATEST(SUM(deaths), 1);
+CREATE OR REPLACE MACRO patch_of(game_version) AS
+    split_part(game_version, '.', 1) || '.' || split_part(game_version, '.', 2);
+"""
+
+
+def patch_key(patch: str) -> list[int]:
+    """Ключ сортировки патчей по номеру: 16.9 < 16.10, а не как строки."""
+    return [int(x) for x in patch.split(".") if x.isdigit()]
+
+
 def install_macros(con) -> None:
-    """Регистрирует макросы Уилсона в подключении DuckDB."""
+    """Регистрирует макросы (Уилсон, KDA, патч) в подключении DuckDB."""
     con.execute(WILSON_MACROS)
+    con.execute(OTHER_MACROS)

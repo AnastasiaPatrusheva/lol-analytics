@@ -11,15 +11,17 @@ import pandas as pd
 import streamlit as st
 
 from dashboard.charts import radar_grid
-from dashboard.data import run, champion_images, table_exists
+from dashboard.data import (
+    champion_images, fmt_int, load_backtest, plural, run, table_exists,
+)
 from dashboard.tabs.quality import RED_SIDE_ODD, red_side_wr
-from dashboard.tabs.strength import _plural
 
 ROLES = [("TOP", "Топ"), ("JUNGLE", "Лес"), ("MIDDLE", "Мид"),
          ("BOTTOM", "Бот"), ("UTILITY", "Саппорт")]
 
-# Стороны карты в Riot API: 100 — синие, 200 — красные.
+# Стороны карты в Riot API: 100 — синие, 200 — красные. Именительный и родительный падеж.
 SIDE_NOM = {100: "синие", 200: "красные"}
+SIDE_GEN = {100: "синих", 200: "красных"}
 
 # Грубая группировка классов Data Dragon для заметки о балансе.
 FRONTLINE = {"Tank", "Fighter"}
@@ -40,7 +42,7 @@ def _card(rk_ru, row, imgs):
         f"{pic}<div style='flex:1;min-width:0'>"
         f"<div style='font-weight:600;color:#F0E6D2'>{rk_ru} — {row['champion_name']}</div>"
         f"<div style='font-size:12px;color:#a49b86'>{games} "
-        f"{_plural(games, 'игра', 'игры', 'игр')} на этой роли</div></div>"
+        f"{plural(games, 'игра', 'игры', 'игр')} на этой роли</div></div>"
         f"<div style='color:{color};font-weight:600'>{wr:.1%} побед</div></div>"
     )
 
@@ -52,8 +54,8 @@ def _backtest(source: str) -> None:
     if not table_exists("composition_backtest"):
         st.info("Проверка не построена: запустите `python main.py backtest`.")
         return
-    bt = run(f"SELECT * FROM composition_backtest WHERE data_source = '{source}'")
-    if bt.empty or "accuracy_sideonly" not in bt.columns:
+    r = load_backtest(source)
+    if r is None:
         st.info(
             f"Для источника «{source}» проверку провести не на чем: нужен хотя бы один "
             "прошлый патч, чтобы посчитать оценки, и достаточно матчей в последнем, чтобы "
@@ -61,12 +63,11 @@ def _backtest(source: str) -> None:
         )
         return
 
-    r = bt.iloc[0]
     patch = r["test_patch"]
-    n_matches = f"{int(r['test_matches']):,}".replace(",", " ")
+    n_matches = fmt_int(r["test_matches"])
     st.caption(
         f"Проверка простая. Матчи последнего патча, {patch} ({n_matches} "
-        f"{_plural(int(r['test_matches']), 'матч', 'матча', 'матчей')}), в расчёт не брали. "
+        f"{plural(int(r['test_matches']), 'матч', 'матча', 'матчей')}), в расчёт не брали. "
         "Оценки составов посчитали по более ранним патчам и посмотрели, угадывают ли они "
         f"победителей в {patch}. Взяли именно последний патч, потому что в жизни так же: "
         "считают по прошлому, а сбывается или нет, видно в будущих матчах. В каждом матче "
@@ -112,7 +113,7 @@ def _backtest(source: str) -> None:
                    "что случилось на самом деле. Ноль — обещание сбывается.")
 
     fav, unfav = float(r["weak_side_fav_wr"]), float(r["weak_side_unfav_wr"])
-    weak_gen = {100: "синих", 200: "красных"}[weak]
+    weak_gen = SIDE_GEN[weak]
     st.markdown("**Влияют ли чемпионы вообще**")
     st.markdown(
         f"Да, но слабо. Возьмём {weak_gen}, которые в этой выборке проигрывают чаще, "
@@ -122,9 +123,9 @@ def _backtest(source: str) -> None:
     s1.metric(f"{SIDE_NOM[weak].capitalize()} выигрывают в среднем", f"{weak_wr:.1%}")
     n_fav, n_unfav = int(r["weak_side_fav_matches"]), int(r["weak_side_unfav_matches"])
     s2.metric(f"…когда чемпионы сильнее у {weak_gen}", f"{fav:.1%}",
-              help=f"{n_fav} {_plural(n_fav, 'матч', 'матча', 'матчей')}")
+              help=f"{n_fav} {plural(n_fav, 'матч', 'матча', 'матчей')}")
     s3.metric("…когда сильнее у соперника", f"{unfav:.1%}",
-              help=f"{n_unfav} {_plural(n_unfav, 'матч', 'матча', 'матчей')}")
+              help=f"{n_unfav} {plural(n_unfav, 'матч', 'матча', 'матчей')}")
     tail = (f"Но даже с более сильными чемпионами {SIDE_NOM[weak]} выигрывают меньше "
             "половины матчей, поэтому фаворит почти всегда тот же, что и без чемпионов."
             if fav < 0.5 else
@@ -184,7 +185,7 @@ def _backtest(source: str) -> None:
             "- **Простая доля побед:** если карточка говорит 51%, такие команды на деле и "
             "выигрывают примерно 51 матч из 100.\n"
             f"- **Осторожная оценка:** в среднем показывает примерно на {under:.0f} "
-            f"{_plural(round(under), 'пункт', 'пункта', 'пунктов')} меньше, чем выходит на "
+            f"{plural(round(under), 'пункт', 'пункта', 'пунктов')} меньше, чем выходит на "
             f"деле. Написано {51 - round(under)}%, а команды выигрывают 51%.\n"
             + weighted_note +
             "\nПосетитель смотрит на число в карточке, поэтому выбрали способ, у которого "
@@ -201,7 +202,7 @@ def _backtest(source: str) -> None:
     n_bins = len(calib)
     st.markdown("**Сбывается ли обещанный процент**")
     st.caption(
-        f"Все команды разложены на {n_bins} {_plural(n_bins, 'группу', 'группы', 'групп')}: "
+        f"Все команды разложены на {n_bins} {plural(n_bins, 'группу', 'группы', 'групп')}: "
         "от тех, кому прогноз обещал меньше всего побед, до тех, кому больше всего. "
         "По горизонтали — что было обещано, по вертикали — что вышло на самом деле. Если "
         "точка лежит на пунктирной линии, обещание сбылось в точности. Выше линии — "
@@ -352,7 +353,7 @@ def render(source: str) -> None:
                AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate,
                -- KDA суммарно за все матчи, как в словаре: среднее KDA отдельных игр
                -- раздувают матчи без смертей
-               (SUM(f.kills) + SUM(f.assists)) * 1.0 / GREATEST(SUM(f.deaths), 1) AS kda,
+               kda_pooled(f.kills, f.deaths, f.assists) AS kda,
                AVG(f.cs_per_min) AS cs,
                AVG(f.damage_per_min) AS dmg, AVG(f.gold_per_min) AS gold,
                AVG(f.vision_per_min) AS vision
