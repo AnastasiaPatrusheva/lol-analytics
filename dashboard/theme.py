@@ -46,13 +46,20 @@ _TO_TOP_JS = """
   if (old) old.remove();
   clearInterval(window.__toTopTimer);
   const b = document.createElement('button');
-  b.id = 'to-top'; b.textContent = '↑'; b.title = 'Наверх';
+  b.id = 'to-top'; b.title = 'Наверх';
   b.setAttribute('aria-label', 'Наверх');
+  // Стрелка — SVG, симметричная в своём viewBox, а не символ «↑»: у символа поля
+  // задаёт шрифт, и на разных системах он садился ниже центра круга.
+  b.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" ' +
+    'stroke="currentColor" stroke-width="2.6" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true" style="display:block">' +
+    '<path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg>';
   Object.assign(b.style, {
     position: 'fixed', right: '28px', bottom: '28px', width: '46px', height: '46px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0',
     borderRadius: '50%', border: '1px solid rgba(200,170,110,.55)', cursor: 'pointer',
     background: 'linear-gradient(180deg,#C8AA6E,#785A28)', color: '#0A1428',
-    fontSize: '22px', fontWeight: '700', zIndex: '999990',
+    zIndex: '999990',
     boxShadow: '0 4px 16px rgba(0,0,0,.55)', opacity: '0', pointerEvents: 'none',
     transition: 'opacity .2s'
   });
