@@ -50,12 +50,14 @@ _TO_TOP_JS = """
   b.setAttribute('aria-label', 'Наверх');
   // Стрелка — SVG, симметричная в своём viewBox, а не символ «↑»: у символа поля
   // задаёт шрифт, и на разных системах он садился ниже центра круга.
-  b.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" ' +
-    'stroke="currentColor" stroke-width="2.6" stroke-linecap="round" ' +
+  b.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" ' +
+    'stroke="currentColor" stroke-width="2.8" stroke-linecap="round" ' +
     'stroke-linejoin="round" aria-hidden="true" style="display:block">' +
-    '<path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg>';
+    '<path d="M12 21.5V2.5M5.5 9 12 2.5 18.5 9"/></svg>';
+  // bottom 88px, а не 28: на Streamlit Cloud в правом нижнем углу у владельца
+  // висит кнопка «Manage app», и прежде она перекрывала «наверх».
   Object.assign(b.style, {
-    position: 'fixed', right: '28px', bottom: '28px', width: '46px', height: '46px',
+    position: 'fixed', right: '28px', bottom: '88px', width: '46px', height: '46px',
     display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0',
     borderRadius: '50%', border: '1px solid rgba(200,170,110,.55)', cursor: 'pointer',
     background: 'linear-gradient(180deg,#C8AA6E,#785A28)', color: '#0A1428',
