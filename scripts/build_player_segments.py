@@ -30,7 +30,10 @@ from lol_utils import config as cfg, save_parquet_if_available  # noqa: E402
 from lol_utils.sql import install_macros  # noqa: E402
 
 # --- параметры кластеризации ---
-FEATURES = ["kda", "cs_per_min", "damage_per_min", "vision_per_min", "gold_per_min"]
+# KDA разложен на две части: убийства на смерть и помощь на смерть. После нормировки
+# к роли они почти не связаны (корреляция 0.13), а сам KDA — это в основном «помощь
+# на смерть» (0.86 против 0.54 у убийств). Одним числом два разных стиля сливались.
+FEATURES = ["kd", "ad", "cs_per_min", "damage_per_min", "vision_per_min", "gold_per_min"]
 # K=4: силуэт по riot_full почти не меняется на 2..6 (0.19–0.25), то есть чёткого
 # «локтя» в данных нет. Из этого диапазона 4 даёт интерпретируемые и достаточно
 # крупные сегменты; силуэт печатается при сборке, чтобы выбор можно было проверить.
@@ -51,6 +54,10 @@ ARCHETYPE_BY_FEATURE = {
     ("vision_per_min", -1): "Не ставит варды",
     ("gold_per_min", +1): "Сильная экономика",
     ("gold_per_min", -1): "Слабая экономика",
+    ("kd", +1): "Керри",
+    ("kd", -1): "Часто умирает",
+    ("ad", +1): "Командный игрок",
+    ("ad", -1): "Играет сам по себе",
     ("kda", +1): "Осторожный",
     ("kda", -1): "Часто умирает",
 }
@@ -60,6 +67,8 @@ FEATURE_SHORT = {
     "cs_per_min": "фарм",
     "vision_per_min": "обзор",
     "gold_per_min": "золото",
+    "kd": "убийства",
+    "ad": "помощь",
     "kda": "KDA",
 }
 
@@ -92,6 +101,8 @@ def aggregate_players(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
         role_avg AS (
             SELECT data_source, role_key,
                    kda_pooled(kills, deaths, assists) AS kda,
+                   SUM(kills) * 1.0 / GREATEST(SUM(deaths), 1)   AS kd,
+                   SUM(assists) * 1.0 / GREATEST(SUM(deaths), 1) AS ad,
                    AVG(cs_per_min) AS cs_per_min, AVG(damage_per_min) AS damage_per_min,
                    AVG(vision_per_min) AS vision_per_min, AVG(gold_per_min) AS gold_per_min
             FROM f WHERE role_key IN ({roles})
@@ -104,6 +115,8 @@ def aggregate_players(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
                    COUNT(*)                       AS games,
                    AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate,
                    kda_pooled(f.kills, f.deaths, f.assists) AS kda,
+                   SUM(f.kills) * 1.0 / GREATEST(SUM(f.deaths), 1)   AS kd,
+                   SUM(f.assists) * 1.0 / GREATEST(SUM(f.deaths), 1) AS ad,
                    AVG(f.cs_per_min) AS cs_per_min, AVG(f.damage_per_min) AS damage_per_min,
                    AVG(f.vision_per_min) AS vision_per_min, AVG(f.gold_per_min) AS gold_per_min
             FROM f JOIN read_parquet('{player}') p
@@ -114,6 +127,8 @@ def aggregate_players(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
         SELECT pp.data_source, pp.puuid, pp.name, pp.source_tier, pp.games, pp.winrate,
                mr.role_key AS main_role,
                pp.kda            / NULLIF(ra.kda, 0)            AS kda,
+               pp.kd             / NULLIF(ra.kd, 0)             AS kd,
+               pp.ad             / NULLIF(ra.ad, 0)             AS ad,
                pp.cs_per_min     / NULLIF(ra.cs_per_min, 0)     AS cs_per_min,
                pp.damage_per_min / NULLIF(ra.damage_per_min, 0) AS damage_per_min,
                pp.vision_per_min / NULLIF(ra.vision_per_min, 0) AS vision_per_min,

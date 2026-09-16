@@ -72,21 +72,23 @@ def test_patch_of_and_patch_key():
     assert sorted(["16.10", "16.9", "16.12"], key=patch_key) == ["16.9", "16.10", "16.12"]
 
 
+def _center(**metrics) -> list[float]:
+    """Центроид кластера в порядке FEATURES: метрики передаются по имени."""
+    return [metrics.get(f, 0.0) for f in FEATURES]
+
+
 def test_archetype_by_dominant_feature():
-    # FEATURES = [kda, cs_per_min, damage_per_min, vision_per_min, gold_per_min]
-    centers = np.array([
-        [0, 0, 0, 2.0, 0],   # доминирует обзор
-        [0, 0, 2.0, 0, 0],   # доминирует урон
-    ])
+    centers = np.array([_center(vision_per_min=2.0), _center(damage_per_min=2.0),
+                        _center(kd=2.0), _center(ad=2.0), _center(kd=-2.0)])
     labels = label_clusters(centers, FEATURES)
-    assert labels[0] == "Играет на обзор"
-    assert labels[1] == "Агрессивный"
+    assert [labels[i] for i in range(5)] == [
+        "Играет на обзор", "Агрессивный", "Керри", "Командный игрок", "Часто умирает"]
 
 
 def test_archetype_collision_disambiguated():
     centers = np.array([
-        [0, 2.0, 0, 0, 1.0],   # фарм доминирует, золото — второе
-        [0, 2.0, 1.0, 0, 0],   # фарм доминирует, урон — второй
+        _center(cs_per_min=2.0, gold_per_min=1.0),    # фарм доминирует, золото — второе
+        _center(cs_per_min=2.0, damage_per_min=1.0),  # фарм доминирует, урон — второй
     ])
     labels = label_clusters(centers, FEATURES)
     # оба кластера «фарм»-доминантные, но ярлыки не должны совпасть

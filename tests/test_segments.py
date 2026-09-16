@@ -9,7 +9,7 @@ def test_every_build_label_has_description():
 
 
 def test_legend_lists_only_given_groups_and_explains_refined_labels():
-    text = _legend(["Часто умирает", "Осторожный + урон"])
-    assert "**Часто умирает** — низкий KDA" in text
-    assert "**Осторожный + урон** — высокий KDA" in text
+    text = _legend(["Часто умирает", "Керри + урон"])
+    assert "**Часто умирает** — убийств на смерть меньше" in text
+    assert "**Керри + урон** — убийств на смерть больше" in text
     assert "Агрессивный" not in text
