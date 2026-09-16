@@ -344,13 +344,16 @@ def render(source: str) -> None:
     )
     H = 560
     ysort = alt.EncodingSortField(field=order_col, op="max", order="descending")
-    portraits = (
-        alt.Chart(top20).mark_image(width=26, height=26)
-        .encode(y=alt.Y("champion_name:N", sort=ysort, axis=None), url="image:N")
-        .properties(width=30, height=H)
-    )
     y_named = alt.Y("champion_name:N", sort=ysort, title=None,
-                    axis=alt.Axis(labelPadding=6, domain=False, ticks=False))
+                    axis=alt.Axis(labelPadding=34, domain=False, ticks=False))
+    # Портрет рисуется внутри графика (x в пикселях от левого края, отрицательный —
+    # в поле подписей), как на вкладке «Игроки». Склейка из двух графиков не тянулась
+    # под ширину колонки и оставляла пустую треть справа. Ось у слоя та же, что у
+    # столбцов: с axis=None подписи пропадали со всего графика.
+    portraits = (
+        alt.Chart(top20).mark_image(width=22, height=22, align="center")
+        .encode(x=alt.value(-17), y=y_named, url="image:N")
+    )
     bars = (
         alt.Chart(top20).mark_bar(cornerRadiusEnd=3)
         .encode(
@@ -387,7 +390,7 @@ def render(source: str) -> None:
                     text=alt.Text(f"{order_col}:Q", format=".1%"))
         )
 
-    layers = [bars, half]
+    layers = [bars, half, portraits]
     above = top20[top20["dev"] >= 0]
     below = top20[top20["dev"] < 0]
     if not above.empty:
@@ -395,7 +398,7 @@ def render(source: str) -> None:
     if not below.empty:
         layers.append(_labels(below, "right", -6))
     st.altair_chart(
-        alt.hconcat(portraits, alt.layer(*layers), spacing=4).configure_view(strokeWidth=0),
+        alt.layer(*layers).properties(height=H).configure_view(strokeWidth=0),
         width="stretch")
 
     # ---------- эффект усреднения: ради этого три вкладки и слиты в одну ----------

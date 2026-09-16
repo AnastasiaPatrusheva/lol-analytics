@@ -30,6 +30,17 @@ ARCHETYPE_DESC = {
 }
 
 
+# Цвета групп. Стандартная палитра Altair давала ярко-красный и ярко-синий: красный
+# читается как «ошибка», хотя это просто название группы, и оба цвета спорили с
+# золото-синим оформлением. Порядок фиксированный, набор проверен на различимость,
+# в том числе при дальтонизме.
+GROUP_COLORS = ["#3987e5", "#d95926", "#199e70", "#c98500", "#9085e9", "#d55181"]
+
+
+def _colors(order: list[str]) -> alt.Scale:
+    return alt.Scale(domain=order, range=GROUP_COLORS[:len(order)])
+
+
 def outcome_note(source: str) -> str:
     """Оговорка: показатели, по которым делили группы, сами зависят от исхода матча.
 
@@ -101,7 +112,8 @@ def render(source: str) -> None:
         .reset_index()
         .sort_values("players", ascending=False)
     )
-    st.markdown(_legend(counts["archetype"].tolist()))
+    order = counts["archetype"].tolist()       # порядок групп по размеру = порядок цветов
+    st.markdown(_legend(order))
     top = counts.iloc[0]
     st.success(
         f"Самая большая группа — «{top['archetype']}»: {int(top['players'])} игроков, "
@@ -119,7 +131,10 @@ def render(source: str) -> None:
     t_right.markdown("#### Урон и обзор")
     c_left, c_right = st.columns([1, 1.4])
     with c_left:
-        ybar = alt.Y("archetype:N", sort="-x", title=None,
+        # Порядок задаём полем, а не «-x»: со своей шкалой цвета сортировка по x
+        # переворачивалась, и самая большая группа оказывалась внизу.
+        ybar = alt.Y("archetype:N", title=None,
+                     sort=alt.EncodingSortField(field="players", op="max", order="descending"),
                      axis=alt.Axis(labelPadding=6, domain=False, ticks=False))
         # Запас справа, иначе число у самой длинной полосы уходит за край
         # графика и обрезается («1505» превращалось в «150»). Запас задан в долях
@@ -136,7 +151,7 @@ def render(source: str) -> None:
                         scale=alt.Scale(domain=[0, x_max]),
                         axis=alt.Axis(grid=True, domain=False, labelFlush=True)),
                 y=ybar,
-                color=alt.Color("archetype:N", legend=None),
+                color=alt.Color("archetype:N", legend=None, scale=_colors(order)),
                 tooltip=["archetype", "players", alt.Tooltip("winrate:Q", format=".1%", title="доля побед")],
             )
             .properties(height=H)
@@ -154,7 +169,7 @@ def render(source: str) -> None:
             .encode(
                 x=alt.X("damage_per_min:Q", title="Урон к норме своей роли"),
                 y=alt.Y("vision_per_min:Q", title="Обзор к норме своей роли"),
-                color=alt.Color("archetype:N", title="Группа"),
+                color=alt.Color("archetype:N", title="Группа", sort=order, scale=_colors(order)),
                 tooltip=["name", "archetype", "games",
                          alt.Tooltip("winrate:Q", format=".1%", title="доля побед"),
                          alt.Tooltip("kda:Q", format=".2f")],
