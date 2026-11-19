@@ -101,7 +101,7 @@ def _team_scores(con: duckdb.DuckDBPyConnection, source: str, patch: str) -> pd.
             SELECT team_id, AVG(CASE WHEN win THEN 1.0 ELSE 0.0 END) - 0.5 AS shift
             FROM f WHERE patch <> '{patch}'
             GROUP BY 1
-        )
+        ), teams AS (
         SELECT t.match_id, t.team_id,
                ANY_VALUE(s.shift) AS side_shift,
                ANY_VALUE(t.win) AS win,
@@ -118,7 +118,12 @@ def _team_scores(con: duckdb.DuckDBPyConnection, source: str, patch: str) -> pd.
         LEFT JOIN side s ON t.team_id = s.team_id
         WHERE t.patch = '{patch}'
         GROUP BY 1, 2
-        HAVING COUNT(*) = 5
+        HAVING COUNT(*) = 5 AND COUNT(DISTINCT t.role_key) = 5
+           AND COUNT(t.win) = 5 AND MIN(CAST(t.win AS INT)) = MAX(CAST(t.win AS INT))
+        )
+        SELECT * FROM teams
+        QUALIFY COUNT(*) OVER (PARTITION BY match_id) = 2
+            AND SUM(CAST(win AS INT)) OVER (PARTITION BY match_id) = 1
     """).df()
 
 
@@ -145,7 +150,7 @@ def _head_to_head(teams: pd.DataFrame, col: str) -> tuple[int, int]:
     a, b = sides
     diff = piv[(col, a)] - piv[(col, b)]
     a_won = piv[("win", a)].astype(bool)
-    decided = diff != 0                      # ничьи по оценке не засчитываем
+    decided = diff.notna() & (diff != 0)     # неполные пары и ничьи не засчитываем
     correct = ((diff > 0) == a_won) & decided
     return int(correct.sum()), int(decided.sum())
 

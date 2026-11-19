@@ -45,20 +45,31 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
     # (одна формула на витрины, дашборд и тесты).
     install_macros(con)
 
-    # Матчи, пригодные для анализа: полные (10 участников) и не ремейки.
+    # Только две полные команды с согласованным исходом и одним победителем, без ремейков.
     # PUUID заменяем на устойчивый хеш: витрины лежат в публичном репозитории,
     # а PUUID — постоянный идентификатор аккаунта Riot. Для джойнов хеша хватает.
     con.execute(f"""
         CREATE OR REPLACE VIEW complete_matches AS
-        WITH mc AS (
+        WITH teams AS (
+            SELECT data_source, match_id, team_id, MAX(CAST(win AS INT)) AS won
+            FROM matches_common
+            WHERE team_id IN (100, 200)
+            GROUP BY 1, 2, 3
+            HAVING COUNT(*) = 5 AND COUNT(DISTINCT participant_id) = 5
+               AND COUNT(win) = 5 AND MIN(CAST(win AS INT)) = MAX(CAST(win AS INT))
+        ), sizes AS (
             SELECT data_source, match_id, COUNT(*) AS participants
-            FROM matches_common GROUP BY data_source, match_id
+            FROM matches_common GROUP BY 1, 2
+        ), mc AS (
+            SELECT data_source, match_id
+            FROM teams JOIN sizes USING (data_source, match_id)
+            WHERE participants = 10
+            GROUP BY 1, 2 HAVING COUNT(*) = 2 AND SUM(won) = 1
         )
         SELECT m.* REPLACE (substr(md5(m.puuid), 1, {cfg.PLAYER_KEY_LEN}) AS puuid)
         FROM matches_common m
         JOIN mc ON m.data_source = mc.data_source AND m.match_id = mc.match_id
-        WHERE mc.participants = 10
-          AND m.game_duration_min >= {cfg.MIN_MATCH_MINUTES}
+        WHERE m.game_duration_min >= {cfg.MIN_MATCH_MINUTES}
     """)
 
     # справочник чемпионов + основной класс из tags
@@ -178,21 +189,24 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
     # витрина "Предмет в финальной сборке x Winrate".
     #
     # ВАЖНО про интерпретацию: item0..item6 — это инвентарь НА КОНЕЦ матча, а не
-    # покупки по ходу игры. Победители дольше живут и успевают достроить дорогие
-    # предметы, поэтому высокий winrate дорогого предмета — в значительной мере
-    # следствие победы, а не её причина. Витрина отвечает на вопрос «что обычно
+    # покупки по ходу игры. Связь предмета с победой может отражать ход матча,
+    # длительность и выбор игроков; причинный эффект из неё не следует.
+    # В витрине один предмет считается один раз на инвентарь игрока. Витрина отвечает на вопрос «что обычно
     # стоит в финальной сборке у победителей», а не «что покупать, чтобы выиграть».
     # Поэтому колонка называется appearances (появления), а не purchases.
     con.execute("""
         CREATE OR REPLACE TABLE item_stats AS
-        WITH agg AS (
+        WITH builds AS (
+            SELECT DISTINCT data_source, match_id, participant_id, item_id
+            FROM fact_participant_item
+        ), agg AS (
             SELECT b.data_source,
                    COALESCE(d.item_name, CAST(b.item_id AS VARCHAR)) AS item_name,
                    b.item_id,
                    d.gold_total,
                    COUNT(*) AS appearances,
                    AVG(CASE WHEN f.win THEN 1.0 ELSE 0.0 END) AS winrate
-            FROM fact_participant_item b
+            FROM builds b
             JOIN fact_participant f
               ON b.data_source = f.data_source
              AND b.match_id = f.match_id
@@ -246,7 +260,7 @@ def build(con: duckdb.DuckDBPyConnection) -> None:
         SELECT *,
                CASE WHEN wilson_low_adj > 0.5 THEN 'выигрывает чаще'
                     WHEN wilson_high_adj < 0.5 THEN 'выигрывает реже'
-                    ELSE 'как все' END AS verdict
+                    ELSE 'отличие не обнаружено' END AS verdict
         FROM ci
         ORDER BY data_source, wilson_low DESC
     """)

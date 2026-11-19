@@ -7,7 +7,7 @@
 методами защитить невозможно, поэтому здесь один метод на все срезы.
 
 Побочный эффект слияния — главная находка проекта становится видимой: сила
-чемпиона проступает только внутри роли и патча, а в общей таблице усредняется в ноль.
+чемпиона может зависеть от роли и патча, а общий срез может скрывать различия.
 """
 import altair as alt
 import pandas as pd
@@ -79,17 +79,18 @@ def role_gap_example(source: str, patch_filter: str, min_games: int) -> dict | N
             JOIN dim_champion ch ON f.champion_id = ch.champion_id
             JOIN dim_match m ON f.data_source = m.data_source AND f.match_id = m.match_id
             WHERE f.data_source = '{source}' AND f.role_key IN ({roles}) {patch_filter}
-            GROUP BY 1, 2 HAVING COUNT(*) >= {min_games}
+            GROUP BY 1, 2
+        ),
+        totals AS (
+            SELECT champion_name, SUM(games) AS total, SUM(games * wr) / SUM(games) AS overall
+            FROM per_role GROUP BY 1
         ),
         ranked AS (
             SELECT *,
                    ROW_NUMBER() OVER (PARTITION BY champion_name ORDER BY wr)      AS lo,
                    ROW_NUMBER() OVER (PARTITION BY champion_name ORDER BY wr DESC) AS hi,
-                   COUNT(*)   OVER (PARTITION BY champion_name)                    AS n_roles,
-                   SUM(games) OVER (PARTITION BY champion_name)                    AS total,
-                   SUM(games * wr) OVER (PARTITION BY champion_name)
-                       / SUM(games) OVER (PARTITION BY champion_name)              AS overall
-            FROM per_role
+                   COUNT(*)   OVER (PARTITION BY champion_name) AS n_roles
+            FROM per_role WHERE games >= {min_games}
         )
         SELECT champion_name, total, overall,
                MAX(CASE WHEN lo = 1 THEN role_key END) AS worst_role,
@@ -98,7 +99,7 @@ def role_gap_example(source: str, patch_filter: str, min_games: int) -> dict | N
                MAX(CASE WHEN hi = 1 THEN role_key END) AS best_role,
                MAX(CASE WHEN hi = 1 THEN wr END)       AS best_wr,
                MAX(CASE WHEN hi = 1 THEN games END)    AS best_games
-        FROM ranked WHERE n_roles >= 2
+        FROM ranked JOIN totals USING (champion_name) WHERE n_roles >= 2
         GROUP BY 1, 2, 3
         HAVING MAX(CASE WHEN hi = 1 THEN wr END) - MAX(CASE WHEN lo = 1 THEN wr END) >= 0.05
            AND abs(overall - 0.5) <= 0.03
@@ -126,8 +127,8 @@ def aggregation_effect(source: str, patch_filter: str, min_games: int) -> pd.Dat
     """Сколько чемпионов значимо отличаются от 50% в разных разрезах.
 
     Ради этой таблицы вкладки и сливались: в общей строке значимых обычно ноль,
-    а внутри роли они появляются. Ноль в общем срезе — следствие усреднения по
-    ролям, а не свойство игры.
+    а внутри роли они появляются. Усреднение по ролям может скрывать различия,
+    но само по себе отсутствие значимости не доказывает равенство чемпионов.
     """
     slices = f"""
         WITH j AS (
@@ -180,9 +181,9 @@ def render(source: str) -> None:
     st.subheader("Сила чемпиона")
     st.caption(
         "Чемпион — это игровой персонаж, за которого играют. Всего их в игре больше "
-        "полутора сотен. Есть ли среди них те, кто выигрывает чаще остальных? В хорошо "
-        "настроенной игре каждый побеждает примерно в половине матчей, и вопрос в том, "
-        "кто действительно выбивается из этой половины, а кому просто повезло. Условия "
+        "полутора сотен. Проверяем, у кого доля побед отличается от половины матчей "
+        "с учётом неопределённости и числа проверок. Это сравнение с 50%, "
+        "а не попарное сравнение чемпионов. Условия "
         "сравнения можно менять: роль, патч, длина матча."
     )
 
@@ -245,7 +246,7 @@ def render(source: str) -> None:
                (winrate - AVG(winrate) OVER (PARTITION BY primary_class)) * 100 AS vs_class,
                CASE WHEN wilson_low_adj > 0.5 THEN 'выигрывает чаще'
                     WHEN wilson_high_adj < 0.5 THEN 'выигрывает реже'
-                    ELSE 'как все' END AS verdict
+                    ELSE 'отличие не обнаружено' END AS verdict
         FROM ci ORDER BY {order_col} DESC
     """, base=base)
 
@@ -257,10 +258,10 @@ def render(source: str) -> None:
     if strong.empty:
         top_row = champions.iloc[0]
         top_title = "Первый в рейтинге"
-        top_value = f"{top_row[order_col]:.1%} · от остальных неотличим"
+        top_value = f"{top_row[order_col]:.1%} · отличие от 50% не обнаружено"
     else:
         top_row = strong.iloc[0]          # champions уже отсортированы по order_col
-        top_title = "Сильнейший"
+        top_title = "Выделяется по доле побед"
         top_value = f"{top_row[order_col]:.1%} · {_games(int(top_row['games']))}"
     most_played = champions.loc[champions["games"].idxmax()]
     best_kda = champions.loc[champions["avg_kda"].idxmax()]
@@ -297,31 +298,26 @@ def render(source: str) -> None:
     if n_marked:
         st.caption(
             f"Заметно чаще половины побеждают — {n_strong}, заметно реже — {n_weak}. "
-            f"Остальные из {n_tests} {gen} от половины неотличимы."
+            f"У остальных из {n_tests} {gen} отличие от половины побед не обнаружено."
         )
     else:
         st.caption(
-            f"В этой выборке {n_tests} {nom} выигрывают примерно одинаково. Разницу "
-            "между ними можно объяснить обычным везением."
+            f"У {n_tests} {gen} в выбранном срезе не обнаружено отличий от 50% побед "
+            "с поправкой на число проверок. Это не доказывает равенство чемпионов."
         )
 
-    # Сколько ложных срабатываний ждём при обычном пороге: alpha × число проверок.
-    expected_false = round(ALPHA * n_tests)
-    tail = ("но мы не засчитали ни одного" if n_marked == 0
-            else f"но засчитали только {n_marked}")
     with st.expander(
-            f"Из {n_tests} чемпионов {n_naive} выглядят сильнее остальных, {tail}"):
+            f"Отличия от 50%: без поправки {n_naive}, после поправки {n_marked}"):
         st.markdown(
-            "Любая проверка по выборке иногда ошибается: мы видим часть матчей "
-            "чемпиона, а не все, какие он вообще сыграл. Насколько часто ошибаться — "
-            "выбираем мы сами, и обычный выбор такой: примерно 5 промахов "
-            "на 100 проверок.\n\n"
-            f"Пока чемпион один, риск невелик. Но чемпионов {n_tests}, и при таком "
-            f"пороге примерно {expected_false} из них назовутся сильными по ошибке. "
-            f"Мы насчитали {n_naive} — и не можем сказать, сколько из них настоящие.\n\n"
-            f"Поэтому поднимаем требования: ярлык получает только тот, чей перевес "
-            f"не объяснить даже с учётом {n_tests} попыток. Таких оказалось "
-            f"**{n_marked}**. Приём называется поправкой Бонферрони."
+            "Если доля побед на самом деле равна 50%, обычная проверка с уровнем 5% "
+            "всё равно иногда ошибочно обнаруживает отличие.\n\n"
+            f"При {n_tests} проверках и истинности всех нулевых гипотез ожидалось бы "
+            f"в среднем не более {ALPHA * n_tests:.1f} ложных срабатываний. "
+            f"Без поправки в данных выделились {n_naive} чемпионов. Само это число "
+            "не показывает, какие отличия воспроизведутся.\n\n"
+            "Поэтому используем поправку Бонферрони: отмечаем чемпионов, у которых "
+            "скорректированный интервал не пересекает 50%. "
+            f"Таких оказалось **{n_marked}**. Проверка не доказывает причину различий."
         )
 
     top20 = champions.head(20).copy()
@@ -363,7 +359,7 @@ def render(source: str) -> None:
             color=alt.Color(
                 "verdict:N", title="Итог",
                 scale=alt.Scale(
-                    domain=["выигрывает чаще", "как все", "выигрывает реже"],
+                    domain=["выигрывает чаще", "отличие не обнаружено", "выигрывает реже"],
                     range=["#C8AA6E", "#6b7580", "#d9534f"],
                 ),
                 legend=alt.Legend(orient="bottom"),
@@ -414,14 +410,13 @@ def render(source: str) -> None:
             "Смешивать роли нельзя потому, что на разных позициях у одного и того же "
             "чемпиона разная работа: где-то он добывает золото и наносит урон, где-то "
             "прикрывает команду. Это фактически две разные игры, и сила в них тоже разная. "
-            f"{role_gap_text(example)} — и чемпион попадает в «как все». "
-            "Так пропадают и сильные, и слабые."
+            f"{role_gap_text(example)}. Общий показатель может скрывать различия между ролями."
         )
     else:
         st.caption(
             "Смешивать роли нельзя вот почему. Одного и того же чемпиона играют на разных "
             "позициях, и на одной он может выигрывать заметно чаще, чем на другой. Вместе "
-            "эти доли сливаются в одну, близкую к половине, и чемпион попадает в «как все». "
+            "эти доли сливаются в одну, близкую к половине, и различия между ролями могут скрыться. "
             "Так пропадают и сильные, и слабые."
         )
     eff = aggregation_effect(source, patch_filter, min_games)
@@ -645,8 +640,8 @@ def _patch_shift(source: str, patches: list[str], pos_filter: str, min_games: in
 
     st.caption(
         f"Riot регулярно правит чемпионов. Здесь видно, у кого доля побед между патчами "
-        f"{a} и {b} изменилась по-настоящему, а у кого сдвинулась в пределах обычного "
-        f"разброса. Золотой столбец — стал выигрывать чаще, красный — реже.\n\n"
+        f"{a} и {b} прошла статистическую проверку с поправкой на число чемпионов. "
+        f"Это наблюдаемое различие, а не доказанный эффект изменений Riot. Золотой столбец — стал выигрывать чаще, красный — реже.\n\n"
         + _brightness_legend(cmp)
     )
     # Один и тот же чемпион не может одновременно усилиться и ослабнуть: берём
@@ -663,12 +658,12 @@ def _patch_shift(source: str, patches: list[str], pos_filter: str, min_games: in
         r = downs.iloc[-1]
         parts.append(f"**{r['champion_name']}** — на {abs(r['delta']):.0%} реже")
     if parts:
-        st.success(f"Между патчами {a} и {b} по-настоящему изменились: "
+        st.success(f"Между патчами {a} и {b} проверку различий прошли: "
                    + ", ".join(parts) + ".")
     else:
         st.info(
-            f"Между патчами {a} и {b} ни у кого нет изменений, которые нельзя объяснить "
-            "случайностью. Цифры у чемпионов поменялись, но в пределах обычного разброса."
+            f"Между патчами {a} и {b} ни одно различие не прошло скорректированный порог. "
+            "Это не доказывает отсутствия изменений."
         )
     st.altair_chart(
         _diverging_bars(cmp, f"Изменение доли побед ({b} − {a})",
@@ -778,14 +773,12 @@ def _by_duration(source: str, pos_filter: str, patch_filter: str, after_chart: b
     st.divider()
     st.markdown("#### Кто сильнее в долгих играх, а кто в коротких")
     st.warning(
-        "**Этот разрез описывает, но не объясняет.** Часть чемпионов набирает силу "
-        "к концу матча: в начале они слабые, зато под конец становятся опаснее всех. "
-        "Проблема в том, что матч заканчивается быстро, когда одна команда разносит "
-        "другую. Значит короткие матчи — это в основном разгромы, и все проигрыши таких "
-        "чемпионов попадают в них сами собой, ещё до того, как те успели усилиться. "
-        "Поэтому из графика видно, кому долгая игра на руку, но не видно, что здесь "
-        "причина, а что следствие: возможно, игра затянулась именно потому, что такой "
-        "чемпион не дал её закончить.",
+        "**Этот разрез описывает, но не объясняет.** Длительность зависит от хода "
+        "матча и действий обеих команд. Здесь сравниваются доли побед в коротких и "
+        "длинных матчах. Различие не доказывает, что увеличение длительности поможет "
+        "чемпиону победить. При малых ожидаемых частотах используем точный тест, "
+        "в остальных случаях сравниваем доли нормальным приближением. Поправка "
+        "на число чемпионов применяется в обоих случаях.",
         icon="⚠️",
     )
     _duration_groups(source, patch_filter)
@@ -807,7 +800,7 @@ def _by_duration(source: str, pos_filter: str, patch_filter: str, after_chart: b
     if not sig.empty:
         top = sig.iloc[0]
         st.success(
-            f"Больше всех выигрывает от долгой игры **{top['champion_name']}**: "
+            f"Пример различия, прошедшего проверку, **{top['champion_name']}**: "
             f"{top['wr_short']:.0%} побед в коротких матчах против {top['wr_long']:.0%} "
             f"в долгих."
         )

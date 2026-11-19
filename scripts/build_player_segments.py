@@ -11,7 +11,8 @@ outputs/sql/star/player_segments.parquet + .csv, который дашборд �
 разы выше. Кластеризация по сырым значениям неизбежно находит РОЛИ, а не стили —
 и выдаёт их за открытие. Поэтому каждая метрика берётся относительно среднего по
 основной роли игрока: 1.0 = «как типичный игрок моей роли», 1.3 = «на 30% выше».
-После этого кластер означает именно манеру игры внутри роли.
+В расчёт входят только матчи на основной роли. Кластеры описывают различия
+показателей, но не устанавливают причины поведения или устойчивые типы игроков.
 
 Запуск:  python scripts/build_player_segments.py   (или через main.py segments)
 """
@@ -51,7 +52,7 @@ ARCHETYPE_BY_FEATURE = {
     ("cs_per_min", +1): "Фармящий",
     ("cs_per_min", -1): "Мало фарма",
     ("vision_per_min", +1): "Играет на обзор",
-    ("vision_per_min", -1): "Не ставит варды",
+    ("vision_per_min", -1): "Мало обзора",
     ("gold_per_min", +1): "Сильная экономика",
     ("gold_per_min", -1): "Слабая экономика",
     ("kd", +1): "Керри",
@@ -76,9 +77,9 @@ FEATURE_SHORT = {
 def aggregate_players(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
     """Метрики игрока относительно средних по его основной роли.
 
-    Три шага: (1) метрики каждого игрока и его основная роль — та, где он сыграл
-    больше всего; (2) средние по роли внутри источника; (3) деление одного на
-    другое. KDA считается пулированно ((убийства+помощи)/смерти по всем матчам),
+    Основная роль определяется по всем матчам. Показатели и порог MIN_GAMES
+    считаются только по матчам на этой роли. Норма роли считается по всем
+    матчам данной роли внутри источника, затем показатели делятся на эту норму. KDA считается пулированно ((убийства+помощи)/смерти по всем матчам),
     а не средним от KDA матчей: среднее отношений завышает игроков с редкими
     матчами без смертей.
     """
@@ -119,7 +120,10 @@ def aggregate_players(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
                    SUM(f.assists) * 1.0 / GREATEST(SUM(f.deaths), 1) AS ad,
                    AVG(f.cs_per_min) AS cs_per_min, AVG(f.damage_per_min) AS damage_per_min,
                    AVG(f.vision_per_min) AS vision_per_min, AVG(f.gold_per_min) AS gold_per_min
-            FROM f JOIN read_parquet('{player}') p
+            FROM f
+            JOIN main_role mr ON f.data_source = mr.data_source AND f.puuid = mr.puuid
+                             AND f.role_key = mr.role_key
+            JOIN read_parquet('{player}') p
               ON f.data_source = p.data_source AND f.puuid = p.puuid
             GROUP BY f.data_source, f.puuid
             HAVING COUNT(*) >= {MIN_GAMES}
@@ -142,7 +146,7 @@ def aggregate_players(con: duckdb.DuckDBPyConnection) -> pd.DataFrame:
 def label_clusters(centers, features: list[str]) -> dict[int, str]:
     """Архетип кластера = метрика с наибольшим отклонением центроида от нормы роли.
 
-    centers — cluster_centers_ (в стандартизованном пространстве, 0 = норма роли).
+    centers содержит отклонения средних отношений к норме роли от единицы.
     Берём метрику по максимуму МОДУЛЯ отклонения и учитываем знак: «часто умирает»
     такой же стиль, как «осторожный». При совпадении доминирующей метрики у двух
     кластеров имя уточняется второй по силе метрикой, в крайнем случае номером.
@@ -181,7 +185,8 @@ def segment_source(df_src: pd.DataFrame) -> pd.DataFrame:
     from sklearn.metrics import silhouette_score
     from sklearn.preprocessing import StandardScaler
 
-    df_src = df_src.copy()
+    # Порядок SQL-строк не фиксирован; KMeans должен получать один и тот же порядок игроков.
+    df_src = df_src.sort_values("puuid").reset_index(drop=True)
     # только метрики с данными и ненулевым разбросом (иначе стандартизация даёт NaN/деление на 0)
     feats = [f for f in FEATURES if df_src[f].notna().any() and df_src[f].std(skipna=True) > 0]
     usable = df_src.dropna(subset=feats)
@@ -193,7 +198,8 @@ def segment_source(df_src: pd.DataFrame) -> pd.DataFrame:
 
     # Стандартизация обязательна: у метрик разный масштаб (gold ~400, vision ~1),
     # иначе KMeans будет мерить расстояние в основном по золоту.
-    X = StandardScaler().fit_transform(usable[feats])
+    scaler = StandardScaler()
+    X = scaler.fit_transform(usable[feats])
     km = KMeans(n_clusters=K, n_init=10, random_state=RANDOM_STATE).fit(X)
     # Силуэт печатаем, чтобы выбор K был проверяемым, а не «просто 4».
     # Значения около 0.2 означают слабую структуру: это разведочная сегментация,
@@ -204,7 +210,7 @@ def segment_source(df_src: pd.DataFrame) -> pd.DataFrame:
         print(f"  силуэт при K={K}: {sil:.3f}")
     usable = usable.copy()
     usable["cluster"] = km.labels_
-    names = label_clusters(km.cluster_centers_, feats)
+    names = label_clusters(scaler.inverse_transform(km.cluster_centers_) - 1.0, feats)
     usable["archetype"] = usable["cluster"].map(names)
 
     # игроков с пропусками в метриках (не попали в кластеризацию) помечаем отдельно

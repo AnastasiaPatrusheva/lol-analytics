@@ -165,6 +165,19 @@ def check_queue(df: pd.DataFrame, report: Report) -> None:
 
 
 def check_win_balance(df: pd.DataFrame, report: Report) -> None:
+    eligible = df[df["game_duration_min"] >= cfg.MIN_MATCH_MINUTES]
+    teams = eligible.groupby(["data_source", "match_id", "team_id"], dropna=False).agg(
+        players=("win", "size"), known=("win", "count"),
+        low=("win", "min"), high=("win", "max"))
+    teams["valid"] = (teams["players"].eq(5) & teams["known"].eq(5)
+                      & teams["low"].eq(teams["high"])
+                      & teams.index.get_level_values("team_id").isin([100, 200]))
+    matches = teams.groupby(level=["data_source", "match_id"]).agg(
+        teams=("valid", "size"), valid=("valid", "all"), winners=("high", "sum"))
+    bad = int((~(matches["teams"].eq(2) & matches["valid"] & matches["winners"].eq(1))).sum())
+    report.add("match_outcomes", passed=bad == 0, severity="WARN",
+               detail="у каждого матча две полные команды и один победитель" if not bad
+               else f"матчей с некорректным исходом или составом команд: {bad}; не допускаются в витрины")
     # В каждом матче 5 победителей и 5 проигравших, поэтому winrate по источнику ≈ 0.5.
     # Существенное отклонение указывает на несбалансированные данные или потерю части строк.
     for source, group in df.groupby("data_source"):
